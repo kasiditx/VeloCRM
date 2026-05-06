@@ -80,8 +80,8 @@ new #[Layout('layouts.guest')] class extends Component
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
+            <x-primary-button class="ms-4" wire:loading.attr="disabled" wire:target="register">
+                <x-ui.loading-label target="register" :label="__('Register')" :loading="__('Creating...')" />
             </x-primary-button>
         </div>
     </form>

@@ -28,7 +28,7 @@ class TaskAssignedNotification extends Notification
         return (new MailMessage)
             ->subject('Task assigned: ' . $this->task->title)
             ->greeting('Hello ' . $notifiable->name)
-            ->line('A task has been assigned to you in VeloCRM.')
+            ->line(__('A task has been assigned to you in :app.', ['app' => velocrm_app_name()]))
             ->line('Task: ' . $this->task->title)
             ->line('Priority: ' . $this->task->priority)
             ->line('Status: ' . $this->task->status)

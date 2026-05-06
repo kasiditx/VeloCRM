@@ -78,10 +78,10 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
-                                        <a href="{{ route('tasks.edit', $task->id) }}" class="module-icon-button hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30" title="{{ __('Edit') }}">
+                                        <a href="{{ route('tasks.edit', $task->id) }}" class="module-icon-button hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30" title="{{ __('Edit') }}" aria-label="{{ __('Edit') }}">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         </a>
-                                        <button wire:click="delete({{ $task->id }})" wire:confirm="{{ __('Confirm deletion?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete') }}">
+                                        <button wire:click="delete({{ $task->id }})" wire:loading.attr="disabled" wire:target="delete({{ $task->id }})" wire:confirm="{{ __('Confirm deletion?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
@@ -134,7 +134,7 @@
 
                         <div class="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700/50">
                             <a href="{{ route('tasks.edit', $task->id) }}" class="flex-1 text-center rounded-lg bg-amber-50 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400">{{ __('Edit') }}</a>
-                            <button wire:click="delete({{ $task->id }})" wire:confirm="{{ __('Confirm deletion?') }}" class="flex-1 rounded-lg bg-rose-50 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-100 dark:bg-rose-900/30 dark:text-rose-400">{{ __('Delete') }}</button>
+                            <button wire:click="delete({{ $task->id }})" wire:loading.attr="disabled" wire:target="delete({{ $task->id }})" wire:confirm="{{ __('Confirm deletion?') }}" class="flex-1 rounded-lg bg-rose-50 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-100 disabled:pointer-events-none disabled:opacity-50 dark:bg-rose-900/30 dark:text-rose-400"><x-ui.loading-label target="delete({{ $task->id }})" :label="__('Delete')" :loading="__('Deleting...')" /></button>
                         </div>
                     </div>
                 @empty

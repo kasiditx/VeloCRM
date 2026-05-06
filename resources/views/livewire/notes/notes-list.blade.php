@@ -12,7 +12,9 @@
             @error('content') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
         </div>
         <div class="flex justify-end">
-            <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700">{{ __('Add Note') }}</button>
+            <button type="submit" wire:loading.attr="disabled" wire:target="save" class="action-button action-button-primary">
+                <x-ui.loading-label target="save" :label="__('Add Note')" :loading="__('Adding...')" />
+            </button>
         </div>
     </form>
 
@@ -27,8 +29,8 @@
                         </p>
                     </div>
                     @if ($note->user_id === auth()->id() || auth()->user()->hasRole('Admin'))
-                        <button wire:click="delete({{ $note->id }})" wire:confirm="{{ __('Delete this note?') }}" class="text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400">
-                            {{ __('Delete') }}
+                        <button wire:click="delete({{ $note->id }})" wire:confirm="{{ __('Delete this note?') }}" wire:loading.attr="disabled" wire:target="delete({{ $note->id }})" class="text-xs font-medium text-rose-600 transition hover:text-rose-700 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
+                            <x-ui.loading-label target="delete({{ $note->id }})" :label="__('Delete')" :loading="__('Deleting...')" />
                         </button>
                     @endif
                 </div>

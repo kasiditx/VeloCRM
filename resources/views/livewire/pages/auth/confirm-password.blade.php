@@ -54,8 +54,8 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
+            <x-primary-button wire:loading.attr="disabled" wire:target="confirmPassword">
+                <x-ui.loading-label target="confirmPassword" :label="__('Confirm')" :loading="__('Checking...')" />
             </x-primary-button>
         </div>
     </form>

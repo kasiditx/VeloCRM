@@ -103,6 +103,46 @@ class Dashboard extends Component
             });
         $overdueInvoiceTotal = $overdueInvoices->sum('balance_due');
         $todayLabel = now()->locale(app()->getLocale())->translatedFormat('l, j F Y');
+        $staleLeads = Lead::query()
+            ->whereIn('status', ['New', 'Contacted'])
+            ->where('updated_at', '<', now()->subDays(7))
+            ->count();
+
+        $decisionCards = collect([
+            [
+                'title' => __('Collect overdue money'),
+                'message' => $overdueInvoices->isNotEmpty()
+                    ? __(':count invoices are overdue, worth :amount.', [
+                        'count' => $overdueInvoices->count(),
+                        'amount' => format_currency($overdueInvoiceTotal),
+                    ])
+                    : __('No overdue invoices right now. Keep billing follow-up weekly.'),
+                'action' => __('Review Invoices'),
+                'href' => route('invoices.index'),
+                'tone' => $overdueInvoices->isNotEmpty() ? 'danger' : 'success',
+                'priority' => $overdueInvoices->isNotEmpty() ? 1 : 4,
+            ],
+            [
+                'title' => __('Follow up before deals go cold'),
+                'message' => $staleLeads > 0
+                    ? __(':count active leads have not changed in 7 days.', ['count' => $staleLeads])
+                    : __('Lead follow-up is current for this week.'),
+                'action' => __('Review Leads'),
+                'href' => route('leads.index'),
+                'tone' => $staleLeads > 0 ? 'warning' : 'success',
+                'priority' => $staleLeads > 0 ? 2 : 5,
+            ],
+            [
+                'title' => __('Plan today’s sales work'),
+                'message' => $upcomingTasks->isNotEmpty()
+                    ? __(':count tasks are due in the next 7 days.', ['count' => $upcomingTasks->count()])
+                    : __('No dated tasks are due this week. Add follow-ups for active deals.'),
+                'action' => __('Open Tasks'),
+                'href' => route('tasks.index'),
+                'tone' => $upcomingTasks->isNotEmpty() ? 'info' : 'neutral',
+                'priority' => $upcomingTasks->isNotEmpty() ? 3 : 6,
+            ],
+        ])->sortBy('priority')->values();
 
         return view('livewire.dashboard', [
             'totalLeads' => $totalLeads,
@@ -119,6 +159,7 @@ class Dashboard extends Component
             'upcomingTasks' => $upcomingTasks,
             'overdueInvoices' => $overdueInvoices,
             'todayLabel' => $todayLabel,
+            'decisionCards' => $decisionCards,
         ])->layout('layouts.app');
     }
 }

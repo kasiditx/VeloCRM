@@ -2,7 +2,7 @@
 
     <h1>Create Admin Account</h1>
     <p class="subtitle">
-        Create your administrator account. You'll use these credentials to log in to {{ config('app.name', 'VeloCRM') }}.
+        Create your administrator account. You'll use these credentials to log in to {{ velocrm_app_name() }}.
     </p>
 
     <form method="POST" action="/install/admin" id="admin-form">

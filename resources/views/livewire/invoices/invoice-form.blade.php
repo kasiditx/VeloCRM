@@ -122,7 +122,7 @@
                                         {{ format_currency($item['amount']) }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
-                                        <button type="button" wire:click="removeItem({{ $index }})" class="p-1 text-gray-400 hover:text-rose-600 transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/30">
+                                        <button type="button" wire:click="removeItem({{ $index }})" wire:loading.attr="disabled" wire:target="removeItem({{ $index }})" class="p-1 text-gray-400 hover:text-rose-600 transition-colors rounded-lg hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-45 dark:hover:bg-rose-900/30">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
                                     </td>

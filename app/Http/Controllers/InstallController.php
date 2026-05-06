@@ -129,9 +129,9 @@ class InstallController extends Controller
             'dbConfig' => $dbConfig,
             'defaults' => [
                 'app_url' => old('app_url', url('/')),
-                'company_name' => old('company_name', 'VeloCRM'),
+                'company_name' => old('company_name', velocrm_app_name()),
                 'company_address' => old('company_address', ''),
-                'site_title' => old('site_title', 'VeloCRM'),
+                'site_title' => old('site_title', velocrm_app_name()),
                 'app_locale' => old('app_locale', 'en'),
                 'app_timezone' => old('app_timezone', 'Asia/Bangkok'),
                 'currency_code' => old('currency_code', 'USD'),
@@ -143,7 +143,7 @@ class InstallController extends Controller
                 'mail_username' => old('mail_username', ''),
                 'mail_password' => old('mail_password', ''),
                 'mail_from_address' => old('mail_from_address', ''),
-                'mail_from_name' => old('mail_from_name', 'VeloCRM'),
+                'mail_from_name' => old('mail_from_name', velocrm_app_name()),
             ],
         ]);
     }
@@ -336,7 +336,7 @@ class InstallController extends Controller
         file_put_contents(storage_path('installed'), json_encode([
             'installed_at' => now()->toIso8601String(),
             'version'      => '1.0.0',
-            'company_name' => Setting::get('company_name', 'VeloCRM'),
+            'company_name' => Setting::get('company_name', velocrm_app_name()),
             'locale' => config('app.locale'),
             'currency_code' => Setting::get('currency_code', 'USD'),
             'smtp_configured' => (bool) Setting::get('mail_host'),

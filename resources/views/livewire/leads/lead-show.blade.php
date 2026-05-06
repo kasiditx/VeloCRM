@@ -13,10 +13,14 @@
 
             <div class="work-actions">
                 @if (! $lead->customer)
-                    <button wire:click="openConvertModal" class="inline-flex items-center gap-1.5 justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700">{{ __('Convert to Customer') }}</button>
+                    <button wire:click="openConvertModal" wire:loading.attr="disabled" wire:target="openConvertModal" class="inline-flex items-center gap-1.5 justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:pointer-events-none disabled:opacity-55 disabled:saturate-50">
+                        <x-ui.loading-label target="openConvertModal" :label="__('Convert to Customer')" :loading="__('Opening...')" />
+                    </button>
                 @endif
                 <x-button.secondary-link href="{{ route('leads.edit', $lead->id) }}" wire:navigate>{{ __('Edit') }}</x-button.secondary-link>
-                <x-button.danger wire:click="delete" wire:confirm="{{ __('Delete this lead?') }}">{{ __('Delete') }}</x-button.danger>
+                <x-button.danger wire:click="delete" wire:confirm="{{ __('Delete this lead?') }}" wire:loading.attr="disabled" wire:target="delete">
+                    <x-ui.loading-label target="delete" :label="__('Delete')" :loading="__('Deleting...')" />
+                </x-button.danger>
             </div>
         </div>
 
@@ -136,14 +140,14 @@
     </div>
 
     @if ($showConvertModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/60 px-4">
-            <div class="w-full max-w-2xl rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/60 px-4" role="dialog" aria-modal="true" aria-labelledby="convert-lead-title" aria-describedby="convert-lead-description">
+            <div class="w-full max-w-2xl rounded-xl bg-white p-6 shadow-2xl outline-none dark:bg-gray-900" tabindex="-1">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ __('Convert Lead to Customer') }}</h2>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Review the details below before creating the customer record.') }}</p>
+                        <h2 id="convert-lead-title" class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ __('Convert Lead to Customer') }}</h2>
+                        <p id="convert-lead-description" class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Review the details below before creating the customer record.') }}</p>
                     </div>
-                    <button wire:click="$set('showConvertModal', false)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+                    <button type="button" aria-label="{{ __('Close') }}" wire:click="$set('showConvertModal', false)" wire:loading.attr="disabled" wire:target="convertToCustomer" class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-gray-800 dark:hover:text-gray-200">✕</button>
                 </div>
 
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
@@ -175,8 +179,10 @@
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
-                    <button wire:click="$set('showConvertModal', false)" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">{{ __('Cancel') }}</button>
-                    <button wire:click="convertToCustomer" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">{{ __('Create Customer') }}</button>
+                    <button wire:click="$set('showConvertModal', false)" wire:loading.attr="disabled" wire:target="convertToCustomer" class="action-button action-button-secondary">{{ __('Cancel') }}</button>
+                    <button wire:click="convertToCustomer" wire:loading.attr="disabled" wire:target="convertToCustomer" class="action-button action-button-success">
+                        <x-ui.loading-label target="convertToCustomer" :label="__('Create Customer')" :loading="__('Converting...')" />
+                    </button>
                 </div>
             </div>
         </div>

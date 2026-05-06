@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'VeloCRM') }}</title>
+        <title>{{ velocrm_app_name() }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -48,7 +48,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <span class="text-2xl font-black text-white tracking-tight">{{ config('app.name', 'VeloCRM') }}</span>
+                    <span class="text-2xl font-black text-white tracking-tight">{{ velocrm_app_name() }}</span>
                 </div>
 
                 {{-- Main illustration area --}}
@@ -60,7 +60,7 @@
                         <div class="float-1 rounded-2xl border border-white/10 bg-white/[0.08] p-6 shadow-xl">
                             <div class="flex items-center justify-between mb-5">
                                 <div>
-                                    <p class="text-white/60 text-xs font-medium uppercase tracking-widest">{{ __('Sales Desk') }}</p>
+                                    <p class="text-white/60 text-xs font-medium uppercase tracking-widest">{{ __('Workspace') }}</p>
                                     <p class="text-white text-3xl font-bold mt-0.5">{{ __('Ready') }}</p>
                                 </div>
                                 <div class="w-12 h-12 rounded-2xl bg-green-400/20 flex items-center justify-center">
@@ -117,10 +117,10 @@
                 {{-- Tagline --}}
                 <div class="relative z-10">
                     <h2 class="text-3xl xl:text-4xl font-extrabold text-white leading-tight">
-                        {{ __('Your sales desk,') }}<br>
+                        {{ velocrm_company_name() }}<br>
                         <span class="text-white/60">{{ __('ready for the next action.') }}</span>
                     </h2>
-                    <p class="text-white/50 text-sm mt-3 max-w-xs">{{ __('Manage leads, tasks, proposals, invoices, and customers without enterprise clutter.') }}</p>
+                    <p class="text-white/50 text-sm mt-3 max-w-xs">{{ velocrm_auth_subtitle() }}</p>
                 </div>
             </div>
 
@@ -134,19 +134,19 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <span class="text-xl font-black text-gray-900 dark:text-white tracking-tight">{{ config('app.name', 'VeloCRM') }}</span>
+                    <span class="text-xl font-black text-gray-900 dark:text-white tracking-tight">{{ velocrm_app_name() }}</span>
                 </div>
 
                 <div class="w-full max-w-md">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ __('Sign in to your sales desk') }}</h1>
-                        <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">{{ __('Continue managing today’s leads, follow-ups, and customer records.') }}</p>
+                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ velocrm_auth_headline() }}</h1>
+                        <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">{{ velocrm_auth_subtitle() }}</p>
                     </div>
 
                     {{ $slot }}
 
                     <p class="mt-8 text-center text-xs text-gray-400 dark:text-gray-600">
-                        © {{ date('Y') }} {{ config('app.name', 'VeloCRM') }}. {{ __('All rights reserved.') }}
+                        © {{ date('Y') }} {{ velocrm_app_name() }}. {{ __('All rights reserved.') }}
                     </p>
                 </div>
             </div>

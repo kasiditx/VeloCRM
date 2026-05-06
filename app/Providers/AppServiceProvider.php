@@ -35,8 +35,8 @@ class AppServiceProvider extends ServiceProvider
             // Share global settings with all views
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
                 \Illuminate\Support\Facades\View::composer('*', function ($view) {
-                    $view->with('site_name', \App\Models\Setting::get('company_name', config('app.name')));
-                    $view->with('site_title', \App\Models\Setting::get('site_title', 'VeloCRM'));
+                    $view->with('site_name', velocrm_company_name());
+                    $view->with('site_title', velocrm_app_name());
                     $view->with('site_logo', \App\Models\Setting::get('logo'));
                     $view->with('site_favicon', \App\Models\Setting::get('favicon'));
                     $view->with('primary_color', \App\Models\Setting::get('primary_color', '#4f46e5'));

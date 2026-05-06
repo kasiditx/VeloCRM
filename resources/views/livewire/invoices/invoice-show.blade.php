@@ -162,7 +162,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ __('Payments') }}</h3>
                     @if ($invoice->balance_due > 0)
-                        <x-button.secondary wire:click="$set('showPaymentModal', true)">
+                        <x-button.secondary wire:click="$set('showPaymentModal', true)" wire:loading.attr="disabled">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             {{ __('Record Payment') }}
                         </x-button.secondary>
@@ -206,11 +206,11 @@
 
     {{-- Payment Modal --}}
     @if($showPaymentModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4">
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-800">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="record-payment-title">
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-800 outline-none" tabindex="-1">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Record Payment') }}</h3>
-                    <button wire:click="$set('showPaymentModal', false)" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <h3 id="record-payment-title" class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Record Payment') }}</h3>
+                    <button type="button" aria-label="{{ __('Close') }}" wire:click="$set('showPaymentModal', false)" wire:loading.attr="disabled" wire:target="recordPayment" class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-gray-800">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
@@ -249,8 +249,10 @@
                         </div>
                     </div>
                     <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-3 rounded-b-2xl">
-                        <x-button.secondary type="button" wire:click="$set('showPaymentModal', false)">{{ __('Cancel') }}</x-button.secondary>
-                        <x-button.primary type="submit">{{ __('Save Payment') }}</x-button.primary>
+                        <x-button.secondary type="button" wire:click="$set('showPaymentModal', false)" wire:loading.attr="disabled" wire:target="recordPayment">{{ __('Cancel') }}</x-button.secondary>
+                        <x-button.primary type="submit" wire:loading.attr="disabled" wire:target="recordPayment">
+                            <x-ui.loading-label target="recordPayment" :label="__('Save Payment')" :loading="__('Saving...')" />
+                        </x-button.primary>
                     </div>
                 </form>
             </div>

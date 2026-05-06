@@ -5,7 +5,7 @@
 
         <h1>Installation Complete!</h1>
         <p class="subtitle" style="margin-bottom: 1rem;">
-            {{ config('app.name', 'VeloCRM') }} has been installed successfully. Review the setup summary below, then log in with your admin credentials and complete the final checklist.
+            {{ velocrm_app_name() }} has been installed successfully. Review the setup summary below, then log in with your admin credentials and complete the final checklist.
         </p>
 
         <ul class="check-list" style="text-align: left; max-width: 360px; margin: 1.5rem auto;">
@@ -38,7 +38,7 @@
         <div class="summary-grid" style="text-align: left;">
             <div class="summary-card">
                 <div class="summary-card-label">Company</div>
-                <div class="summary-card-value">{{ $summary['company_name'] ?? config('app.name', 'VeloCRM') }}</div>
+                <div class="summary-card-value">{{ $summary['company_name'] ?? velocrm_company_name() }}</div>
             </div>
             <div class="summary-card">
                 <div class="summary-card-label">Company Address</div>
@@ -46,7 +46,7 @@
             </div>
             <div class="summary-card">
                 <div class="summary-card-label">Site Title</div>
-                <div class="summary-card-value">{{ $summary['site_title'] ?? config('app.name', 'VeloCRM') }}</div>
+                <div class="summary-card-value">{{ $summary['site_title'] ?? velocrm_app_name() }}</div>
             </div>
             <div class="summary-card">
                 <div class="summary-card-label">Regional Format</div>
@@ -76,7 +76,7 @@
 
         <form method="POST" action="/install/finalize" style="margin-top: 1.5rem;">
             @csrf
-            <button type="submit" class="btn btn-success btn-block" style="font-size: 1rem; padding: 1rem;">
+            <button type="submit" class="btn btn-success btn-block" style="font-size: 1rem; padding: 1rem;" onclick="this.innerHTML='<span class=\'spinner\'></span> Launching...'; this.disabled=true; this.form.submit();">
                 Launch CRM
             </button>
         </form>

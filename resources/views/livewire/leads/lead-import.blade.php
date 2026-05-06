@@ -150,8 +150,8 @@
                     </table>
                 </div>
                 <div class="border-t border-gray-200 p-5 dark:border-gray-800">
-                    <button wire:click="import" wire:loading.attr="disabled" class="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60">
-                        {{ __('Start Import') }}
+                    <button wire:click="import" wire:loading.attr="disabled" wire:target="import" class="action-button action-button-success">
+                        <x-ui.loading-label target="import" :label="__('Start Import')" :loading="__('Importing...')" />
                     </button>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'VeloCRM') }} Installer</title>
+    <title>{{ velocrm_app_name() }} Installer</title>
 
     {{-- Google Fonts — No Vite needed --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -581,7 +581,7 @@
 
     {{-- Footer --}}
     <div class="installer-footer">
-        VeloCRM v1.0.0 &middot; &copy; {{ date('Y') }} All rights reserved
+        {{ velocrm_app_name() }} v1.0.0 &middot; &copy; {{ date('Y') }} All rights reserved
     </div>
 </body>
 </html>

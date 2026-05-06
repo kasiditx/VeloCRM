@@ -24,7 +24,7 @@ class InvoiceShow extends Component
     public function mount(int $invoiceId)
     {
         $this->loadInvoice($invoiceId);
-        $this->companyName = Setting::get('company_name', config('app.name'));
+        $this->companyName = Setting::get('company_name', velocrm_company_name());
         $this->companyAddress = Setting::get('company_address', '');
 
         $this->paymentDate = date('Y-m-d');

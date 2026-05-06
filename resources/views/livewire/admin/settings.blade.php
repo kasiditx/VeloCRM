@@ -82,7 +82,9 @@
                                     @error('envato_purchase_code') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="pt-2">
-                                    <button type="submit" class="inline-flex items-center rounded-lg bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition">{{ __('Save Changes') }}</button>
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="saveGeneral" class="action-button action-button-primary">
+                                        <x-ui.loading-label target="saveGeneral" :label="__('Save Changes')" :loading="__('Saving...')" />
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -133,7 +135,9 @@
                                     @error('primary_color') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="pt-2">
-                                    <button type="submit" class="inline-flex items-center rounded-lg bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition">{{ __('Save Changes') }}</button>
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="saveBranding,logo,favicon" class="action-button action-button-primary">
+                                        <x-ui.loading-label target="saveBranding,logo,favicon" :label="__('Save Changes')" :loading="__('Saving...')" />
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -175,8 +179,12 @@
                                     <input type="text" wire:model="mail_from_name" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
                                 </div>
                                 <div class="sm:col-span-2 flex flex-wrap justify-between items-center gap-3 pt-2">
-                                    <button type="button" wire:click="sendTestEmail" class="inline-flex items-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 transition">{{ __('Send Test Email') }}</button>
-                                    <button type="submit" class="inline-flex items-center rounded-lg bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition">{{ __('Save Changes') }}</button>
+                                    <button type="button" wire:click="sendTestEmail" wire:loading.attr="disabled" wire:target="sendTestEmail,saveSMTP" class="action-button action-button-secondary">
+                                        <x-ui.loading-label target="sendTestEmail" :label="__('Send Test Email')" :loading="__('Sending...')" />
+                                    </button>
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="saveSMTP,sendTestEmail" class="action-button action-button-primary">
+                                        <x-ui.loading-label target="saveSMTP" :label="__('Save Changes')" :loading="__('Saving...')" />
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -205,7 +213,9 @@
                                     </select>
                                 </div>
                                 <div class="pt-2">
-                                    <button type="submit" class="inline-flex items-center rounded-lg bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition">{{ __('Save Changes') }}</button>
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="saveRegional" class="action-button action-button-primary">
+                                        <x-ui.loading-label target="saveRegional" :label="__('Save Changes')" :loading="__('Saving...')" />
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -215,7 +225,7 @@
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Email Templates') }}</h3>
                                 @if($editingTemplate)
-                                    <button wire:click="cancelEdit" class="text-sm font-medium text-gray-500 hover:text-gray-700">{{ __('Cancel') }}</button>
+                                    <button wire:click="cancelEdit" wire:loading.attr="disabled" wire:target="cancelEdit,saveTemplate" class="text-sm font-medium text-gray-500 transition hover:text-gray-700 disabled:pointer-events-none disabled:opacity-50">{{ __('Cancel') }}</button>
                                 @endif
                             </div>
 
@@ -231,7 +241,9 @@
                                         <p class="mt-2 text-xs text-gray-500">{{ __('Available placeholders') }}: <code>{customer_name}</code>, <code>{company_name}</code>, <code>{invoice_number}</code>, <code>{user_name}</code></p>
                                     </div>
                                     <div class="pt-2">
-                                        <button type="submit" class="inline-flex items-center rounded-lg bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition">{{ __('Update Template') }}</button>
+                                        <button type="submit" wire:loading.attr="disabled" wire:target="saveTemplate" class="action-button action-button-primary">
+                                            <x-ui.loading-label target="saveTemplate" :label="__('Update Template')" :loading="__('Saving...')" />
+                                        </button>
                                     </div>
                                 </form>
                             @else
@@ -242,7 +254,9 @@
                                                 <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ $template['name'] }}</h4>
                                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ $template['subject'] }}</p>
                                             </div>
-                                            <button wire:click="editTemplate({{ $template['id'] }})" class="text-sm font-semibold text-primary-600 hover:text-primary-700">{{ __('Edit') }}</button>
+                                            <button wire:click="editTemplate({{ $template['id'] }})" wire:loading.attr="disabled" wire:target="editTemplate({{ $template['id'] }})" class="text-sm font-semibold text-primary-600 transition hover:text-primary-700 disabled:pointer-events-none disabled:opacity-50">
+                                                <x-ui.loading-label target="editTemplate({{ $template['id'] }})" :label="__('Edit')" :loading="__('Opening...')" />
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>

@@ -1,8 +1,8 @@
 <x-install-layout :currentStep="1">
 
-    <h1>Welcome to {{ config('app.name', 'VeloCRM') }}</h1>
+    <h1>Welcome to {{ velocrm_app_name() }}</h1>
     <p class="subtitle">
-        Thank you for purchasing {{ config('app.name', 'VeloCRM') }}. This wizard will guide you through the installation process
+        Thank you for purchasing {{ velocrm_app_name() }}. This wizard will guide you through the installation process
         in just a few minutes. Please make sure you have your database credentials ready.
     </p>
 

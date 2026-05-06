@@ -12,7 +12,9 @@
             @error('file') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
         </div>
         <div class="flex justify-end">
-            <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700">{{ __('Upload File') }}</button>
+            <button type="submit" wire:loading.attr="disabled" wire:target="save,file" class="action-button action-button-primary">
+                <x-ui.loading-label target="save,file" :label="__('Upload File')" :loading="__('Uploading...')" />
+            </button>
         </div>
     </form>
 
@@ -31,8 +33,8 @@
                         </p>
                     </div>
                     @if ($attachment->user_id === auth()->id() || auth()->user()->hasRole('Admin'))
-                        <button wire:click="delete({{ $attachment->id }})" wire:confirm="{{ __('Delete this attachment?') }}" class="text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400">
-                            {{ __('Delete') }}
+                        <button wire:click="delete({{ $attachment->id }})" wire:confirm="{{ __('Delete this attachment?') }}" wire:loading.attr="disabled" wire:target="delete({{ $attachment->id }})" class="text-xs font-medium text-rose-600 transition hover:text-rose-700 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
+                            <x-ui.loading-label target="delete({{ $attachment->id }})" :label="__('Delete')" :loading="__('Deleting...')" />
                         </button>
                     @endif
                 </div>

@@ -39,10 +39,10 @@ new class extends Component
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >{{ __('Delete Account') }}</x-danger-button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
+    <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" labelledby="delete-account-title" focusable>
         <form wire:submit="deleteUser" class="p-6">
 
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <h2 id="delete-account-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
@@ -66,12 +66,12 @@ new class extends Component
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+                <x-secondary-button x-on:click="$dispatch('close')" wire:loading.attr="disabled" wire:target="deleteUser">
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
+                <x-danger-button class="ms-3" wire:loading.attr="disabled" wire:target="deleteUser">
+                    <x-ui.loading-label target="deleteUser" :label="__('Delete Account')" :loading="__('Deleting...')" />
                 </x-danger-button>
             </div>
         </form>

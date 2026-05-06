@@ -104,7 +104,27 @@
     }
 
     .module-icon-button {
-        @apply rounded-lg p-2 text-gray-500 transition-colors dark:text-gray-400;
+        @apply rounded-lg p-2 text-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:text-gray-400 dark:focus:ring-offset-gray-900 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45 disabled:saturate-50;
+    }
+
+    .action-button {
+        @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-55 disabled:saturate-50 dark:focus:ring-offset-gray-900;
+    }
+
+    .action-button-primary {
+        @apply bg-primary-600 text-white shadow-sm hover:bg-primary-700 focus:ring-primary-500;
+    }
+
+    .action-button-secondary {
+        @apply border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700;
+    }
+
+    .action-button-success {
+        @apply bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 focus:ring-emerald-500;
+    }
+
+    .action-button-danger-soft {
+        @apply border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 focus:ring-rose-500 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/50;
     }
 
     .module-mobile-list {

@@ -93,6 +93,7 @@ class ReportIndex extends Component
 
         return view('livewire.reports.report-index', [
             'stats' => $data['stats'],
+            'decisionNotes' => $data['decisionNotes'],
             'revenueByMonth' => $data['revenueByMonth'],
             'revenueByCustomer' => $data['revenueByCustomer'],
             'leadSources' => $data['leadSources'],
@@ -104,6 +105,7 @@ class ReportIndex extends Component
     /**
      * @return array{
      *     stats: array<string, int|float|string>,
+     *     decisionNotes: list<array{title:string,message:string,action:string,href:string,tone:string}>,
      *     revenueByMonth: list<array{label:string, amount:float}>,
      *     revenueByCustomer: list<array{label:string, amount:float}>,
      *     leadSources: list<array{label:string, total:int}>,
@@ -191,6 +193,47 @@ class ReportIndex extends Component
         $conversionRate = $totalLeads > 0
             ? number_format(($convertedLeads / $totalLeads) * 100, 1) . '%'
             : '0.0%';
+        $conversionRateValue = $totalLeads > 0 ? ($convertedLeads / $totalLeads) * 100 : 0;
+        $unpaidBalance = (float) $invoicesInRange
+            ->where('status', '!=', 'Paid')
+            ->sum('balance_due');
+        $topLeadSource = collect($leadSources)->first();
+        $decisionNotes = [
+            [
+                'title' => __('Cash collection'),
+                'message' => $unpaidBalance > 0
+                    ? __('Unpaid invoices in this period total :amount. Review billing before chasing new work.', ['amount' => format_currency($unpaidBalance)])
+                    : __('No unpaid balance in this period. Revenue follow-up is not the bottleneck.'),
+                'action' => __('Open Invoices'),
+                'href' => route('invoices.index'),
+                'tone' => $unpaidBalance > 0 ? 'danger' : 'success',
+            ],
+            [
+                'title' => __('Sales conversion'),
+                'message' => $totalLeads === 0
+                    ? __('No leads were created in this range. Check acquisition before judging conversion.')
+                    : __(':converted of :total leads converted (:rate).', [
+                        'converted' => $convertedLeads,
+                        'total' => $totalLeads,
+                        'rate' => $conversionRate,
+                    ]),
+                'action' => __('Review Leads'),
+                'href' => route('leads.index'),
+                'tone' => $conversionRateValue >= 25 ? 'success' : 'warning',
+            ],
+            [
+                'title' => __('Best source to double down on'),
+                'message' => $topLeadSource
+                    ? __(':source produced the most leads in this range (:count).', [
+                        'source' => __($topLeadSource['label']),
+                        'count' => $topLeadSource['total'],
+                    ])
+                    : __('No source data yet. Require source when sales adds new leads.'),
+                'action' => __('Create Lead'),
+                'href' => route('leads.create'),
+                'tone' => $topLeadSource ? 'info' : 'neutral',
+            ],
+        ];
 
         return [
             'stats' => [
@@ -203,6 +246,7 @@ class ReportIndex extends Component
                 'Average Invoice' => $paidInvoices->isNotEmpty() ? (float) $paidInvoices->avg('total') : 0.0,
                 'Conversion Rate' => $conversionRate,
             ],
+            'decisionNotes' => $decisionNotes,
             'revenueByMonth' => $revenueByMonth,
             'revenueByCustomer' => $revenueByCustomer,
             'leadSources' => $leadSources,

@@ -72,7 +72,7 @@
 
         <div class="btn-group">
             <a href="/install/requirements" class="btn btn-secondary">← Back</a>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" onclick="this.innerHTML='<span class=\'spinner\'></span> Testing...'; this.disabled=true; this.form.submit();">
                 Test Connection & Continue →
             </button>
         </div>

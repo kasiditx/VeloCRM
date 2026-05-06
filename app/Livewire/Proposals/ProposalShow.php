@@ -16,7 +16,7 @@ class ProposalShow extends Component
     {
         $this->proposal = Proposal::with(['customer', 'lead', 'items.taxTemplate'])->findOrFail($proposalId);
 
-        $this->companyName = Setting::get('company_name', config('app.name'));
+        $this->companyName = Setting::get('company_name', velocrm_company_name());
         $this->companyAddress = Setting::get('company_address', '');
     }
 

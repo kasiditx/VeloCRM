@@ -64,9 +64,9 @@ class SettingsBackup extends Component
 
     public function mount(): void
     {
-        $this->company_name = (string) Setting::get('company_name', config('app.name') ?? 'VeloCRM');
+        $this->company_name = (string) Setting::get('company_name', velocrm_company_name());
         $this->company_address = (string) Setting::get('company_address', '');
-        $this->site_title = (string) Setting::get('site_title', 'VeloCRM');
+        $this->site_title = (string) Setting::get('site_title', velocrm_app_name());
 
         $this->current_logo = Setting::get('logo');
         $this->current_favicon = Setting::get('favicon');
@@ -171,9 +171,9 @@ class SettingsBackup extends Component
             Config::set('mail.from.address', $this->mail_from_address);
             Config::set('mail.from.name', $this->mail_from_name);
 
-            Mail::raw('This is a test email from VeloCRM. If you received this, your SMTP settings are correct.', function ($message) {
+            Mail::raw(__('This is a test email from :app. If you received this, your SMTP settings are correct.', ['app' => velocrm_app_name()]), function ($message) {
                 $message->to(auth()->user()->email)
-                    ->subject('VeloCRM SMTP Test');
+                    ->subject(__('SMTP Test from :app', ['app' => velocrm_app_name()]));
             });
 
             session()->flash('success', 'Test email sent successfully to ' . auth()->user()->email);

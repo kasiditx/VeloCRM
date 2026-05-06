@@ -2,7 +2,7 @@
 
     <h1>Server Requirements</h1>
     <p class="subtitle">
-        Let's make sure your server meets all the requirements to run VeloCRM.
+        Let's make sure your server meets all the requirements to run {{ velocrm_app_name() }}.
     </p>
 
     {{-- PHP Version --}}

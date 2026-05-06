@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ \App\Models\Setting::get('site_title', config('app.name', 'VeloCRM')) }}</title>
+        <title>{{ velocrm_app_name() }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -126,7 +126,7 @@
                         <svg class="delight-toast-mark h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-semibold">{{ __('Saved to your sales desk.') }}</p>
+                        <p class="text-sm font-semibold">{{ __('Saved.') }}</p>
                         <p class="mt-0.5 text-sm text-emerald-700 dark:text-emerald-300">{{ session('success') }}</p>
                     </div>
                     <button @click="show = false" class="rounded-lg p-1 text-emerald-500 transition hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-900"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>

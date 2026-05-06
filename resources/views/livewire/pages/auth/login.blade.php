@@ -114,7 +114,9 @@ new #[Layout('layouts.guest')] class extends Component
         {{-- Submit Button --}}
         <button
             type="submit"
-            class="w-full flex items-center justify-center gap-2 rounded-xl bg-primary-600 hover:bg-primary-700 active:bg-primary-800 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary-600/30 hover:shadow-primary-600/40 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 select-none"
+            wire:loading.attr="disabled"
+            wire:target="login"
+            class="w-full flex items-center justify-center gap-2 rounded-xl bg-primary-600 hover:bg-primary-700 active:bg-primary-800 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary-600/30 hover:shadow-primary-600/40 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 select-none disabled:pointer-events-none disabled:opacity-55 disabled:saturate-50"
         >
             <span wire:loading.remove wire:target="login">{{ __('Sign in') }}</span>
             <svg wire:loading wire:target="login" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">

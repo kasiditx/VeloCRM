@@ -6,16 +6,39 @@
             <div>
                 <p class="work-kicker">{{ __('Insights') }}</p>
                 <h1 class="work-heading">{{ __('Reports') }}</h1>
-                <p class="work-subtitle">{{ __('Review revenue, lead acquisition, and conversion performance across a custom date range.') }}</p>
+                <p class="work-subtitle">{{ __('Use this range to decide what needs attention: cash collection, lead conversion, or acquisition focus.') }}</p>
             </div>
             <div class="work-actions">
-                <button wire:click="exportCsv"
+                <button wire:click="exportCsv" wire:loading.attr="disabled" wire:target="exportCsv"
                     class="inline-flex items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    {{ __('Export CSV') }}
+                    <x-ui.loading-label target="exportCsv" :label="__('Export CSV')" :loading="__('Exporting...')" />
                 </button>
             </div>
         </div>
+
+        <section class="grid gap-4 lg:grid-cols-3" aria-label="{{ __('Decision summary') }}">
+            @foreach ($decisionNotes as $note)
+                @php
+                    $tone = match ($note['tone']) {
+                        'danger' => 'border-rose-200 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/35',
+                        'warning' => 'border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/35',
+                        'success' => 'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/35',
+                        'info' => 'border-sky-200 bg-sky-50 dark:border-sky-900/60 dark:bg-sky-950/35',
+                        default => 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900',
+                    };
+                @endphp
+                <article class="rounded-2xl border p-5 shadow-sm {{ $tone }}">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Decision Point') }}</p>
+                    <h2 class="mt-2 text-lg font-bold text-gray-900 dark:text-gray-100">{{ $note['title'] }}</h2>
+                    <p class="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">{{ $note['message'] }}</p>
+                    <a href="{{ $note['href'] }}" wire:navigate
+                       class="mt-4 inline-flex items-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-950/70 dark:text-gray-100 dark:ring-gray-800 dark:hover:bg-gray-950">
+                        {{ $note['action'] }}
+                    </a>
+                </article>
+            @endforeach
+        </section>
 
         {{-- Date Range Filter --}}
         <div class="form-panel">
@@ -31,10 +54,10 @@
                     @error('endDate') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
                 <div class="md:col-span-2 xl:col-span-2 flex items-end">
-                    <button wire:click="applyFilters"
+                    <button wire:click="applyFilters" wire:loading.attr="disabled" wire:target="applyFilters"
                         class="inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-                        {{ __('Apply Filters') }}
+                        <x-ui.loading-label target="applyFilters" :label="__('Apply Filters')" :loading="__('Applying...')" />
                     </button>
                 </div>
             </div>

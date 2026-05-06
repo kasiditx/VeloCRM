@@ -2,7 +2,7 @@
     <div class="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">{{ __('Sales Desk') }}</p>
+                <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">{{ __('Owner Brief') }}</p>
                 <h1 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
                     @php
                         $hour = now()->hour;
@@ -13,7 +13,7 @@
                     <span class="text-gray-900 dark:text-white">{{ auth()->user()->name }}</span>
                 </h1>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                    {{ $todayLabel }}. {{ __("Here's what's happening today.") }}
+                    {{ $todayLabel }}. {{ __('Start with the decision that protects cash, follow-up, or today’s workload.') }}
                 </p>
             </div>
 
@@ -30,6 +30,29 @@
                 </a>
             </div>
         </div>
+
+        <section class="grid gap-4 lg:grid-cols-3" aria-label="{{ __('Recommended decisions') }}">
+            @foreach ($decisionCards as $card)
+                @php
+                    $tone = match ($card['tone']) {
+                        'danger' => 'border-rose-200 bg-rose-50 text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/35 dark:text-rose-100',
+                        'warning' => 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-100',
+                        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/35 dark:text-emerald-100',
+                        'info' => 'border-sky-200 bg-sky-50 text-sky-900 dark:border-sky-900/60 dark:bg-sky-950/35 dark:text-sky-100',
+                        default => 'border-gray-200 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100',
+                    };
+                @endphp
+                <article class="rounded-2xl border p-5 shadow-sm {{ $tone }}">
+                    <p class="text-xs font-semibold uppercase tracking-wider opacity-70">{{ __('Recommended Action') }}</p>
+                    <h2 class="mt-2 text-lg font-bold">{{ $card['title'] }}</h2>
+                    <p class="mt-2 text-sm leading-6 opacity-80">{{ $card['message'] }}</p>
+                    <a href="{{ $card['href'] }}" wire:navigate
+                       class="mt-4 inline-flex items-center rounded-xl bg-white/80 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:bg-gray-950/70 dark:text-gray-100 dark:hover:bg-gray-950">
+                        {{ $card['action'] }}
+                    </a>
+                </article>
+            @endforeach
+        </section>
 
         @php
             $metrics = [

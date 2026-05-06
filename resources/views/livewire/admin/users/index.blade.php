@@ -68,20 +68,20 @@
                                 <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{{ format_date($user->created_at) }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-1">
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" wire:navigate title="{{ __('Edit') }}"
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" wire:navigate title="{{ __('Edit') }}" aria-label="{{ __('Edit') }}"
                                             class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         </a>
-                                        <button wire:click="toggleActive({{ $user->id }})" title="{{ $user->is_active ? __('Disable') : __('Enable') }}"
-                                            class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                        <button wire:click="toggleActive({{ $user->id }})" wire:loading.attr="disabled" wire:target="toggleActive({{ $user->id }})" title="{{ $user->is_active ? __('Disable') : __('Enable') }}" aria-label="{{ $user->is_active ? __('Disable') : __('Enable') }}"
+                                            class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-primary-600 hover:bg-primary-50 disabled:pointer-events-none disabled:opacity-45 dark:hover:bg-primary-900/30 transition-colors">
                                             @if($user->is_active)
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                             @else
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             @endif
                                         </button>
-                                        <button wire:click="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" title="{{ __('Delete') }}"
-                                            class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-colors">
+                                        <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}"
+                                            class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-rose-600 hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-45 dark:hover:bg-rose-900/30 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </div>
@@ -127,8 +127,12 @@
                         </div>
                         <div class="flex gap-3 pt-1">
                             <a href="{{ route('admin.users.edit', $user->id) }}" wire:navigate class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ __('Edit') }}</a>
-                            <button wire:click="toggleActive({{ $user->id }})" class="text-xs font-medium text-primary-600 dark:text-primary-400">{{ $user->is_active ? __('Disable') : __('Enable') }}</button>
-                            <button wire:click="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ __('Delete') }}</button>
+                            <button wire:click="toggleActive({{ $user->id }})" wire:loading.attr="disabled" wire:target="toggleActive({{ $user->id }})" class="text-xs font-medium text-primary-600 disabled:pointer-events-none disabled:opacity-50 dark:text-primary-400">
+                                <x-ui.loading-label target="toggleActive({{ $user->id }})" :label="$user->is_active ? __('Disable') : __('Enable')" :loading="__('Updating...')" />
+                            </button>
+                            <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" class="text-xs font-medium text-rose-600 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
+                                <x-ui.loading-label target="delete({{ $user->id }})" :label="__('Delete')" :loading="__('Deleting...')" />
+                            </button>
                         </div>
                     </div>
                 @empty

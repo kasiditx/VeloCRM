@@ -8,7 +8,7 @@
                 </p>
             </div>
             <div class="module-actions">
-                <button wire:click="$toggle('showTrashed')" class="inline-flex items-center rounded-xl border px-4 py-2 text-sm font-medium transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {{ $showTrashed ? 'border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 focus:ring-rose-500 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700' }}">
+                <button wire:click="$toggle('showTrashed')" wire:loading.attr="disabled" class="inline-flex items-center rounded-xl border px-4 py-2 text-sm font-medium transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-55 {{ $showTrashed ? 'border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 focus:ring-rose-500 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700' }}">
                     {{ $showTrashed ? __('Back to Active Customers') : __('Open Trash') }}
                 </button>
                 @unless ($showTrashed)
@@ -78,20 +78,20 @@
                                 <td class="px-6 py-4 text-right text-sm font-medium">
                                     <div class="flex justify-end gap-2">
                                         @if ($showTrashed)
-                                            <button wire:click="restore({{ $customer->id }})" class="module-icon-button hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="{{ __('Restore') }}">
+                                            <button wire:click="restore({{ $customer->id }})" wire:loading.attr="disabled" wire:target="restore({{ $customer->id }})" class="module-icon-button hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="{{ __('Restore') }}" aria-label="{{ __('Restore') }}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             </button>
-                                            <button wire:click="forceDelete({{ $customer->id }})" wire:confirm="{{ __('Permanently delete this customer?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete Permanently') }}">
+                                            <button wire:click="forceDelete({{ $customer->id }})" wire:loading.attr="disabled" wire:target="forceDelete({{ $customer->id }})" wire:confirm="{{ __('Permanently delete this customer?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete Permanently') }}" aria-label="{{ __('Delete Permanently') }}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                             </button>
                                         @else
-                                            <a href="{{ route('customers.show', $customer->id) }}" wire:navigate class="module-icon-button hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30" title="{{ __('View') }}">
+                                            <a href="{{ route('customers.show', $customer->id) }}" wire:navigate class="module-icon-button hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30" title="{{ __('View') }}" aria-label="{{ __('View') }}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                             </a>
-                                            <a href="{{ route('customers.edit', $customer->id) }}" wire:navigate class="module-icon-button hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30" title="{{ __('Edit') }}">
+                                            <a href="{{ route('customers.edit', $customer->id) }}" wire:navigate class="module-icon-button hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30" title="{{ __('Edit') }}" aria-label="{{ __('Edit') }}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                             </a>
-                                            <button wire:click="delete({{ $customer->id }})" wire:confirm="{{ __('Move this customer to trash?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete') }}">
+                                            <button wire:click="delete({{ $customer->id }})" wire:loading.attr="disabled" wire:target="delete({{ $customer->id }})" wire:confirm="{{ __('Move this customer to trash?') }}" class="module-icon-button hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30" title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                             </button>
                                         @endif
@@ -160,12 +160,12 @@
 
                         <div class="flex justify-center gap-2 pt-2">
                             @if ($showTrashed)
-                                <button wire:click="restore({{ $customer->id }})" class="flex-1 rounded-lg bg-emerald-50 py-2 text-sm font-semibold text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">{{ __('Restore') }}</button>
-                                <button wire:click="forceDelete({{ $customer->id }})" wire:confirm="{{ __('Permanently delete this customer?') }}" class="flex-1 rounded-lg bg-rose-50 py-2 text-sm font-semibold text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">{{ __('Delete') }}</button>
+                                <button wire:click="restore({{ $customer->id }})" wire:loading.attr="disabled" wire:target="restore({{ $customer->id }})" class="flex-1 rounded-lg bg-emerald-50 py-2 text-sm font-semibold text-emerald-600 disabled:pointer-events-none disabled:opacity-50 dark:bg-emerald-900/30 dark:text-emerald-400"><x-ui.loading-label target="restore({{ $customer->id }})" :label="__('Restore')" :loading="__('Restoring...')" /></button>
+                                <button wire:click="forceDelete({{ $customer->id }})" wire:loading.attr="disabled" wire:target="forceDelete({{ $customer->id }})" wire:confirm="{{ __('Permanently delete this customer?') }}" class="flex-1 rounded-lg bg-rose-50 py-2 text-sm font-semibold text-rose-600 disabled:pointer-events-none disabled:opacity-50 dark:bg-rose-900/30 dark:text-rose-400"><x-ui.loading-label target="forceDelete({{ $customer->id }})" :label="__('Delete')" :loading="__('Deleting...')" /></button>
                             @else
                                 <a href="{{ route('customers.show', $customer->id) }}" wire:navigate class="flex-1 text-center rounded-lg bg-gray-50 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">{{ __('View') }}</a>
                                 <a href="{{ route('customers.edit', $customer->id) }}" wire:navigate class="flex-1 text-center rounded-lg bg-amber-50 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400">{{ __('Edit') }}</a>
-                                <button wire:click="delete({{ $customer->id }})" wire:confirm="{{ __('Move this customer to trash?') }}" class="flex-1 rounded-lg bg-white border border-gray-200 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">{{ __('Trash') }}</button>
+                                <button wire:click="delete({{ $customer->id }})" wire:loading.attr="disabled" wire:target="delete({{ $customer->id }})" wire:confirm="{{ __('Move this customer to trash?') }}" class="flex-1 rounded-lg bg-white border border-gray-200 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"><x-ui.loading-label target="delete({{ $customer->id }})" :label="__('Trash')" :loading="__('Moving...')" /></button>
                             @endif
                         </div>
                     </div>

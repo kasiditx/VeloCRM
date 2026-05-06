@@ -97,8 +97,8 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
+            <x-primary-button wire:loading.attr="disabled" wire:target="resetPassword">
+                <x-ui.loading-label target="resetPassword" :label="__('Reset Password')" :loading="__('Resetting...')" />
             </x-primary-button>
         </div>
     </form>

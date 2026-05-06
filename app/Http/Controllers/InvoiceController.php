@@ -30,7 +30,7 @@ class InvoiceController extends Controller
             }
         }
 
-        $companyName = Setting::get('company_name', config('app.name'));
+        $companyName = Setting::get('company_name', velocrm_company_name());
         $companyAddress = Setting::get('company_address');
         $companyUrl = config('app.url');
 

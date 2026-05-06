@@ -9,7 +9,9 @@
 
             <div class="work-actions">
                 <x-button.secondary-link href="{{ route('customers.edit', $customer->id) }}" wire:navigate>{{ __('Edit') }}</x-button.secondary-link>
-                <x-button.danger wire:click="delete" wire:confirm="{{ __('Delete this customer?') }}">{{ __('Delete') }}</x-button.danger>
+                <x-button.danger wire:click="delete" wire:confirm="{{ __('Delete this customer?') }}" wire:loading.attr="disabled" wire:target="delete">
+                    <x-ui.loading-label target="delete" :label="__('Delete')" :loading="__('Deleting...')" />
+                </x-button.danger>
             </div>
         </div>
 
