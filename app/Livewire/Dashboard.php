@@ -1,0 +1,124 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Livewire;
+
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Lead;
+use App\Models\Proposal;
+use App\Models\Task;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
+
+class Dashboard extends Component
+{
+    #[Computed]
+    public function revenueSeries(): Collection
+    {
+        $start = now()->startOfMonth()->subMonths(11);
+        $months = collect(range(0, 11))->map(function (int $offset) use ($start) {
+            $month = $start->copy()->addMonths($offset);
+
+            return [
+                'key' => $month->format('Y-m'),
+                'label' => $month->copy()->locale(app()->getLocale())->translatedFormat('M Y'),
+                'total' => 0.0,
+            ];
+        })->keyBy('key');
+
+        Invoice::query()
+            ->where('status', 'Paid')
+            ->whereDate('invoice_date', '>=', $start->toDateString())
+            ->get()
+            ->groupBy(fn (Invoice $invoice) => Carbon::parse($invoice->invoice_date)->format('Y-m'))
+            ->each(function (Collection $group, string $monthKey) use ($months): void {
+                if ($months->has($monthKey)) {
+                    $month = $months->get($monthKey);
+                    $month['total'] = (float) $group->sum('total');
+                    $months->put($monthKey, $month);
+                }
+            });
+
+        return $months->values();
+    }
+
+    #[Computed]
+    public function leadPipeline(): Collection
+    {
+        $statuses = collect(['New', 'Contacted', 'Qualified', 'Won', 'Lost']);
+        $counts = Lead::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return $statuses->map(fn (string $status) => [
+            'label' => $status,
+            'total' => (int) ($counts[$status] ?? 0),
+        ]);
+    }
+
+    public function render()
+    {
+        $totalLeads = Lead::count();
+        $totalCustomers = Customer::count();
+        $totalRevenue = Invoice::where('status', 'Paid')->sum('total');
+        $pendingInvoices = Invoice::whereIn('status', ['Draft', 'Sent', 'Overdue'])->count();
+        $pendingInvoiceBalance = Invoice::whereIn('status', ['Draft', 'Sent', 'Overdue'])->sum('balance_due');
+        $totalProposals = Proposal::count();
+        $convertedLeads = Customer::whereNotNull('lead_id')->count();
+        $conversionRate = $totalLeads > 0 ? ($convertedLeads / $totalLeads) * 100 : 0;
+        $recentActivity = Activity::query()
+            ->with('causer')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $upcomingTasks = Task::query()
+            ->with(['assignee', 'relatable'])
+            ->whereIn('status', ['Todo', 'In Progress'])
+            ->whereNotNull('due_date')
+            ->whereBetween('due_date', [now()->toDateString(), now()->copy()->addDays(7)->toDateString()])
+            ->orderBy('due_date')
+            ->take(8)
+            ->get();
+
+        $overdueInvoices = Invoice::query()
+            ->with('customer')
+            ->where('status', '!=', 'Paid')
+            ->whereDate('due_date', '<', now()->toDateString())
+            ->orderBy('due_date')
+            ->take(8)
+            ->get()
+            ->map(function (Invoice $invoice) {
+                if ($invoice->status !== 'Overdue') {
+                    $invoice->status = 'Overdue';
+                }
+
+                return $invoice;
+            });
+        $overdueInvoiceTotal = $overdueInvoices->sum('balance_due');
+        $todayLabel = now()->locale(app()->getLocale())->translatedFormat('l, j F Y');
+
+        return view('livewire.dashboard', [
+            'totalLeads' => $totalLeads,
+            'totalCustomers' => $totalCustomers,
+            'totalRevenue' => $totalRevenue,
+            'pendingInvoices' => $pendingInvoices,
+            'pendingInvoiceBalance' => $pendingInvoiceBalance,
+            'totalProposals' => $totalProposals,
+            'conversionRate' => round($conversionRate, 2),
+            'overdueInvoiceTotal' => $overdueInvoiceTotal,
+            'revenueSeries' => $this->revenueSeries,
+            'leadPipeline' => $this->leadPipeline,
+            'recentActivity' => $recentActivity,
+            'upcomingTasks' => $upcomingTasks,
+            'overdueInvoices' => $overdueInvoices,
+            'todayLabel' => $todayLabel,
+        ])->layout('layouts.app');
+    }
+}

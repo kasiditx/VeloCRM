@@ -1,0 +1,423 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CRITICAL: Prevent white flash on dark mode ──────────────────────
+   Sets dark background at the CSS level BEFORE Tailwind processes.
+   This ensures no white background is ever visible during load.     */
+@layer base {
+    html.dark {
+        background-color: #030712; /* gray-950 */
+        color-scheme: dark;
+    }
+    html.dark body {
+        background-color: #030712; /* gray-950 */
+    }
+}
+
+@layer components {
+    .page-motion {
+        --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --motion-fast: 150ms;
+        --motion-normal: 220ms;
+    }
+
+    .page-arrived > * {
+        animation: velo-page-settle var(--motion-normal) var(--motion-ease-out) both;
+    }
+
+    .motion-feedback {
+        @apply transition duration-150 ease-out;
+    }
+
+    .motion-feedback:active:not(:disabled) {
+        transform: translateY(1px);
+    }
+
+    .motion-surface {
+        @apply transition duration-200 ease-out;
+    }
+
+    .motion-surface:hover {
+        transform: translateY(-1px);
+    }
+
+    /* ── Module Pages: shared vocabulary for CRM list/settings screens ── */
+    .module-page {
+        @apply py-6 lg:py-8;
+    }
+
+    .module-container {
+        @apply mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8;
+    }
+
+    .module-header {
+        @apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between;
+    }
+
+    .module-title {
+        @apply text-2xl font-bold tracking-tight text-gray-900 dark:text-white;
+    }
+
+    .module-subtitle {
+        @apply mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400;
+    }
+
+    .module-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .module-panel {
+        @apply overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900;
+    }
+
+    .module-filter {
+        @apply border-b border-gray-100 p-5 dark:border-gray-800;
+    }
+
+    .module-table {
+        @apply min-w-full divide-y divide-gray-200 dark:divide-gray-800;
+    }
+
+    .module-table-head {
+        @apply bg-gray-50 dark:bg-gray-950;
+    }
+
+    .module-table-heading {
+        @apply px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400;
+    }
+
+    .module-table-heading-right {
+        @apply px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400;
+    }
+
+    .module-table-heading-center {
+        @apply px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400;
+    }
+
+    .module-table-body {
+        @apply divide-y divide-gray-200 bg-white dark:divide-gray-800 dark:bg-gray-900;
+    }
+
+    .module-table-row {
+        @apply transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50;
+    }
+
+    .module-icon-button {
+        @apply rounded-lg p-2 text-gray-500 transition-colors dark:text-gray-400;
+    }
+
+    .module-mobile-list {
+        @apply grid grid-cols-1 gap-3 p-4 lg:hidden;
+    }
+
+    .module-mobile-card {
+        @apply rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition dark:border-gray-800 dark:bg-gray-800/50;
+    }
+
+    .module-empty {
+        @apply rounded-xl border border-dashed border-gray-200 px-6 py-12 text-center dark:border-gray-800;
+    }
+
+    .module-pagination {
+        @apply rounded-b-2xl border-t border-gray-200 bg-gray-50/30 px-5 py-4 dark:border-gray-800 dark:bg-gray-900/30;
+    }
+
+    /* ── Form / Detail / Report Pages: shared CRM work surfaces ── */
+    .work-page,
+    .form-page,
+    .detail-page,
+    .report-page {
+        @apply py-6 lg:py-8;
+    }
+
+    .work-container {
+        @apply mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8;
+    }
+
+    .work-container-narrow {
+        @apply mx-auto max-w-4xl space-y-6 px-4 sm:px-6 lg:px-8;
+    }
+
+    .work-container-form {
+        @apply mx-auto max-w-5xl space-y-6 px-4 sm:px-6 lg:px-8;
+    }
+
+    .work-header {
+        @apply flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between;
+    }
+
+    .work-heading {
+        @apply text-2xl font-bold tracking-tight text-gray-900 dark:text-white;
+    }
+
+    .work-kicker {
+        @apply text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400;
+    }
+
+    .work-subtitle {
+        @apply mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400;
+    }
+
+    .work-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .form-panel,
+    .detail-card,
+    .report-card {
+        @apply rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900;
+    }
+
+    .form-panel {
+        @apply space-y-6 p-6;
+    }
+
+    .form-grid {
+        @apply grid gap-5 md:grid-cols-2;
+    }
+
+    .field-label {
+        @apply mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300;
+    }
+
+    .field-control {
+        @apply w-full rounded-xl border-gray-300 text-sm shadow-sm transition focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100;
+    }
+
+    .field-error {
+        @apply mt-1.5 text-sm text-rose-600 dark:text-rose-400;
+    }
+
+    .field-hint {
+        @apply mt-1.5 text-xs leading-5 text-gray-500 dark:text-gray-400;
+    }
+
+    .form-footer {
+        @apply flex justify-end gap-3 border-t border-gray-200 pt-5 dark:border-gray-800;
+    }
+
+    .detail-card {
+        @apply p-6;
+    }
+
+    .detail-card-title {
+        @apply text-lg font-semibold text-gray-900 dark:text-gray-100;
+    }
+
+    .detail-grid {
+        @apply mt-4 grid gap-4 md:grid-cols-2;
+    }
+
+    .detail-label {
+        @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+    }
+
+    .detail-value {
+        @apply mt-1 text-sm text-gray-900 dark:text-gray-100;
+    }
+
+    .detail-note {
+        @apply mt-5 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950/60;
+    }
+
+    .detail-list-item {
+        @apply rounded-xl border border-gray-200 p-4 dark:border-gray-800;
+    }
+
+    .timeline-item {
+        @apply rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950/60;
+    }
+
+    .report-card {
+        @apply p-6;
+    }
+
+    .report-section-title {
+        @apply mb-4 text-base font-semibold text-gray-900 dark:text-gray-100;
+    }
+
+    .report-row {
+        @apply flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 dark:bg-gray-950/60;
+    }
+
+    .report-metric {
+        @apply rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+    }
+
+    .report-metric-label {
+        @apply text-sm text-gray-500 dark:text-gray-400;
+    }
+
+    .report-metric-value {
+        @apply mt-0.5 text-2xl font-bold text-gray-900 dark:text-gray-100;
+    }
+
+    .auth-card {
+        @apply rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+    }
+
+    .delight-empty {
+        background-image:
+            radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 32%),
+            linear-gradient(180deg, rgba(249, 250, 251, 0.9), rgba(255, 255, 254, 0.9));
+    }
+
+    .dark .delight-empty {
+        background-image:
+            radial-gradient(circle at top left, rgba(79, 70, 229, 0.14), transparent 34%),
+            linear-gradient(180deg, rgba(17, 24, 39, 0.9), rgba(3, 7, 18, 0.9));
+    }
+
+    .delight-icon {
+        @apply inline-flex items-center justify-center rounded-2xl;
+        background-color: rgba(79, 70, 229, 0.08);
+        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
+        color: var(--color-primary-600, #4f46e5);
+    }
+
+    .dark .delight-icon {
+        background-color: rgba(79, 70, 229, 0.14);
+        box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.22);
+        color: #c4b5fd;
+    }
+
+    .delight-toast {
+        animation: velo-toast-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .delight-toast-mark path {
+        stroke-dasharray: 32;
+        stroke-dashoffset: 32;
+        animation: velo-check-draw 460ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+    }
+
+    /* ── Navbar nav items ───────────────────────────────── */
+    .nav-item {
+        @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-150 cursor-pointer motion-feedback;
+    }
+    .nav-item-default {
+        @apply text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800;
+    }
+    .nav-item-active {
+        @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900;
+    }
+
+    /* ── Navbar dropdowns ──────────────────────────────── */
+    .nav-dropdown {
+        @apply absolute left-0 top-full mt-1.5 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 py-1.5 origin-top-left;
+        animation: velo-popover-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .nav-dropdown-item {
+        @apply flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-50 dark:hover:bg-primary-900 hover:text-primary-600 dark:hover:text-primary-400 transition-colors motion-feedback;
+    }
+    .nav-dropdown-item-active {
+        @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900;
+    }
+}
+
+/* ── Suppress ALL CSS transitions during Livewire page navigation ──
+   Prevents the "flash" where dark: elements animate from light → dark
+   because Livewire morphs the DOM before transitions are ready.
+   Class is toggled via JS in app.blade.php                           */
+.livewire-navigating,
+.livewire-navigating *,
+.livewire-navigating *::before,
+.livewire-navigating *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    transition-delay: 0ms !important;
+}
+
+/* ── Shared Page Animations ───────────────────────────────────────── */
+@keyframes velo-page-settle {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes velo-popover-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes velo-progress {
+    0% {
+        transform: translateX(-120%) scaleX(0.35);
+    }
+    45% {
+        transform: translateX(15%) scaleX(0.45);
+    }
+    100% {
+        transform: translateX(120%) scaleX(0.25);
+    }
+}
+
+@keyframes velo-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes velo-check-draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out forwards;
+}
+.animate-fade-in {
+    animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* ── Thin scrollbar for calendar / overflow containers ───────────── */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .page-arrived > *,
+    .nav-dropdown,
+    .delight-toast,
+    .delight-toast-mark path {
+        animation: none !important;
+    }
+
+    .motion-feedback:active:not(:disabled),
+    .motion-surface:hover {
+        transform: none !important;
+    }
+}

@@ -1,0 +1,81 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+auth.json
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Laravel runtime
+/storage/*.key
+/storage/installed
+/storage/pail/*
+!/storage/pail/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/app/private/*
+!/storage/app/private/.gitignore
+/storage/app/public/*
+!/storage/app/public/.gitignore
+/storage/fonts/
+
+# Laravel generated cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Local databases and test artifacts
+/database/*.sqlite
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.phpunit.cache
+.phpunit.result.cache
+/coverage/
+
+# Frontend build and dev server artifacts
+/public/build/
+/public/hot
+/public/storage
+/public/vendor/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# User uploads and generated output
+/public/uploads/
+/audit_screenshots/
+/output/
+
+# Local font assets must be provided as real binaries before release.
+# Ignore accidental HTML downloads saved as .ttf files.
+/public/fonts/
+/resources/fonts/
+
+# Local tool state
+/.impeccable/
+/.agents/
+.phpactor.json
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+/.fleet/
+/.idea/
+/.nova/
+/.vscode/
+/.zed/
+
+# Homestead / local VM
+Homestead.json
+Homestead.yaml
