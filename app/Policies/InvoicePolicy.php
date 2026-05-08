@@ -22,7 +22,10 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice): bool
     {
-        if ($user->hasRole('Admin')) return true;
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+
         return $invoice->user_id === $user->id;
     }
 
@@ -39,7 +42,10 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice): bool
     {
-        if ($user->hasRole('Admin')) return true;
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+
         return $invoice->user_id === $user->id;
     }
 
@@ -48,7 +54,10 @@ class InvoicePolicy
      */
     public function delete(User $user, Invoice $invoice): bool
     {
-        if ($user->hasRole('Admin')) return true;
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+
         return $invoice->user_id === $user->id;
     }
 
@@ -57,7 +66,10 @@ class InvoicePolicy
      */
     public function restore(User $user, Invoice $invoice): bool
     {
-        if ($user->hasRole('Admin')) return true;
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+
         return $invoice->user_id === $user->id;
     }
 

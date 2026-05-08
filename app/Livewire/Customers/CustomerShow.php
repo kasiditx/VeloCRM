@@ -5,19 +5,27 @@ declare(strict_types=1);
 namespace App\Livewire\Customers;
 
 use App\Models\Customer;
+use App\Models\Task;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
 class CustomerShow extends Component
 {
+    use AuthorizesRequests;
+
     public Customer $customer;
 
     public function mount(int $customerId): void
     {
         $this->customer = Customer::with(['lead', 'user', 'invoices', 'proposals'])->findOrFail($customerId);
+        $this->authorize('view', $this->customer);
     }
 
     public function delete(): void
     {
+        $this->authorize('delete', $this->customer);
+
         $this->customer->delete();
         session()->flash('success', 'Customer deleted.');
         $this->redirect(route('customers.index'), navigate: true);
@@ -25,20 +33,20 @@ class CustomerShow extends Component
 
     public function render()
     {
-        $activities = \Spatie\Activitylog\Models\Activity::where('subject_type', Customer::class)
+        $activities = Activity::where('subject_type', Customer::class)
             ->where('subject_id', $this->customer->id)
             ->latest()
             ->take(20)
             ->get();
 
-        $tasks = \App\Models\Task::where('relatable_type', Customer::class)
+        $tasks = Task::where('relatable_type', Customer::class)
             ->where('relatable_id', $this->customer->id)
             ->orderBy('due_date')
             ->get();
 
         return view('livewire.customers.customer-show', [
             'activities' => $activities,
-            'tasks'      => $tasks,
+            'tasks' => $tasks,
         ])->layout('layouts.app');
     }
 }

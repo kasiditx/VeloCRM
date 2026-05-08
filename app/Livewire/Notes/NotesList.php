@@ -8,12 +8,17 @@ use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\Note;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class NotesList extends Component
 {
+    use AuthorizesRequests;
+
     public string $notableType;
+
     public int $notableId;
+
     public string $content = '';
 
     protected function rules(): array
@@ -26,11 +31,15 @@ class NotesList extends Component
     public function save(): void
     {
         $data = $this->validate();
+        $notable = $this->notable();
+        $this->authorize('view', $notable);
+        $this->authorize('create', Note::class);
 
-        $this->notable()->notes()->create([
+        $note = $notable->notes()->make([
             'content' => trim($data['content']),
-            'user_id' => auth()->id(),
         ]);
+        $note->user_id = auth()->id();
+        $note->save();
 
         $this->reset('content');
         session()->flash('success', 'Note added successfully.');
@@ -39,10 +48,7 @@ class NotesList extends Component
     public function delete(int $noteId): void
     {
         $note = $this->notable()->notes()->findOrFail($noteId);
-
-        if ($note->user_id !== auth()->id() && ! auth()->user()->hasRole('Admin')) {
-            abort(403);
-        }
+        $this->authorize('delete', $note);
 
         $note->delete();
 
@@ -58,7 +64,7 @@ class NotesList extends Component
 
         abort_unless(in_array($this->notableType, $allowedTypes, true), 404);
 
-        /** @var \Illuminate\Database\Eloquent\Model $model */
+        /** @var Model $model */
         $model = $this->notableType::query()->findOrFail($this->notableId);
 
         return $model;
@@ -66,6 +72,8 @@ class NotesList extends Component
 
     public function render()
     {
+        $this->authorize('view', $this->notable());
+
         return view('livewire.notes.notes-list', [
             'notes' => $this->notable()->notes()->with('user')->latest()->get(),
         ]);

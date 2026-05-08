@@ -17,7 +17,7 @@
         </div>
 
         <div class="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory">
-            @foreach (['Todo', 'In Progress', 'Done', 'Cancelled'] as $status)
+            @foreach ($statuses as $status)
                 @php($taskGroup = $tasks->get($status, collect()))
                 <div
                     class="snap-start flex-shrink-0 w-72 sm:w-80 rounded-2xl bg-gray-100 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 p-4 shadow-sm"

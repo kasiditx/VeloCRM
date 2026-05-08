@@ -76,6 +76,6 @@ class ReportsPageTest extends TestCase
             ->assertSee('Website')
             ->assertSee('100.0%')
             ->call('exportCsv')
-            ->assertFileDownloaded('reports-' . now()->subDays(30)->toDateString() . '-to-' . now()->toDateString() . '.csv');
+            ->assertFileDownloaded('reports-'.now()->subDays(30)->toDateString().'-to-'.now()->toDateString().'.csv');
     }
 }

@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
 use App\Models\Lead;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class LeadSeeder extends Seeder
 {
@@ -17,7 +15,9 @@ class LeadSeeder extends Seeder
     {
         $admin = User::where('email', 'admin@velocrm.com')->first();
 
-        if (!$admin) return;
+        if (! $admin) {
+            return;
+        }
 
         $leads = [
             ['name' => 'John Doe', 'company' => 'Google', 'value' => 5000, 'status' => 'New'],

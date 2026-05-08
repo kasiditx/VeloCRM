@@ -3,19 +3,29 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Proposal - {{ $proposal->number }}</title>
+    @php
+        $regularFont = storage_path('fonts/THSarabunNew.ttf');
+        $boldFont = storage_path('fonts/THSarabunNew-Bold.ttf');
+        $regularFontUrl = file_exists($regularFont) ? 'file://' . $regularFont : null;
+        $boldFontUrl = file_exists($boldFont) ? 'file://' . $boldFont : null;
+    @endphp
     <style>
-        @font-face {
-            font-family: 'THSarabunNew';
-            font-style: normal;
-            font-weight: normal;
-            src: url("{{ public_path('fonts/THSarabunNew.ttf') }}") format('truetype');
-        }
-        @font-face {
-            font-family: 'THSarabunNew';
-            font-style: normal;
-            font-weight: bold;
-            src: url("{{ public_path('fonts/THSarabunNew-Bold.ttf') }}") format('truetype');
-        }
+        @if($regularFontUrl)
+            @font-face {
+                font-family: 'THSarabunNew';
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ $regularFontUrl }}") format('truetype');
+            }
+        @endif
+        @if($boldFontUrl)
+            @font-face {
+                font-family: 'THSarabunNew';
+                font-style: normal;
+                font-weight: bold;
+                src: url("{{ $boldFontUrl }}") format('truetype');
+            }
+        @endif
         body {
             font-family: 'THSarabunNew';
             font-size: 16pt;

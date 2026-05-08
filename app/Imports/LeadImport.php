@@ -20,6 +20,7 @@ class LeadImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHeading
     use Importable;
 
     public int $importedCount = 0;
+
     public int $skippedCount = 0;
 
     /**
@@ -29,8 +30,7 @@ class LeadImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHeading
 
     public function __construct(
         protected readonly int $defaultUserId,
-    ) {
-    }
+    ) {}
 
     public function model(array $row): ?Lead
     {

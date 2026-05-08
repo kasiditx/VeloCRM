@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LeadSeeder::class,
             Phase3Seeder::class,
+            EmailTemplateSeeder::class,
         ]);
     }
 }

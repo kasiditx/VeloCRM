@@ -15,7 +15,7 @@ class TenancyScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->check() && !auth()->user()->hasRole('Admin')) {
+        if (auth()->check() && ! auth()->user()->hasRole('Admin')) {
             $builder->where('user_id', auth()->id());
         }
     }

@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Database\Seeders\DefaultRolesSeeder;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,7 +23,7 @@ class LocaleSwitchTest extends TestCase
 
     public function test_guest_can_switch_locale_to_thai(): void
     {
-        $response = $this->from('/login')->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class)->post(route('locale.switch'), [
+        $response = $this->from('/login')->withoutMiddleware(VerifyCsrfToken::class)->post(route('locale.switch'), [
             'locale' => 'th',
         ]);
 
@@ -41,7 +42,7 @@ class LocaleSwitchTest extends TestCase
 
         $this->actingAs($user);
 
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class)->post(route('locale.switch'), [
+        $this->withoutMiddleware(VerifyCsrfToken::class)->post(route('locale.switch'), [
             'locale' => 'th',
         ])->assertRedirect();
 

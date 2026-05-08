@@ -11,13 +11,19 @@ use Livewire\Component;
 class UserForm extends Component
 {
     public ?int $userId = null;
+
     public ?User $user = null;
 
     public string $name = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
+
     public string $role = 'Staff';
+
     public bool $is_active = true;
 
     public function mount(?int $userId = null): void

@@ -193,6 +193,112 @@
             <div class="h-full w-full origin-left bg-primary-600 dark:bg-primary-400" style="animation: velo-progress 1.1s cubic-bezier(0.22, 1, 0.36, 1) infinite;"></div>
         </div>
 
+        <div
+            x-data="{
+                open: false,
+                message: '',
+                action: null,
+                isDestructive() {
+                    return /delete|trash|remove|deactivate|ลบ/i.test(this.message)
+                },
+                confirm() {
+                    const callback = this.action
+                    this.open = false
+                    this.action = null
+
+                    if (typeof callback === 'function') {
+                        callback()
+                    }
+                },
+                cancel() {
+                    this.open = false
+                    this.action = null
+                },
+            }"
+            x-on:velo-confirm:open.window="
+                message = $event.detail.message || '{{ __('Are you sure?') }}'
+                action = $event.detail.onConfirm
+                open = true
+                $nextTick(() => $refs.cancelButton?.focus())
+            "
+            x-on:keydown.escape.window="open ? cancel() : null"
+            x-show="open"
+            x-cloak
+            class="fixed inset-0 z-[90] flex items-center justify-center px-4 py-6"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="global-confirm-title"
+        >
+            <div
+                x-show="open"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"
+                x-on:click="cancel()"
+            ></div>
+
+            <div
+                x-show="open"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 translate-y-3 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                class="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900"
+            >
+                <div class="p-6">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl"
+                            :class="isDestructive()
+                                ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300'
+                                : 'bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300'"
+                        >
+                            <svg x-show="isDestructive()" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                            </svg>
+                            <svg x-show="! isDestructive()" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9.247a4 4 0 117.044 2.626c-.978.545-1.522 1.072-1.522 2.127M12 18h.01" />
+                            </svg>
+                        </div>
+
+                        <div class="min-w-0 flex-1">
+                            <h2 id="global-confirm-title" class="text-base font-semibold text-gray-950 dark:text-gray-50">
+                                {{ __('Confirm action') }}
+                            </h2>
+                            <p class="mt-1.5 text-sm leading-6 text-gray-600 dark:text-gray-300" x-text="message"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col-reverse gap-2 border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-gray-950/60 sm:flex-row sm:justify-end">
+                    <button
+                        type="button"
+                        x-ref="cancelButton"
+                        x-on:click="cancel()"
+                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                        {{ __('Cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        x-on:click="confirm()"
+                        class="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                        :class="isDestructive()
+                            ? 'bg-rose-600 hover:bg-rose-700 focus-visible:ring-rose-500'
+                            : 'bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500'"
+                    >
+                        {{ __('Confirm') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Plugins -->
         <script>
             (function () {

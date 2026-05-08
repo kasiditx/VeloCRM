@@ -108,7 +108,7 @@
                         </thead>
                         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
                             @foreach($items as $index => $item)
-                                <tr wire:key="item-{{ $index }}">
+                                <tr wire:key="invoice-item-{{ $item['_key'] ?? $index }}">
                                     <td class="px-4 py-3">
                                         <input type="text" wire:model.live.debounce.500ms="items.{{ $index }}.description" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 text-sm">
                                     </td>

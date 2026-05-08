@@ -63,13 +63,13 @@ new class extends Component
 }; ?>
 
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Profile Information') }}
+    <header class="border-b border-gray-100 pb-5 dark:border-gray-800">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+            {{ __('Profile information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {{ __('Your name and email appear on invoices, proposals, and activity logs.') }}
         </p>
     </header>
 

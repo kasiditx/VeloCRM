@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\EmailTemplate;
 use Illuminate\Database\Seeder;
 
 class EmailTemplateSeeder extends Seeder
@@ -31,7 +31,7 @@ class EmailTemplateSeeder extends Seeder
         ];
 
         foreach ($templates as $t) {
-            \App\Models\EmailTemplate::updateOrCreate(['name' => $t['name']], $t);
+            EmailTemplate::updateOrCreate(['name' => $t['name']], $t);
         }
     }
 }

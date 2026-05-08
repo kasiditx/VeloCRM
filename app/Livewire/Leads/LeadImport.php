@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Leads;
 
 use App\Imports\LeadImport as LeadCsvImport;
+use App\Models\Lead;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -14,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class LeadImport extends Component
 {
+    use AuthorizesRequests;
     use WithFileUploads;
 
     public mixed $file = null;
@@ -62,6 +65,7 @@ class LeadImport extends Component
 
     public function updatedFile(): void
     {
+        $this->authorize('create', Lead::class);
         $this->validateOnly('file');
 
         $rows = $this->readCsv($this->file->getRealPath());
@@ -82,6 +86,7 @@ class LeadImport extends Component
 
     public function import(): void
     {
+        $this->authorize('create', Lead::class);
         $this->validate();
 
         if ($this->csvHeaders === [] || $this->previewRows === []) {
@@ -179,7 +184,7 @@ class LeadImport extends Component
     }
 
     /**
-     * @param list<string> $headers
+     * @param  list<string>  $headers
      * @return array<int, string>
      */
     protected function buildDefaultColumnMap(array $headers): array

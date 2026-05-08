@@ -20,7 +20,8 @@ class SafeNotifierTest extends TestCase
                 && $context['error'] === 'SMTP unavailable'
                 && $context['notification'] === Notification::class);
 
-        $notifiable = new class {
+        $notifiable = new class
+        {
             public int $id = 123;
 
             public function notify(Notification $notification): void
@@ -29,6 +30,6 @@ class SafeNotifierTest extends TestCase
             }
         };
 
-        $this->assertFalse(SafeNotifier::send($notifiable, new Notification()));
+        $this->assertFalse(SafeNotifier::send($notifiable, new Notification));
     }
 }

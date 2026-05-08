@@ -89,7 +89,7 @@ class AttachmentsTest extends TestCase
 
         $attachment = $customer->attachments()->create([
             'filename' => 'contract.pdf',
-            'path' => 'attachments/customer/' . $customer->id . '/contract.pdf',
+            'path' => 'attachments/customer/'.$customer->id.'/contract.pdf',
             'size' => 2048,
             'user_id' => $user->id,
         ]);

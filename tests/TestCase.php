@@ -12,7 +12,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         // Ensure Livewire is available for testing
-        if (!app()->providerIsLoaded(LivewireServiceProvider::class)) {
+        if (! app()->providerIsLoaded(LivewireServiceProvider::class)) {
             app()->register(LivewireServiceProvider::class);
         }
     }

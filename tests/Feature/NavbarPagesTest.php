@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Livewire\Calendar\CalendarIndex;
-use App\Livewire\Dashboard;
 use App\Livewire\Customers\CustomerIndex;
+use App\Livewire\Dashboard;
 use App\Livewire\Invoices\InvoiceIndex;
 use App\Livewire\Leads\LeadIndex;
 use App\Livewire\Proposals\ProposalIndex;

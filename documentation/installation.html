@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VeloCRM Installation</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar"><h1>VeloCRM</h1><a href="index.html">Overview</a><a href="configuration.html">Configuration</a><a href="cron.html">Cron Jobs</a><a href="faq.html">FAQ</a></aside>
+    <main class="content">
+        <h2>Installation</h2>
+        <div class="card">
+            <h3>Server Requirements</h3>
+            <ul>
+                <li>PHP 8.2 or newer</li>
+                <li>MySQL 8 or MariaDB compatible database</li>
+                <li>PHP extensions: bcmath, ctype, fileinfo, gd or imagick, mbstring, openssl, pdo_mysql, tokenizer, xml, zip</li>
+                <li>Writable folders: <code>storage/</code>, <code>bootstrap/cache/</code>, <code>public/uploads/</code></li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Browser Installer</h3>
+            <ol>
+                <li>Upload the package to your server.</li>
+                <li>Point the domain document root to <code>public/</code>.</li>
+                <li>Create an empty database and database user.</li>
+                <li>Open <code>https://your-domain.com/install</code>.</li>
+                <li>Complete requirements, database, company setup, SMTP setup, regional setup, and admin account creation.</li>
+                <li>Finalize installation and sign in.</li>
+            </ol>
+        </div>
+        <div class="card">
+            <h3>After Install Checklist</h3>
+            <ul>
+                <li>Upload logo and favicon.</li>
+                <li>Send an SMTP test email.</li>
+                <li>Create or import leads.</li>
+                <li>Create the first invoice and verify PDF output.</li>
+                <li>Configure scheduler cron.</li>
+            </ul>
+        </div>
+    </main>
+</div>
+</body>
+</html>

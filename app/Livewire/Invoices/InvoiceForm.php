@@ -4,33 +4,50 @@ declare(strict_types=1);
 
 namespace App\Livewire\Invoices;
 
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use App\Models\Customer;
 use App\Models\TaxTemplate;
 use App\Notifications\InvoiceSentNotification;
 use App\Support\SafeNotifier;
-use Livewire\Component;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
+use Livewire\Component;
 
 class InvoiceForm extends Component
 {
+    use AuthorizesRequests;
+
     public $invoiceId;
+
     public $number;
+
     public $customer_id;
+
     public $invoice_date;
+
     public $due_date;
+
     public $status = 'Draft';
+
     public $items = [];
+
     public $tax_id;
+
     public $discount = 0;
+
     public $notes;
+
     public $is_recurring = false;
+
     public $recurring_cycle = 'monthly';
+
     public $next_recurring_date;
 
     public $subtotal = 0;
+
     public $tax_total = 0;
+
     public $total = 0;
 
     protected $rules = [
@@ -53,6 +70,8 @@ class InvoiceForm extends Component
     {
         if ($invoiceId) {
             $invoice = Invoice::with('items')->findOrFail($invoiceId);
+            $this->authorize('update', $invoice);
+
             $this->invoiceId = $invoice->id;
             $this->number = $invoice->number;
             $this->customer_id = $invoice->customer_id;
@@ -64,20 +83,24 @@ class InvoiceForm extends Component
             $this->is_recurring = $invoice->is_recurring;
             $this->recurring_cycle = $invoice->recurring_cycle;
             $this->next_recurring_date = $invoice->next_recurring_date;
-            $this->items = $invoice->items->toArray();
+            $this->items = $invoice->items
+                ->map(fn (InvoiceItem $item) => $this->normalizeItem($item->toArray()))
+                ->toArray();
         } else {
-            $this->number = 'INV-' . strtoupper(Str::random(6));
+            $this->authorize('create', Invoice::class);
+
+            $this->number = 'INV-'.strtoupper(Str::random(6));
             $this->invoice_date = now()->format('Y-m-d');
             $this->due_date = now()->addDays(30)->format('Y-m-d');
             $this->status = 'Draft';
-            $this->items = [['description' => '', 'quantity' => 1, 'unit_price' => 0, 'amount' => 0]];
+            $this->items = [$this->newItem()];
         }
         $this->calculateTotals();
     }
 
     public function addItem()
     {
-        $this->items[] = ['description' => '', 'quantity' => 1, 'unit_price' => 0, 'amount' => 0];
+        $this->items[] = $this->newItem();
     }
 
     public function removeItem($index)
@@ -128,12 +151,44 @@ class InvoiceForm extends Component
         return is_numeric($value) ? (float) $value : 0.0;
     }
 
+    private function newItem(): array
+    {
+        return [
+            '_key' => (string) Str::uuid(),
+            'description' => '',
+            'quantity' => 1,
+            'unit_price' => 0,
+            'amount' => 0,
+        ];
+    }
+
+    private function normalizeItem(array $item): array
+    {
+        return [
+            '_key' => $item['_key'] ?? (string) Str::uuid(),
+            'description' => $item['description'] ?? '',
+            'quantity' => $item['quantity'] ?? 1,
+            'unit_price' => $item['unit_price'] ?? 0,
+            'amount' => $item['amount'] ?? 0,
+        ];
+    }
+
+    private function itemAttributes(array $item): array
+    {
+        return [
+            'description' => $item['description'] ?? '',
+            'quantity' => $this->toNumber($item['quantity'] ?? 0),
+            'unit_price' => $this->toNumber($item['unit_price'] ?? 0),
+            'amount' => $this->toNumber($item['amount'] ?? 0),
+        ];
+    }
+
     public function save()
     {
         $rules = $this->rules;
 
         if ($this->invoiceId) {
-            $rules['number'] = 'required|unique:invoices,number,' . $this->invoiceId;
+            $rules['number'] = 'required|unique:invoices,number,'.$this->invoiceId;
         }
 
         if ($this->is_recurring) {
@@ -144,10 +199,14 @@ class InvoiceForm extends Component
         $this->validate($rules);
 
         $previousStatus = null;
-        $invoice = $this->invoiceId ? Invoice::find($this->invoiceId) : new Invoice();
+        $invoice = $this->invoiceId ? Invoice::find($this->invoiceId) : new Invoice;
         if ($invoice->exists) {
+            $this->authorize('update', $invoice);
             $previousStatus = $invoice->status;
+        } else {
+            $this->authorize('create', Invoice::class);
         }
+
         $invoice->fill([
             'number' => $this->number,
             'customer_id' => $this->customer_id,
@@ -164,13 +223,17 @@ class InvoiceForm extends Component
             'recurring_cycle' => $this->is_recurring ? $this->recurring_cycle : null,
             'next_recurring_date' => $this->is_recurring ? $this->next_recurring_date : null,
             'recurring_parent_id' => $invoice->recurring_parent_id,
-            'user_id' => auth()->id(),
         ]);
+
+        if (! $invoice->exists) {
+            $invoice->user_id = auth()->id();
+        }
+
         $invoice->save();
 
         $invoice->items()->delete();
         foreach ($this->items as $item) {
-            $invoice->items()->create($item);
+            $invoice->items()->create($this->itemAttributes($item));
         }
 
         $invoice->load('customer');
@@ -187,7 +250,8 @@ class InvoiceForm extends Component
             ]);
         }
 
-        session()->flash('message', 'Invoice saved successfully.');
+        session()->flash('success', __('Invoice saved successfully.'));
+
         return redirect()->route('invoices.index');
     }
 

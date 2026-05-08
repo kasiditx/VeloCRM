@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Models\Setting;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 
 if (! function_exists('velocrm_setting_value')) {
@@ -12,8 +14,8 @@ if (! function_exists('velocrm_setting_value')) {
                 return $default;
             }
 
-            return \App\Models\Setting::get($key, $default);
-        } catch (\Throwable) {
+            return Setting::get($key, $default);
+        } catch (Throwable) {
             return $default;
         }
     }
@@ -66,7 +68,7 @@ if (! function_exists('format_currency')) {
     {
         $value = is_null($amount) ? 0 : (float) $amount;
 
-        return velocrm_currency_symbol() . number_format($value, $decimals);
+        return velocrm_currency_symbol().number_format($value, $decimals);
     }
 }
 
@@ -77,6 +79,6 @@ if (! function_exists('format_date')) {
             return '';
         }
 
-        return \Illuminate\Support\Carbon::parse($value)->format($format ?: velocrm_date_format());
+        return Carbon::parse($value)->format($format ?: velocrm_date_format());
     }
 }

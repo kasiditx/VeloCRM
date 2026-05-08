@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Reports;
 
-use Carbon\Carbon;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\Proposal;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ReportIndex extends Component
 {
     public string $startDate = '';
+
     public string $endDate = '';
 
     protected $queryString = [
@@ -48,7 +49,7 @@ class ReportIndex extends Component
         $this->validate();
 
         $data = $this->buildReportData();
-        $filename = 'reports-' . $this->startDate . '-to-' . $this->endDate . '.csv';
+        $filename = 'reports-'.$this->startDate.'-to-'.$this->endDate.'.csv';
 
         return response()->streamDownload(function () use ($data): void {
             $handle = fopen('php://output', 'wb');
@@ -191,7 +192,7 @@ class ReportIndex extends Component
         $totalLeads = $leadsInRange->count();
         $totalPaidRevenue = (float) $paidInvoices->sum('total');
         $conversionRate = $totalLeads > 0
-            ? number_format(($convertedLeads / $totalLeads) * 100, 1) . '%'
+            ? number_format(($convertedLeads / $totalLeads) * 100, 1).'%'
             : '0.0%';
         $conversionRateValue = $totalLeads > 0 ? ($convertedLeads / $totalLeads) * 100 : 0;
         $unpaidBalance = (float) $invoicesInRange

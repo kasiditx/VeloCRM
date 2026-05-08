@@ -7,26 +7,24 @@ namespace App\Http\Controllers;
 use App\Models\Proposal;
 use App\Models\Setting;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Gate;
 
 class ProposalController extends Controller
 {
     public function generatePdf(Proposal $proposal)
     {
-        // Authorization: ensure user can view this proposal
-        if (!auth()->user()->hasRole('Admin') && $proposal->user_id !== auth()->id()) {
-            abort(403);
-        }
+        Gate::authorize('view', $proposal);
 
         // Use logo from admin settings (uploads disk), fallback to default
         $logoSetting = Setting::get('logo');
         $logoBase64 = null;
 
         if ($logoSetting) {
-            $logoPath = public_path('uploads/' . $logoSetting);
+            $logoPath = public_path('uploads/'.$logoSetting);
             if (file_exists($logoPath)) {
                 $type = pathinfo($logoPath, PATHINFO_EXTENSION);
                 $data = file_get_contents($logoPath);
-                $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $logoBase64 = 'data:image/'.$type.';base64,'.base64_encode($data);
             }
         }
 
@@ -34,7 +32,10 @@ class ProposalController extends Controller
         $companyAddress = Setting::get('company_address');
         $companyUrl = config('app.url');
 
-        $pdf = Pdf::loadView('pdf.proposal', [
+        $pdf = Pdf::setOptions([
+            'defaultFont' => 'thsarabunnew',
+            'isFontSubsettingEnabled' => true,
+        ])->loadView('pdf.proposal', [
             'proposal' => $proposal->load('customer', 'lead'),
             'logo_base64' => $logoBase64,
             'company_name' => $companyName,
@@ -42,6 +43,6 @@ class ProposalController extends Controller
             'company_url' => $companyUrl,
         ]);
 
-        return $pdf->stream('Proposal-' . $proposal->number . '.pdf');
+        return $pdf->stream('Proposal-'.$proposal->number.'.pdf');
     }
 }

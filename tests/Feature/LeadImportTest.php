@@ -40,7 +40,7 @@ class LeadImportTest extends TestCase
 
         $this->actingAs($admin);
 
-        $csv = <<<CSV
+        $csv = <<<'CSV'
 Full Name,Email Address,Phone Number,Company Name,Lead Status,Lead Source,Deal Value,Description,Assigned To
 Acme Prospect,lead@example.com,0812345678,Acme Co,Qualified,Website,25000,Warm inbound lead,owner@example.com
 CSV;
@@ -79,7 +79,7 @@ CSV;
 
         $this->actingAs($admin);
 
-        $csv = <<<CSV
+        $csv = <<<'CSV'
 Name,Email,Phone,Company,Status,Source,Value,Notes,Assigned To
 Duplicate Lead,existing@example.com,0811111111,Acme,Qualified,Website,2000,Should skip,admin@example.com
 Broken Lead,not-an-email,0822222222,Acme,New,Referral,3000,Bad email,admin@example.com

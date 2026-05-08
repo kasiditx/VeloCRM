@@ -18,7 +18,7 @@
                     </button>
                 @endif
                 <x-button.secondary-link href="{{ route('leads.edit', $lead->id) }}" wire:navigate>{{ __('Edit') }}</x-button.secondary-link>
-                <x-button.danger wire:click="delete" wire:confirm="{{ __('Delete this lead?') }}" wire:loading.attr="disabled" wire:target="delete">
+                <x-button.danger wire:click="delete" data-velo-confirm="{{ __('Delete this lead?') }}" wire:loading.attr="disabled" wire:target="delete">
                     <x-ui.loading-label target="delete" :label="__('Delete')" :loading="__('Deleting...')" />
                 </x-button.danger>
             </div>

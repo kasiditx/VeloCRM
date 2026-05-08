@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VeloCRM Cron Jobs</title><link rel="stylesheet" href="assets/style.css"></head>
+<body><div class="layout"><aside class="sidebar"><h1>VeloCRM</h1><a href="index.html">Overview</a><a href="installation.html">Installation</a><a href="faq.html">FAQ</a></aside><main class="content">
+<h2>Cron Jobs</h2>
+<div class="card"><p>Recurring invoices and overdue reminders use Laravel Scheduler. Add this cron command on the server:</p><pre>* * * * * php /path/to/velocrm/artisan schedule:run >> /dev/null 2>&1</pre></div>
+<div class="card"><h3>cPanel</h3><p>Use the Cron Jobs tool and update the PHP binary path if your hosting provider requires a custom path.</p></div>
+</main></div></body></html>

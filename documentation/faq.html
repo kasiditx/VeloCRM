@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VeloCRM FAQ</title><link rel="stylesheet" href="assets/style.css"></head>
+<body><div class="layout"><aside class="sidebar"><h1>VeloCRM</h1><a href="index.html">Overview</a><a href="installation.html">Installation</a><a href="cron.html">Cron Jobs</a></aside><main class="content">
+<h2>FAQ</h2>
+<div class="card"><h3>The installer says a folder is not writable</h3><p>Make <code>storage/</code>, <code>bootstrap/cache/</code>, and <code>public/uploads/</code> writable.</p></div>
+<div class="card"><h3>Email is not sending</h3><p>Check SMTP values in Admin Settings and send a test email. Some hosts block outbound SMTP or require the full mailbox address as username.</p></div>
+<div class="card"><h3>Recurring invoices are not generated</h3><p>Confirm the invoice is recurring, <code>next_recurring_date</code> is due, and the scheduler cron runs every minute.</p></div>
+<div class="card"><h3>Thai PDF text does not render correctly</h3><p>Confirm DomPDF font files are present in the package and rebuild font cache if your host changes font paths.</p></div>
+</main></div></body></html>

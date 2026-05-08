@@ -71,12 +71,6 @@
                                 <span class="font-medium text-gray-500 dark:text-gray-400">{{ __('Date Issued:') }}</span>
                                 <span class="text-gray-900 dark:text-white">{{ format_date($proposal->created_at) }}</span>
                             </div>
-                            @if ($proposal->valid_until)
-                            <div class="flex sm:justify-end gap-2">
-                                <span class="font-medium text-gray-500 dark:text-gray-400">{{ __('Valid Until:') }}</span>
-                                <span class="text-gray-900 dark:text-white font-semibold">{{ format_date($proposal->valid_until) }}</span>
-                            </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -88,54 +82,9 @@
                 </div>
                 @endif
 
-                {{-- Items Table --}}
-                <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 mb-8">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                        <thead class="bg-gray-50 dark:bg-gray-950">
-                            <tr>
-                                <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Description') }}</th>
-                                <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 w-24">{{ __('Qty') }}</th>
-                                <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 w-32">{{ __('Price') }}</th>
-                                <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 w-32">{{ __('Amount') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-                            @forelse($proposal->items as $item)
-                                <tr>
-                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $item->description }}</td>
-                                    <td class="px-6 py-4 text-sm text-right text-gray-500 dark:text-gray-400">{{ $item->quantity }}</td>
-                                    <td class="px-6 py-4 text-sm text-right text-gray-500 dark:text-gray-400">{{ format_currency($item->unit_price) }}</td>
-                                    <td class="px-6 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">{{ format_currency($item->amount) }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                                        <x-ui.empty-state
-                                            icon="proposal"
-                                            :title="__('No items found for this proposal.')"
-                                            :message="__('Add proposal items so scope, pricing, and PDF output are clear.')"
-                                            size="compact"
-                                        />
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
                 {{-- Totals --}}
                 <div class="flex justify-end">
                     <div class="w-full sm:w-80 space-y-3">
-                        <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-                            <span>{{ __('Subtotal') }}</span>
-                            <span class="font-medium">{{ format_currency($proposal->subtotal) }}</span>
-                        </div>
-                        @if ($proposal->tax_total > 0)
-                        <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-                            <span>{{ __('Tax') }}</span>
-                            <span class="font-medium">{{ format_currency($proposal->tax_total) }}</span>
-                        </div>
-                        @endif
                         <div class="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-3 text-lg font-bold text-gray-900 dark:text-white">
                             <span>{{ __('Total') }}</span>
                             <span>{{ format_currency($proposal->total) }}</span>

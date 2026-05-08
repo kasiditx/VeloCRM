@@ -179,7 +179,14 @@ return [
          *
          * @var string
          */
-        'default_font' => 'serif',
+        'default_font' => 'thsarabunnew',
+
+        'font_data' => [
+            'thsarabunnew' => [
+                'R' => 'THSarabunNew.ttf',
+                'B' => 'THSarabunNew-Bold.ttf',
+            ],
+        ],
 
         /**
          * Image DPI setting

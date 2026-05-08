@@ -18,13 +18,13 @@ class Setting extends Model
     {
         $setting = self::where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return $default;
         }
 
         $value = $setting->value;
 
-        if ($decrypt && !empty($value)) {
+        if ($decrypt && ! empty($value)) {
             try {
                 return Crypt::decryptString($value);
             } catch (\Exception $e) {
@@ -40,7 +40,7 @@ class Setting extends Model
      */
     public static function set(string $key, mixed $value, bool $encrypt = false): void
     {
-        if ($encrypt && !empty($value)) {
+        if ($encrypt && ! empty($value)) {
             $value = Crypt::encryptString((string) $value);
         }
 

@@ -8,6 +8,7 @@ use App\Models\Attachment;
 use App\Models\Customer;
 use App\Models\Lead;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -16,16 +17,19 @@ use Livewire\WithFileUploads;
 
 class AttachmentPanel extends Component
 {
+    use AuthorizesRequests;
     use WithFileUploads;
 
     public string $attachableType;
+
     public int $attachableId;
-    public TemporaryUploadedFile|null $file = null;
+
+    public ?TemporaryUploadedFile $file = null;
 
     protected function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'max:10240'],
+            'file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg,webp,csv,xlsx,docx', 'max:10240'],
         ];
     }
 
@@ -34,15 +38,20 @@ class AttachmentPanel extends Component
         $this->validate();
 
         $attachable = $this->attachable();
-        $directory = 'attachments/' . Str::kebab(class_basename($this->attachableType)) . '/' . $this->attachableId;
-        $storedPath = $this->file->store($directory, 'uploads');
+        $this->authorize('view', $attachable);
+        $this->authorize('create', Attachment::class);
 
-        $attachable->attachments()->create([
+        $directory = 'attachments/'.Str::kebab(class_basename($this->attachableType)).'/'.$this->attachableId;
+        $extension = $this->file->getClientOriginalExtension();
+        $storedPath = $this->file->storeAs($directory, Str::uuid().'.'.$extension, 'uploads');
+
+        $attachment = $attachable->attachments()->make([
             'filename' => $this->file->getClientOriginalName(),
             'path' => $storedPath,
             'size' => $this->file->getSize(),
-            'user_id' => auth()->id(),
         ]);
+        $attachment->user_id = auth()->id();
+        $attachment->save();
 
         $this->reset('file');
         session()->flash('success', 'Attachment uploaded successfully.');
@@ -51,10 +60,7 @@ class AttachmentPanel extends Component
     public function delete(int $attachmentId): void
     {
         $attachment = $this->attachable()->attachments()->findOrFail($attachmentId);
-
-        if ($attachment->user_id !== auth()->id() && ! auth()->user()->hasRole('Admin')) {
-            abort(403);
-        }
+        $this->authorize('delete', $attachment);
 
         Storage::disk('uploads')->delete($attachment->path);
         $attachment->delete();
@@ -71,7 +77,7 @@ class AttachmentPanel extends Component
 
         abort_unless(in_array($this->attachableType, $allowedTypes, true), 404);
 
-        /** @var \Illuminate\Database\Eloquent\Model $model */
+        /** @var Model $model */
         $model = $this->attachableType::query()->findOrFail($this->attachableId);
 
         return $model;
@@ -79,6 +85,8 @@ class AttachmentPanel extends Component
 
     public function render()
     {
+        $this->authorize('view', $this->attachable());
+
         return view('livewire.attachments.attachment-panel', [
             'attachments' => $this->attachable()->attachments()->with('user')->latest()->get(),
         ]);

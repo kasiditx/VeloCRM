@@ -30,6 +30,7 @@ class GenerateRecurringInvoices extends Command
             ->each(function (Invoice $template) use (&$generatedCount): void {
                 if (! $template->customer) {
                     $this->warn("Skipped template {$template->number}: customer not found.");
+
                     return;
                 }
 
@@ -123,7 +124,7 @@ class GenerateRecurringInvoices extends Command
     protected function generateInvoiceNumber(): string
     {
         do {
-            $number = 'INV-' . Str::upper(Str::random(6));
+            $number = 'INV-'.Str::upper(Str::random(6));
         } while (Invoice::query()->where('number', $number)->exists());
 
         return $number;

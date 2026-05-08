@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Livewire\Leads\LeadShow;
-use App\Livewire\Leads\LeadIndex;
 use App\Livewire\Customers\CustomerIndex;
+use App\Livewire\Leads\LeadIndex;
+use App\Livewire\Leads\LeadShow;
 use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\User;

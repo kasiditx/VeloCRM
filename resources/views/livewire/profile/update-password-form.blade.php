@@ -39,13 +39,13 @@ new class extends Component
 }; ?>
 
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Update Password') }}
+    <header class="border-b border-gray-100 pb-5 dark:border-gray-800">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+            {{ __('Password') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {{ __('Use a long, unique password. You will stay signed in on this device after saving.') }}
         </p>
     </header>
 

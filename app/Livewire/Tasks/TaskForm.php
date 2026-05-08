@@ -4,39 +4,58 @@ declare(strict_types=1);
 
 namespace App\Livewire\Tasks;
 
-use App\Models\Task;
-use App\Models\User;
 use App\Models\Customer;
 use App\Models\Lead;
+use App\Models\Task;
+use App\Models\User;
 use App\Notifications\TaskAssignedNotification;
 use App\Support\SafeNotifier;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class TaskForm extends Component
 {
+    use AuthorizesRequests;
+
+    private const STATUSES = ['Todo', 'In Progress', 'Done', 'Cancelled'];
+
     public $taskId;
+
     public $title;
+
     public $description;
+
     public $status = 'Todo';
+
     public $priority = 'Medium';
+
     public $due_date;
+
     public $relatable_type;
+
     public $relatable_id;
+
     public $assigned_to;
 
-    protected $rules = [
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'status' => 'required|in:Todo,In Progress,Done,Cancelled',
-        'priority' => 'required|in:Low,Medium,High,Urgent',
-        'due_date' => 'nullable|date',
-        'assigned_to' => 'nullable|exists:users,id',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => ['required', Rule::in(self::STATUSES)],
+            'priority' => 'required|in:Low,Medium,High,Urgent',
+            'due_date' => 'nullable|date',
+            'assigned_to' => 'nullable|exists:users,id',
+        ];
+    }
 
     public function mount($taskId = null, $relatableType = null, $relatableId = null): void
     {
         if ($taskId) {
             $task = Task::findOrFail($taskId);
+            $this->authorize('update', $task);
+
             $this->taskId = $task->id;
             $this->title = $task->title;
             $this->description = $task->description;
@@ -47,9 +66,16 @@ class TaskForm extends Component
             $this->relatable_id = $task->relatable_id;
             $this->assigned_to = $task->assigned_to;
         } else {
+            $this->authorize('create', Task::class);
+
             $this->due_date = now()->addDay()->format('Y-m-d');
             $this->relatable_type = $relatableType;
             $this->relatable_id = $relatableId;
+
+            $status = request()->query('status');
+            if (is_string($status) && in_array($status, self::STATUSES, true)) {
+                $this->status = $status;
+            }
         }
     }
 
@@ -58,9 +84,12 @@ class TaskForm extends Component
         $this->validate();
 
         $existingAssignedTo = null;
-        $task = $this->taskId ? Task::find($this->taskId) : new Task();
+        $task = $this->taskId ? Task::find($this->taskId) : new Task;
         if ($task->exists) {
+            $this->authorize('update', $task);
             $existingAssignedTo = $task->assigned_to;
+        } else {
+            $this->authorize('create', Task::class);
         }
 
         $task->fill([
@@ -72,8 +101,10 @@ class TaskForm extends Component
             'relatable_type' => $this->relatable_type,
             'relatable_id' => $this->relatable_id,
             'assigned_to' => $this->assigned_to,
-            'user_id' => auth()->id(),
         ]);
+        if (! $task->exists) {
+            $task->user_id = auth()->id();
+        }
         $task->save();
 
         $task->load('assignee');
@@ -92,7 +123,10 @@ class TaskForm extends Component
             ]);
         }
 
-        session()->flash('message', 'Task saved successfully.');
+        session()->flash('success', __('Task saved successfully.'));
+
+        $this->dispatch('taskUpdated');
+
         return redirect()->route('tasks.board');
     }
 

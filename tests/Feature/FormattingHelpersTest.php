@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Livewire\Leads\LeadIndex;
 use App\Models\Lead;
 use App\Models\Setting;
 use App\Models\User;
@@ -49,7 +50,7 @@ class FormattingHelpersTest extends TestCase
 
         $this->actingAs($user);
 
-        Livewire::test(\App\Livewire\Leads\LeadIndex::class)
+        Livewire::test(LeadIndex::class)
             ->assertSee('€999.99');
     }
 }

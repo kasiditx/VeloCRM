@@ -15,8 +15,7 @@ class TaskAssignedNotification extends Notification
 
     public function __construct(
         public Task $task
-    ) {
-    }
+    ) {}
 
     public function via(object $notifiable): array
     {
@@ -26,12 +25,12 @@ class TaskAssignedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Task assigned: ' . $this->task->title)
-            ->greeting('Hello ' . $notifiable->name)
+            ->subject('Task assigned: '.$this->task->title)
+            ->greeting('Hello '.$notifiable->name)
             ->line(__('A task has been assigned to you in :app.', ['app' => velocrm_app_name()]))
-            ->line('Task: ' . $this->task->title)
-            ->line('Priority: ' . $this->task->priority)
-            ->line('Status: ' . $this->task->status)
-            ->line('Due Date: ' . ($this->task->due_date ?: 'Not set'));
+            ->line('Task: '.$this->task->title)
+            ->line('Priority: '.$this->task->priority)
+            ->line('Status: '.$this->task->status)
+            ->line('Due Date: '.($this->task->due_date ?: 'Not set'));
     }
 }

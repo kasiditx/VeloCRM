@@ -6,7 +6,6 @@ namespace App\Livewire;
 
 use App\Models\Lead;
 use Livewire\Component;
-use Illuminate\Support\Facades\Log;
 
 class LeadKanban extends Component
 {
@@ -17,11 +16,13 @@ class LeadKanban extends Component
         foreach ($groups as $group) {
             $status = $group['value'];
 
-            if (!in_array($status, $this->statuses)) continue;
+            if (! in_array($status, $this->statuses)) {
+                continue;
+            }
 
             $leadIds = collect($group['items'])->pluck('value')->toArray();
 
-            if (!empty($leadIds)) {
+            if (! empty($leadIds)) {
                 // Update status for all leads in this group to match the column
                 // (In a real app with strict ordering, we'd also update an 'order' or 'sort' column here)
                 Lead::whereIn('id', $leadIds)->update(['status' => $status]);
@@ -36,7 +37,7 @@ class LeadKanban extends Component
         $leads = Lead::all()->groupBy('status');
 
         return view('livewire.lead-kanban', [
-            'leads' => $leads
+            'leads' => $leads,
         ]);
     }
 }

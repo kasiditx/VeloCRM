@@ -1,30 +1,34 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InstallController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProposalController;
-use App\Livewire\Admin\UserIndex;
+use App\Http\Middleware\EnsureUserIsActive;
+use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\UserForm;
+use App\Livewire\Admin\UserIndex;
+use App\Livewire\Calendar\CalendarIndex;
 use App\Livewire\Customers\CustomerForm;
 use App\Livewire\Customers\CustomerIndex;
 use App\Livewire\Customers\CustomerShow;
+use App\Livewire\Dashboard;
+use App\Livewire\Invoices\InvoiceForm;
+use App\Livewire\Invoices\InvoiceIndex;
+use App\Livewire\Invoices\InvoiceShow;
 use App\Livewire\LeadKanban;
 use App\Livewire\Leads\LeadForm;
-use App\Livewire\Leads\LeadIndex;
 use App\Livewire\Leads\LeadImport;
+use App\Livewire\Leads\LeadIndex;
 use App\Livewire\Leads\LeadShow;
-use App\Livewire\Invoices\InvoiceIndex;
-use App\Livewire\Invoices\InvoiceForm;
-use App\Livewire\Invoices\InvoiceShow;
-use App\Livewire\Proposals\ProposalIndex;
 use App\Livewire\Proposals\ProposalForm;
+use App\Livewire\Proposals\ProposalIndex;
 use App\Livewire\Proposals\ProposalShow;
 use App\Livewire\Reports\ReportIndex;
-use App\Livewire\Tasks\TaskIndex;
 use App\Livewire\Tasks\TaskBoard;
 use App\Livewire\Tasks\TaskForm;
-use App\Livewire\Calendar\CalendarIndex;
+use App\Livewire\Tasks\TaskIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,14 +48,16 @@ Route::prefix('install')->group(function () {
     Route::post('/finalize', [InstallController::class, 'finalize'])->name('install.finalize');
 });
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::post('locale', LocaleController::class)->name('locale.switch');
+Route::post('locale', LocaleController::class)
+    ->middleware('throttle:12,1')
+    ->name('locale.switch');
 
-Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class, 'verified'])->group(function () {
-    Route::get('dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
+Route::middleware(['auth', EnsureUserIsActive::class, 'verified'])->group(function () {
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     // Leads
     Route::get('leads', LeadIndex::class)->name('leads.index');
@@ -59,7 +65,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class, 'veri
     Route::get('leads/create', LeadForm::class)->name('leads.create');
     Route::middleware('role:Admin')->group(function () {
         Route::get('leads/import', LeadImport::class)->name('leads.import');
-        Route::get('import/leads/template', [App\Http\Controllers\ExportController::class, 'leadImportTemplate'])->name('leads.import.template');
+        Route::get('import/leads/template', [ExportController::class, 'leadImportTemplate'])->name('leads.import.template');
     });
     Route::get('leads/{leadId}', LeadShow::class)->name('leads.show');
     Route::get('leads/{leadId}/edit', LeadForm::class)->name('leads.edit');
@@ -103,16 +109,16 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class, 'veri
         Route::get('admin/users/{userId}/edit', UserForm::class)->name('admin.users.edit');
 
         // Admin Settings
-        Route::get('admin/settings', \App\Livewire\Admin\Settings::class)->name('admin.settings');
+        Route::get('admin/settings', Settings::class)->name('admin.settings');
 
         // Exports
-        Route::get('export/leads', [App\Http\Controllers\ExportController::class, 'leads'])->name('export.leads');
-        Route::get('export/customers', [App\Http\Controllers\ExportController::class, 'customers'])->name('export.customers');
+        Route::get('export/leads', [ExportController::class, 'leads'])->name('export.leads');
+        Route::get('export/customers', [ExportController::class, 'customers'])->name('export.customers');
     });
 });
 
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', EnsureUserIsActive::class])
     ->name('profile');
 
 require __DIR__.'/auth.php';

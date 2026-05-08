@@ -130,7 +130,7 @@
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Primary UI Color') }}</label>
                                     <div class="flex items-center gap-4">
                                         <input type="color" wire:model="primary_color" class="h-10 w-20 border-0 p-0 rounded-lg cursor-pointer">
-                                        <span class="text-sm font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">{{ $primary_color }}</span>
+                                        <input type="text" wire:model.live.debounce.300ms="primary_color" placeholder="#4f46e5" maxlength="7" class="w-32 rounded-lg border-gray-300 bg-gray-100 px-3 py-1.5 font-mono text-sm text-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                                     </div>
                                     @error('primary_color') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
@@ -149,10 +149,12 @@
                                 <div class="sm:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Mail Host') }}</label>
                                     <input type="text" wire:model="mail_host" placeholder="smtp.mailtrap.io" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_host') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Mail Port') }}</label>
                                     <input type="text" wire:model="mail_port" placeholder="587" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_port') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Encryption') }}</label>
@@ -161,22 +163,27 @@
                                         <option value="ssl">SSL</option>
                                         <option value="none">None</option>
                                     </select>
+                                    @error('mail_encryption') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Username') }}</label>
                                     <input type="text" wire:model="mail_username" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_username') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Password') }}</label>
                                     <input type="password" wire:model="mail_password" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_password') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Sender Email') }}</label>
                                     <input type="email" wire:model="mail_from_address" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_from_address') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Sender Name') }}</label>
                                     <input type="text" wire:model="mail_from_name" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                    @error('mail_from_name') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="sm:col-span-2 flex flex-wrap justify-between items-center gap-3 pt-2">
                                     <button type="button" wire:click="sendTestEmail" wire:loading.attr="disabled" wire:target="sendTestEmail,saveSMTP" class="action-button action-button-secondary">
@@ -197,10 +204,12 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Currency Code') }}</label>
                                         <input type="text" wire:model="currency_code" placeholder="USD" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                        @error('currency_code') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Currency Symbol') }}</label>
                                         <input type="text" wire:model="currency_symbol" placeholder="$" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                        @error('currency_symbol') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                                 <div>
@@ -211,6 +220,7 @@
                                         <option value="Y-m-d">YYYY-MM-DD ({{ now()->format('Y-m-d') }})</option>
                                         <option value="M d, Y">Month Day, Year ({{ now()->format('M d, Y') }})</option>
                                     </select>
+                                    @error('date_format') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="pt-2">
                                     <button type="submit" wire:loading.attr="disabled" wire:target="saveRegional" class="action-button action-button-primary">
@@ -234,11 +244,13 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Subject') }}</label>
                                         <input type="text" wire:model="template_subject" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm">
+                                        @error('template_subject') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Body') }}</label>
                                         <textarea wire:model="template_body" rows="8" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm font-mono"></textarea>
                                         <p class="mt-2 text-xs text-gray-500">{{ __('Available placeholders') }}: <code>{customer_name}</code>, <code>{company_name}</code>, <code>{invoice_number}</code>, <code>{user_name}</code></p>
+                                        @error('template_body') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                     <div class="pt-2">
                                         <button type="submit" wire:loading.attr="disabled" wire:target="saveTemplate" class="action-button action-button-primary">
@@ -248,7 +260,7 @@
                                 </form>
                             @else
                                 <div class="grid gap-4">
-                                    @foreach($templates as $template)
+                                    @forelse($templates as $template)
                                         <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                                             <div>
                                                 <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ $template['name'] }}</h4>
@@ -258,7 +270,12 @@
                                                 <x-ui.loading-label target="editTemplate({{ $template['id'] }})" :label="__('Edit')" :loading="__('Opening...')" />
                                             </button>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center dark:border-gray-700 dark:bg-gray-800">
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('No email templates found.') }}</p>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Run the database seeder to install the default templates.') }}</p>
+                                        </div>
+                                    @endforelse
                                 </div>
                             @endif
                         </div>

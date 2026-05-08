@@ -29,7 +29,7 @@
                         </p>
                     </div>
                     @if ($note->user_id === auth()->id() || auth()->user()->hasRole('Admin'))
-                        <button wire:click="delete({{ $note->id }})" wire:confirm="{{ __('Delete this note?') }}" wire:loading.attr="disabled" wire:target="delete({{ $note->id }})" class="text-xs font-medium text-rose-600 transition hover:text-rose-700 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
+                        <button wire:click="delete({{ $note->id }})" data-velo-confirm="{{ __('Delete this note?') }}" wire:loading.attr="disabled" wire:target="delete({{ $note->id }})" class="text-xs font-medium text-rose-600 transition hover:text-rose-700 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
                             <x-ui.loading-label target="delete({{ $note->id }})" :label="__('Delete')" :loading="__('Deleting...')" />
                         </button>
                     @endif

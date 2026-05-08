@@ -3,27 +3,38 @@
 namespace App\Livewire\Invoices;
 
 use App\Models\Invoice;
-use App\Models\Setting;
 use App\Models\Payment;
+use App\Models\Setting;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class InvoiceShow extends Component
 {
+    use AuthorizesRequests;
+
     public Invoice $invoice;
+
     public string $companyName;
+
     public string $companyAddress;
 
     // Payment Form state
     public bool $showPaymentModal = false;
+
     public $paymentAmount;
+
     public $paymentDate;
+
     public $paymentMethod = 'Bank Transfer';
+
     public $paymentNotes;
 
     public function mount(int $invoiceId)
     {
         $this->loadInvoice($invoiceId);
+        $this->authorize('view', $this->invoice);
+
         $this->companyName = Setting::get('company_name', velocrm_company_name());
         $this->companyAddress = Setting::get('company_address', '');
 
@@ -33,16 +44,19 @@ class InvoiceShow extends Component
 
     private function loadInvoice(int $invoiceId)
     {
-        $this->invoice = Invoice::with(['customer', 'items.taxTemplate', 'payments'])->findOrFail($invoiceId);
+        $this->invoice = Invoice::with(['customer', 'items', 'payments'])->findOrFail($invoiceId);
     }
 
     public function recordPayment()
     {
+        $this->authorize('update', $this->invoice);
+        $this->authorize('create', Payment::class);
+
         $this->validate([
             'paymentAmount' => 'required|numeric|min:0.01',
             'paymentDate' => 'required|date',
             'paymentMethod' => 'required|string',
-            'paymentNotes' => 'nullable|string'
+            'paymentNotes' => 'nullable|string',
         ]);
 
         DB::transaction(function () {
@@ -53,7 +67,7 @@ class InvoiceShow extends Component
                 'notes' => $this->paymentNotes,
             ]);
 
-            $this->invoice->updateBalances();
+            $this->invoice->updateTotals();
         });
 
         $this->showPaymentModal = false;
@@ -61,7 +75,7 @@ class InvoiceShow extends Component
         $this->paymentAmount = $this->invoice->balance_due;
         $this->paymentNotes = null;
 
-        session()->flash('message', __('Payment recorded successfully.'));
+        session()->flash('success', __('Payment recorded successfully.'));
     }
 
     public function render()

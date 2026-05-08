@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Livewire\Admin;
 
 use App\Models\Setting;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -21,28 +20,42 @@ class SettingsBackup extends Component
 
     // General
     public string $company_name = '';
+
     public string $company_address = '';
+
     public string $site_title = '';
 
     // Branding
     public $logo;
+
     public $favicon;
+
     public $current_logo;
+
     public $current_favicon;
+
     public string $primary_color = '#4f46e5';
 
     // SMTP
     public string $mail_host = '';
+
     public string $mail_port = '';
+
     public string $mail_username = '';
+
     public string $mail_password = '';
+
     public string $mail_encryption = 'tls';
+
     public string $mail_from_address = '';
+
     public string $mail_from_name = '';
 
     // Regional
     public string $currency_code = 'USD';
+
     public string $currency_symbol = '$';
+
     public string $date_format = 'd/m/Y';
 
     protected $rules = [
@@ -108,19 +121,19 @@ class SettingsBackup extends Component
     public function saveBranding(): void
     {
         $this->validate([
-            'logo' => 'nullable|image|max:1024',
-            'favicon' => 'nullable|image|max:512',
+            'logo' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:1024',
+            'favicon' => 'nullable|file|mimes:png,jpg,jpeg,webp,ico|max:512',
             'primary_color' => 'required|string|max:7',
         ]);
 
         if ($this->logo) {
-            $path = $this->logo->store('branding', 'uploads');
+            $path = $this->logo->storeAs('branding', Str::uuid().'.'.$this->logo->getClientOriginalExtension(), 'uploads');
             Setting::set('logo', $path);
             $this->current_logo = $path;
         }
 
         if ($this->favicon) {
-            $path = $this->favicon->store('branding', 'uploads');
+            $path = $this->favicon->storeAs('branding', Str::uuid().'.'.$this->favicon->getClientOriginalExtension(), 'uploads');
             Setting::set('favicon', $path);
             $this->current_favicon = $path;
         }
@@ -142,7 +155,7 @@ class SettingsBackup extends Component
         Setting::set('mail_port', $this->mail_port);
         Setting::set('mail_username', $this->mail_username);
 
-        if (!empty($this->mail_password)) {
+        if (! empty($this->mail_password)) {
             Setting::set('mail_password', $this->mail_password, true);
         }
 
@@ -176,9 +189,9 @@ class SettingsBackup extends Component
                     ->subject(__('SMTP Test from :app', ['app' => velocrm_app_name()]));
             });
 
-            session()->flash('success', 'Test email sent successfully to ' . auth()->user()->email);
+            session()->flash('success', 'Test email sent successfully to '.auth()->user()->email);
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to send test email: ' . $e->getMessage());
+            session()->flash('error', 'Failed to send test email: '.$e->getMessage());
         }
     }
 
@@ -216,7 +229,7 @@ class SettingsBackup extends Component
         ];
 
         foreach ($paths as $name => $path) {
-            if (!File::exists($path)) {
+            if (! File::exists($path)) {
                 File::makeDirectory($path, 0755, true, true);
             }
             $results['permissions'][$name] = File::isWritable($path);

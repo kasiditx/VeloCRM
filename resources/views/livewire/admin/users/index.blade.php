@@ -80,7 +80,7 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             @endif
                                         </button>
-                                        <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}"
+                                        <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" data-velo-confirm="{{ __('Delete this user?') }}" title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}"
                                             class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-rose-600 hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-45 dark:hover:bg-rose-900/30 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
@@ -130,7 +130,7 @@
                             <button wire:click="toggleActive({{ $user->id }})" wire:loading.attr="disabled" wire:target="toggleActive({{ $user->id }})" class="text-xs font-medium text-primary-600 disabled:pointer-events-none disabled:opacity-50 dark:text-primary-400">
                                 <x-ui.loading-label target="toggleActive({{ $user->id }})" :label="$user->is_active ? __('Disable') : __('Enable')" :loading="__('Updating...')" />
                             </button>
-                            <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" wire:confirm="{{ __('Delete this user?') }}" class="text-xs font-medium text-rose-600 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
+                            <button wire:click="delete({{ $user->id }})" wire:loading.attr="disabled" wire:target="delete({{ $user->id }})" data-velo-confirm="{{ __('Delete this user?') }}" class="text-xs font-medium text-rose-600 disabled:pointer-events-none disabled:opacity-50 dark:text-rose-400">
                                 <x-ui.loading-label target="delete({{ $user->id }})" :label="__('Delete')" :loading="__('Deleting...')" />
                             </button>
                         </div>

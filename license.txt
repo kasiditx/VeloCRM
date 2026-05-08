@@ -1,0 +1,10 @@
+VeloCRM Marketplace License Notes
+
+Regular License:
+- Use by one end customer in one end product.
+- Suitable for one company CRM installation.
+
+Extended License:
+- Required when the end product is sold, resold, or used as a paid service for multiple external customers.
+
+This file is a plain-language summary for buyers. The official Envato license terms apply to marketplace purchases.

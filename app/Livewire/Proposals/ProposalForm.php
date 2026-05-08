@@ -4,21 +4,31 @@ declare(strict_types=1);
 
 namespace App\Livewire\Proposals;
 
-use App\Models\Proposal;
 use App\Models\Customer;
 use App\Models\Lead;
-use Livewire\Component;
+use App\Models\Proposal;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
+use Livewire\Component;
 
 class ProposalForm extends Component
 {
+    use AuthorizesRequests;
+
     public $proposalId;
+
     public $number;
+
     public $subject;
+
     public $content;
+
     public $total;
+
     public $status = 'Draft';
+
     public $customer_id;
+
     public $lead_id;
 
     protected $rules = [
@@ -34,6 +44,8 @@ class ProposalForm extends Component
     {
         if ($proposalId) {
             $proposal = Proposal::findOrFail($proposalId);
+            $this->authorize('update', $proposal);
+
             $this->proposalId = $proposal->id;
             $this->number = $proposal->number;
             $this->subject = $proposal->subject;
@@ -43,7 +55,8 @@ class ProposalForm extends Component
             $this->customer_id = $proposal->customer_id;
             $this->lead_id = $proposal->lead_id;
         } else {
-            $this->number = 'PROP-' . strtoupper(Str::random(6));
+            $this->authorize('create', Proposal::class);
+            $this->number = 'PROP-'.strtoupper(Str::random(6));
         }
     }
 
@@ -51,7 +64,13 @@ class ProposalForm extends Component
     {
         $this->validate();
 
-        $proposal = $this->proposalId ? Proposal::find($this->proposalId) : new Proposal();
+        $proposal = $this->proposalId ? Proposal::find($this->proposalId) : new Proposal;
+        if ($proposal->exists) {
+            $this->authorize('update', $proposal);
+        } else {
+            $this->authorize('create', Proposal::class);
+        }
+
         $proposal->fill([
             'number' => $this->number,
             'subject' => $this->subject,
@@ -60,11 +79,16 @@ class ProposalForm extends Component
             'status' => $this->status,
             'customer_id' => $this->customer_id,
             'lead_id' => $this->lead_id,
-            'user_id' => auth()->id(),
         ]);
+
+        if (! $proposal->exists) {
+            $proposal->user_id = auth()->id();
+        }
+
         $proposal->save();
 
         session()->flash('message', 'Proposal saved successfully.');
+
         return redirect()->route('proposals.index');
     }
 

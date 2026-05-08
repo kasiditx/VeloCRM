@@ -17,6 +17,11 @@ use Spatie\Activitylog\Models\Activity;
 
 class Dashboard extends Component
 {
+    protected $listeners = [
+        'leadUpdated' => '$refresh',
+        'taskUpdated' => '$refresh',
+    ];
+
     #[Computed]
     public function revenueSeries(): Collection
     {

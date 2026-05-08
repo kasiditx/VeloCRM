@@ -14,16 +14,24 @@ class TaskIndex extends Component
     use AuthorizesRequests;
     use WithPagination;
 
+    protected $listeners = [
+        'taskUpdated' => '$refresh',
+    ];
+
     public function delete($id): void
     {
         $task = Task::findOrFail($id);
         $this->authorize('delete', $task);
         $task->delete();
-        session()->flash('message', 'Task deleted successfully.');
+        session()->flash('success', __('Task deleted successfully.'));
+
+        $this->dispatch('taskUpdated');
     }
 
     public function render()
     {
+        $this->authorize('viewAny', Task::class);
+
         return view('livewire.tasks.task-index', [
             'tasks' => Task::with(['user', 'relatable', 'assignee'])->latest()->paginate(10),
         ])->layout('layouts.app');

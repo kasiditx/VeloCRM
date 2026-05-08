@@ -30,7 +30,7 @@ class RecurringInvoice extends Model
         return [
             'next_run_date' => 'date',
             'last_run_date' => 'date',
-            'is_active'     => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 

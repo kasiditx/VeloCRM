@@ -1,0 +1,6 @@
+VeloCRM Changelog
+
+Version 1.0.0
+- Initial CodeCanyon-ready release.
+- Added leads, customers, invoices, proposals, tasks, calendar, dashboard, reports, notes, attachments, soft deletes, notifications, recurring invoices, PDF generation, installer onboarding, admin settings, and EN/TH localization.
+- Added buyer documentation pack and packaging checklist.

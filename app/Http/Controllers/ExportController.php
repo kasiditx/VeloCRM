@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exports\LeadsExport;
 use App\Exports\CustomersExport;
+use App\Exports\LeadsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -13,12 +13,12 @@ class ExportController extends Controller
 {
     public function leads()
     {
-        return Excel::download(new LeadsExport, 'leads-' . now()->format('Y-m-d') . '.xlsx');
+        return Excel::download(new LeadsExport, 'leads-'.now()->format('Y-m-d').'.xlsx');
     }
 
     public function customers()
     {
-        return Excel::download(new CustomersExport, 'customers-' . now()->format('Y-m-d') . '.xlsx');
+        return Excel::download(new CustomersExport, 'customers-'.now()->format('Y-m-d').'.xlsx');
     }
 
     public function leadImportTemplate(): StreamedResponse

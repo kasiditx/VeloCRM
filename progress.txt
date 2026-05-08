@@ -1,0 +1,453 @@
+@/Users/kasidit/Documents/VeloCRM/progress.txt
+================================================================================
+VeloCRM — CodeCanyon Release Roadmap
+Last updated: 2026-05-08
+Owner: Kasidit
+================================================================================
+
+GOAL
+--------------------------------------------------------------------------------
+นำ VeloCRM ขึ้นขายบน CodeCanyon (Envato) ในฐานะ Laravel 11 + Livewire 3 CRM
+สำหรับ SME ที่ใช้งานง่าย รองรับ EN/TH และมีจุดเด่นแบบ Thai-first
+(PromptPay, WHT, e-Tax) ที่คู่แข่งฝรั่งทำไม่ได้
+
+TARGET LAUNCH: 6 weeks from start
+TARGET PRICE:
+  - Intro 30 days: $49 (Regular)
+  - Steady: $69 (Regular) / $207 (Extended)
+
+
+================================================================================
+0. CURRENT STATE (baseline ที่มีอยู่แล้ว — อย่าทำซ้ำ)
+================================================================================
+[x] Laravel 11 + Livewire 3 + Tailwind + Vite
+[x] Installer flow (/install: requirements, db, setup, admin, complete)
+[x] Admin Settings (branding, SMTP, regional)
+[x] Lead pipeline + Kanban + CSV import + CSV template
+[x] Customer module + notes + attachments
+[x] Invoice + items + payments + recurring + PDF
+[x] Proposal + PDF
+[x] Tasks + board + calendar
+[x] Reports + CSV export
+[x] Email templates
+[x] Soft deletes ทุก core table
+[x] Activity log (spatie/laravel-activitylog)
+[x] Roles & permissions (spatie/laravel-permission)
+[x] Notifications: invoice sent, task assigned, overdue reminder
+[x] Scheduler: recurring invoice, overdue reminders
+[x] Localization EN/TH
+[x] DomPDF Thai font (THSarabunNew) ใน config/dompdf.php
+[x] Tests: 73 passed (245 assertions)
+
+
+================================================================================
+1. RELEASE BLOCKERS (P0) — ต้องเสร็จก่อน submit Envato
+================================================================================
+
+1.1 Security audit
+    [ ] รัน static analysis (php artisan route:list ตรวจ middleware ครบทุก route)
+    [ ] เพิ่ม Laravel Policies ต่อ resource:
+        - LeadPolicy, CustomerPolicy, InvoicePolicy, ProposalPolicy,
+          TaskPolicy, NotePolicy, AttachmentPolicy, PaymentPolicy
+    [ ] บังคับ authorize() ใน Livewire mount() ทุก *Show / *Form
+    [ ] ตรวจ $fillable ทุก model — ห้ามมี user_id, tenant_id, role_id
+    [ ] ตรวจ {!! !!} ทุกที่ ว่า escape แล้วหรือเปล่า
+    [ ] ตรวจ file upload:
+        - mime whitelist (pdf, png, jpg, jpeg, webp, csv, xlsx, docx)
+        - max size (default 10MB)
+        - random filename + ห้ามใช้ original
+    [ ] Rate limiting:
+        - login (Laravel default ok)
+        - password reset
+        - locale switch
+        - global search
+    [ ] เพิ่ม Two-Factor Authentication (Laravel Fortify หรือ pragmarx/google2fa)
+        — เป็น optional toggle ใน Profile
+
+1.2 Demo data + reset
+    [ ] artisan command: velocrm:demo-seed
+        - สร้าง admin / staff / customer demo users
+        - สร้าง 20 leads, 10 customers, 5 invoices, 3 proposals, 8 tasks
+    [ ] artisan command: velocrm:demo-reset
+        - ใช้บน demo site ให้ reviewer + buyer ทดลองได้
+    [ ] cron บน demo site: เรียก demo-reset ทุก 6 ชั่วโมง
+
+1.3 Marketplace package
+    [ ] Live demo site + credentials:
+        - admin@demo.velocrm.app / demo1234
+        - staff@demo.velocrm.app / demo1234
+        - customer@demo.velocrm.app / demo1234
+    [ ] Preview video 60–120s (Loom / YouTube unlisted)
+    [ ] Screenshots (1920x1080, PNG):
+        - dashboard
+        - leads list
+        - leads kanban
+        - lead detail
+        - customer detail
+        - invoice form
+        - invoice PDF preview
+        - proposal PDF preview
+        - reports
+        - settings
+        - installer wizard
+        - login
+        - dark mode (ถ้าทำ)
+    [ ] HTML documentation (แทนที่ docs/*.md เดิม):
+        - documentation/index.html
+        - documentation/installation.html
+        - documentation/configuration.html
+        - documentation/modules.html
+        - documentation/cron.html
+        - documentation/customization.html
+        - documentation/faq.html
+        - documentation/changelog.html
+    [ ] readme.txt (Envato style)
+    [ ] license.txt (Regular vs Extended)
+    [ ] CHANGELOG.md อัปเดตเป็น Envato format
+
+1.4 Production hygiene
+    [ ] .env.example ที่ APP_DEBUG=false, APP_ENV=production
+    [ ] ลบ .env, .phpunit.result.cache, audit_screenshots/, output/, missing.json
+    [ ] composer install --no-dev --optimize-autoloader ก่อน zip
+    [ ] npm run build (vite assets) commit ลง public/build
+    [ ] zip ไม่รวม: node_modules, .git, vendor, storage/logs/*, .DS_Store
+
+
+================================================================================
+2. HIGH-VALUE FEATURES (P1) — ดันราคา / สู้คู่แข่ง
+================================================================================
+
+2.1 Customer Portal
+    [ ] เพิ่ม role 'Customer' ใน DefaultRolesSeeder
+    [ ] guard เดียวกัน, layout แยก: resources/views/layouts/portal.blade.php
+    [ ] หน้า portal:
+        - /portal/invoices             — list of invoices
+        - /portal/invoices/{id}        — view invoice + download PDF + pay
+        - /portal/proposals/{id}       — view proposal + accept/reject
+        - /portal/profile              — แก้ที่อยู่ + เปลี่ยนรหัสผ่าน
+    [ ] User factory: ผูก customer_id ให้ user ที่เป็น role Customer
+    [ ] Middleware: EnsurePortalAccess (block route /admin /leads ฯลฯ)
+    [ ] Policy: ดูได้เฉพาะ invoice/proposal ของ customer ตัวเอง
+
+2.2 Public share link (no-login)
+    [ ] เพิ่ม column public_token (uuid) ใน invoices, proposals
+    [ ] route:
+        - /p/invoice/{token}
+        - /p/proposal/{token}
+    [ ] หน้า view + download PDF + payment button (ถ้ามี gateway)
+    [ ] ปุ่ม "Copy share link" ใน InvoiceShow / ProposalShow
+    [ ] Audit log: เก็บเวลา + IP ที่กด view ครั้งแรก
+
+2.3 Payment gateways
+    [ ] config/payments.php (driver, key, secret, mode test/live)
+    [ ] เพิ่ม Settings tab "Payment Gateways"
+    [ ] Driver pattern:
+        - StripeDriver
+        - PayPalDriver
+        - OmiseDriver  (Thai)
+        - Manual / Bank Transfer
+    [ ] Webhook routes (csrf exempt) + signature verification
+    [ ] Update Payment model + Invoice.updateTotals() เมื่อ webhook ยืนยัน
+    [ ] หน้า portal/public: ปุ่ม Pay → redirect → return → success
+
+2.4 Multi-currency per invoice
+    [ ] migration: invoices.currency (string 3), invoices.exchange_rate (decimal 12,6)
+    [ ] รับค่า default จาก Setting('default_currency')
+    [ ] formatter helper: velocrm_money($amount, $currency)
+    [ ] PDF + list + show: แสดง currency code ทุกที่
+    [ ] Reports: aggregate ตาม currency หรือ convert เป็น base currency
+
+2.5 REST API + Sanctum
+    [ ] composer require laravel/sanctum
+    [ ] routes/api.php:
+        - POST /api/login
+        - GET/POST/PUT/DELETE /api/leads
+        - GET/POST/PUT/DELETE /api/customers
+        - GET/POST/PUT/DELETE /api/invoices
+        - GET /api/reports/summary
+    [ ] API Resources (Eloquent API Resource)
+    [ ] Policy ใช้ร่วมกับเว็บ
+    [ ] หน้า Settings → API Tokens (สร้าง / revoke)
+    [ ] Doc: documentation/api.html (endpoint, auth, examples)
+
+2.6 Custom fields
+    [ ] migration: custom_fields (id, model_type, key, label_th, label_en, type, options json)
+    [ ] migration: custom_field_values (model_type, model_id, custom_field_id, value)
+    [ ] รองรับ type: text, textarea, number, date, select, boolean
+    [ ] หน้า Admin → Custom Fields
+    [ ] แสดงในฟอร์ม Lead/Customer/Invoice ตาม model_type
+
+2.7 Audit trail UI
+    [ ] หน้า resource: tab "Activity" ดึงจาก spatie/activitylog
+    [ ] หน้า Admin → Activity Log (filter by user, model, date)
+
+
+================================================================================
+3. THAI-FIRST DIFFERENTIATORS (P2) — moat สำหรับตลาดไทย
+================================================================================
+
+3.1 Thai tax fields
+    [ ] migration: customers.tax_id (13), customers.branch (string)
+    [ ] migration: invoices.tax_id, invoices.branch (snapshot)
+    [ ] form: validate tax_id 13 หลัก + checksum
+    [ ] PDF: แสดง "เลขประจำตัวผู้เสียภาษี" + สาขา
+
+3.2 Withholding Tax (WHT / หัก ณ ที่จ่าย)
+    [ ] migration: invoice_items.wht_rate, invoice_items.wht_amount
+    [ ] preset rates: 1%, 2%, 3%, 5%, 10%, 15%
+    [ ] Invoice.updateTotals() คำนวณ wht_total
+    [ ] PDF: แสดง "หัก ณ ที่จ่าย (X%)" + ยอดสุทธิหลังหัก
+
+3.3 PromptPay QR บน invoice PDF
+    [ ] Setting: promptpay_id (เบอร์มือถือ / เลขบัตร / เลขนิติบุคคล)
+    [ ] composer require simplesoftwareio/simple-qrcode (หรือ endroid/qr-code)
+    [ ] Helper: generate EMVCo PromptPay payload (มี library php-promptpay)
+    [ ] PDF: แสดง QR + จำนวนเงิน + ชื่อผู้รับ
+    [ ] Public/portal page: แสดง QR + ปุ่มยืนยันโอน
+
+3.4 Thai Baht Text
+    [ ] Helper: velocrm_baht_text(123456.78)
+        → "หนึ่งแสนสองหมื่นสามพันสี่ร้อยห้าสิบหกบาทเจ็ดสิบแปดสตางค์"
+    [ ] PDF: แสดงใต้ Total
+    [ ] ใช้ logic จาก ZF / KPaymentGateway helper เดิม (เขียนเองได้)
+
+3.5 Document type variants
+    [ ] migration: invoices.document_type (enum)
+        - quotation        (ใบเสนอราคา)
+        - billing_note     (ใบวางบิล)
+        - invoice          (ใบแจ้งหนี้)
+        - tax_invoice      (ใบกำกับภาษี)
+        - receipt          (ใบเสร็จรับเงิน)
+        - tax_invoice_receipt (ใบกำกับภาษี/ใบเสร็จรับเงิน)
+    [ ] PDF: header + footer ตาม type
+    [ ] ปุ่ม "Convert to Tax Invoice" / "Issue Receipt"
+    [ ] Setting: ลำดับเลขเอกสารแยกตาม type (running number per type per year)
+
+3.6 LINE Notify integration
+    [ ] Setting: line_notify_token
+    [ ] Helper: velocrm_line_notify($message, $imageUrl = null)
+    [ ] Hook events:
+        - InvoiceOverdue
+        - TaskAssigned
+        - LeadCreated (high value)
+    [ ] ทำเป็น optional notification channel
+
+
+================================================================================
+4. UX POLISH — "ใช้งานง่าย" ตาม brand promise
+================================================================================
+
+[ ] Empty states ทุกหน้า list:
+    - icon + headline + sub + ปุ่ม Create
+    - ไฟล์ shared component: <x-empty-state>
+[ ] Onboarding checklist บน Dashboard (แสดงครั้งแรกหลัง install):
+    1. ตั้งค่า Branding
+    2. ตั้งค่า SMTP + ส่ง test email
+    3. สร้าง Lead แรก
+    4. สร้าง Invoice แรก
+    5. เชิญผู้ใช้คนที่สอง
+[ ] Global Cmd/Ctrl+K palette (มี GlobalSearch อยู่แล้ว — bind hotkey)
+[ ] Keyboard shortcut overlay (กด ?)
+    - g d → dashboard
+    - g l → leads
+    - g c → customers
+    - g i → invoices
+    - n   → new (context-aware)
+[ ] Quick Create ใน navbar (dropdown: Lead, Customer, Invoice, Task)
+[ ] Inline status update ใน list (Lead status, Invoice status, Task status)
+[ ] Bulk actions (checkbox + dropdown):
+    - delete, change status, assign user, export selected
+[ ] Saved filter views (per user)
+[ ] Form draft autosave (Invoice / Proposal)
+[ ] Toast feedback ทุก mutation (success/error key)
+[ ] Mobile responsive ตรวจซ้ำทุกหน้า list + form
+[ ] Dark mode ครบทุกหน้า + toggle ใน Profile
+
+
+================================================================================
+5. CODE QUALITY / TESTING
+================================================================================
+
+[ ] Coverage ปัจจุบัน 73 tests — ตั้งเป้าเพิ่มเป็น 120+
+[ ] เพิ่ม tests:
+    - PolicyTest ทุก resource
+    - PortalAccessTest
+    - PublicShareLinkTest
+    - PaymentWebhookTest (Stripe / PayPal mocked)
+    - WithholdingTaxCalculationTest
+    - PromptPayPayloadTest
+    - BahtTextHelperTest
+    - DocumentTypeNumberingTest
+[ ] Pint clean: ./vendor/bin/pint --test
+[ ] Larastan level 6 (ทำ baseline ก่อน)
+[ ] Run on PHP 8.2 และ 8.3 (matrix)
+
+
+================================================================================
+6. MARKETING ASSETS
+================================================================================
+
+[ ] Item title:
+    "VeloCRM — Laravel 11 CRM with Invoicing, Proposals, Customer Portal & Thai Tax (PromptPay, WHT, e-Tax)"
+[ ] Item subtitle:
+    "Self-hosted SME CRM for Sales, Billing, and Customer Management — EN/TH"
+[ ] Tags (Envato max 15):
+    crm, laravel, livewire, invoice, proposal, customer-portal, kanban,
+    sme, thai, promptpay, recurring-invoice, multi-currency, payment-gateway,
+    pdf, sales
+[ ] Description sections:
+    1. Hero (1 paragraph + GIF)
+    2. Why VeloCRM (3 bullets)
+    3. Core modules (icons grid)
+    4. Thai-first features (PromptPay, WHT, e-Tax)
+    5. Technical stack
+    6. Installer flow (screenshot)
+    7. Customer portal (screenshot)
+    8. Reports (screenshot)
+    9. Documentation
+    10. Support policy
+    11. Changelog
+    12. FAQ
+[ ] Cover image 590x300, banner 950x590 (ตามสเปค Envato)
+[ ] Preview video script (60–90s):
+    - 0:00 brand intro
+    - 0:05 dashboard
+    - 0:15 create lead → kanban → convert customer
+    - 0:35 create invoice → PDF (Thai) → PromptPay QR
+    - 0:55 customer portal → pay
+    - 1:10 reports + settings
+    - 1:25 outro
+
+
+================================================================================
+7. POST-LAUNCH (หลังขึ้นขายแล้ว)
+================================================================================
+
+[ ] เปิด support inbox: support@velocrm.app
+[ ] Discord / Telegram community channel
+[ ] Public roadmap (GitHub Projects or Trello)
+[ ] รายเดือน: 1 minor release + bugfix patch
+[ ] รายไตรมาส: 1 feature release
+[ ] เก็บ feedback จาก review → prioritize ใน roadmap
+
+================================================================================
+8. DEFINITION OF DONE (per feature)
+================================================================================
+
+ทุก feature ต้องผ่าน checklist นี้ก่อนปิด task:
+    [ ] โค้ดผ่าน ./vendor/bin/pint
+    [ ] tests เพิ่ม + ผ่านทั้งหมด (php artisan test)
+    [ ] Policy / authorization ครอบคลุม
+    [ ] รองรับ EN + TH (lang/en + lang/th)
+    [ ] ตรวจ mobile responsive
+    [ ] ตรวจ dark mode (ถ้ารองรับ)
+    [ ] เพิ่ม / อัปเดต screenshot ใน documentation
+    [ ] เพิ่มบรรทัดใน CHANGELOG.md
+    [ ] manual QA pass ตาม happy path + 1 edge case
+
+
+================================================================================
+9. RISKS & MITIGATIONS
+================================================================================
+
+Risk 1: Envato hard reject ครั้งแรก (พบบ่อยในของใหม่)
+    Mitigation: ทำ security audit + HTML docs ก่อน submit ตาม P0 ครบ
+                เผื่อเวลา 1-2 สัปดาห์สำหรับ revision
+
+Risk 2: Payment webhook ไม่เสถียรบน shared hosting
+    Mitigation: รองรับ manual reconciliation +
+                Pay button → redirect-back-with-status เป็น fallback
+
+Risk 3: DomPDF render Thai font พลาดบนเครื่อง buyer
+    Mitigation: ใส่ font ใน storage/fonts/ + autoloader script ใน installer
+                เพิ่ม artisan velocrm:fonts:rebuild
+
+Risk 4: Shared hosting ไม่มี cron
+    Mitigation: doc ระบุชัด + หน้า Settings → Scheduler Status
+                แสดงเตือนถ้า last_run > 2 นาที
+
+Risk 5: Buyer ปรับแต่ง view แล้ว upgrade ไม่ได้
+    Mitigation: ใช้ Blade @stack / @push + publishable views
+                docs/customization.html อธิบาย override pattern
+
+Risk 6: ไม่มียอดขายช่วงเปิดตัว
+    Mitigation: ราคา intro $49 30 วัน +
+                ขอ review จาก buyer 5 คนแรก แลกกับ 6 เดือน support
+                โพสต์บน Laracasts / Reddit r/laravel / Thai PHP groups
+
+
+================================================================================
+10. DEPENDENCIES TO ADD
+================================================================================
+
+require:
+    laravel/sanctum                       — REST API auth
+    simplesoftwareio/simple-qrcode        — PromptPay QR
+    pragmarx/google2fa-laravel            — 2FA (optional)
+    stripe/stripe-php                     — Stripe driver
+    paypal/paypal-checkout-sdk            — PayPal driver
+    omise/omise-php                       — Omise driver (Thai)
+
+require-dev:
+    larastan/larastan                     — static analysis
+    pestphp/pest (พิจารณาภายหลัง)         — ปัจจุบันใช้ phpunit อยู่
+
+
+================================================================================
+11. FILE / FOLDER PLAN
+================================================================================
+
+จะมีโฟลเดอร์ใหม่ที่ต้องสร้าง:
+    app/Policies/                         — Lead, Customer, Invoice, ...
+    app/Services/Payments/                — Stripe, PayPal, Omise, Manual
+    app/Services/Documents/               — number generator per type
+    app/Support/Helpers/                  — money, baht text, promptpay, line
+    app/Http/Middleware/EnsurePortalAccess.php
+    app/Livewire/Portal/                  — InvoiceIndex, InvoiceShow, ProposalShow
+    resources/views/layouts/portal.blade.php
+    resources/views/livewire/portal/...
+    resources/views/public/...            — share-link views
+    routes/portal.php
+    routes/api.php (เปิดใช้)
+    documentation/                        — HTML buyer docs
+    bin/package.sh                        — zip builder
+
+
+================================================================================
+12. ENVATO SUBMISSION CHECKLIST (วันส่ง)
+================================================================================
+
+[ ] zip file ขนาดสมเหตุสมผล (< 60MB ถ้าทำได้)
+[ ] ไม่มี node_modules / vendor / .git / .env / *.sql.bak
+[ ] composer install --no-dev สำเร็จบนเครื่องเปล่า
+[ ] vite assets อยู่ใน public/build
+[ ] readme.txt + license.txt + changelog.txt อยู่ root ของ zip
+[ ] documentation/ พร้อม index.html
+[ ] screenshots ครบ 13 รูป
+[ ] preview video URL พร้อม
+[ ] item title, subtitle, description, tags กรอกครบ
+[ ] price + license tier เลือกถูก
+[ ] support policy 6 เดือนตั้งค่าใน Envato
+[ ] demo URL + credentials ใส่ในช่อง Reviewer Note
+[ ] ติด tag PHP 8.2 / 8.3 / Laravel 11
+
+
+================================================================================
+13. NOTES / DECISIONS LOG
+================================================================================
+
+2026-05-08
+    - ตัดสินใจราคา intro $49 → steady $69
+    - ตัดสินใจไม่ทำ multi-tenant ในเวอร์ชันแรก (เพิ่ม complexity เกินจำเป็น)
+    - เลือก Sanctum แทน Passport (เบากว่า + เพียงพอสำหรับ CRM)
+    - เลือก DomPDF ต่อ (ไม่สลับไป Browsershot — shared hosting ไม่มี Chromium)
+
+
+================================================================================
+END OF PROGRESS LOG
+================================================================================
+
+หมายเหตุการใช้งาน
+อัปเดตเป็นรายวัน: เปลี่ยน [ ] เป็น [x] เมื่อเสร็จ และเติมวันที่เสร็จด้านท้ายบรรทัด
+Notes / Decisions Log (ส่วน 14) สำคัญที่สุดสำหรับ long-horizon work เก็บเหตุผลของการตัดสินใจไว้ป้องกันลืมตอนกลับมาทำต่อ
+Definition of Done (ส่วน 9) ใช้กันลืม polish step เล็ก ๆ ที่ทำให้ Envato review ผ่านง่ายขึ้น

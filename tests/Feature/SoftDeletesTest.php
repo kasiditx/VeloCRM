@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Livewire\Customers\CustomerIndex;
+use App\Livewire\Invoices\InvoiceForm;
 use App\Livewire\Invoices\InvoiceIndex;
+use App\Livewire\Invoices\InvoiceShow;
 use App\Livewire\Leads\LeadIndex;
 use App\Livewire\Proposals\ProposalIndex;
+use App\Livewire\Proposals\ProposalShow;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Lead;
@@ -141,6 +144,104 @@ class SoftDeletesTest extends TestCase
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
 
+    public function test_invoice_show_renders_with_items_without_tax_template_relationship(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Admin');
+        $this->actingAs($user);
+
+        $customer = Customer::create([
+            'name' => 'Billing Customer',
+            'email' => 'billing@example.com',
+            'user_id' => $user->id,
+        ]);
+
+        $invoice = Invoice::create([
+            'number' => 'INV-2001',
+            'customer_id' => $customer->id,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(7)->toDateString(),
+            'subtotal' => 500,
+            'tax_total' => 0,
+            'discount' => 0,
+            'total' => 500,
+            'amount_paid' => 0,
+            'balance_due' => 500,
+            'status' => 'Sent',
+            'user_id' => $user->id,
+        ]);
+
+        $invoice->items()->create([
+            'description' => 'Implementation',
+            'quantity' => 1,
+            'unit_price' => 500,
+            'amount' => 500,
+        ]);
+
+        Livewire::test(InvoiceShow::class, ['invoiceId' => $invoice->id])
+            ->assertStatus(200)
+            ->assertSee('INV-2001')
+            ->assertSee('Implementation');
+    }
+
+    public function test_invoice_show_can_record_payment_and_update_totals(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Admin');
+        $this->actingAs($user);
+
+        $customer = Customer::create([
+            'name' => 'Payment Customer',
+            'email' => 'payment@example.com',
+            'user_id' => $user->id,
+        ]);
+
+        $invoice = Invoice::create([
+            'number' => 'INV-2002',
+            'customer_id' => $customer->id,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(7)->toDateString(),
+            'subtotal' => 300,
+            'tax_total' => 0,
+            'discount' => 0,
+            'total' => 300,
+            'amount_paid' => 0,
+            'balance_due' => 300,
+            'status' => 'Sent',
+            'user_id' => $user->id,
+        ]);
+
+        Livewire::test(InvoiceShow::class, ['invoiceId' => $invoice->id])
+            ->set('paymentAmount', 300)
+            ->set('paymentDate', now()->toDateString())
+            ->set('paymentMethod', 'Bank Transfer')
+            ->call('recordPayment')
+            ->assertHasNoErrors();
+
+        $invoice->refresh();
+
+        $this->assertSame('Paid', $invoice->status);
+        $this->assertEqualsWithDelta(300.0, (float) $invoice->amount_paid, 0.001);
+        $this->assertEqualsWithDelta(0.0, (float) $invoice->balance_due, 0.001);
+    }
+
+    public function test_invoice_form_add_item_preserves_existing_item_details(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Admin');
+        $this->actingAs($user);
+
+        Livewire::test(InvoiceForm::class)
+            ->set('items.0.description', 'Existing service')
+            ->set('items.0.quantity', 2)
+            ->set('items.0.unit_price', 150)
+            ->call('addItem')
+            ->assertSet('items.0.description', 'Existing service')
+            ->assertSet('items.0.quantity', 2)
+            ->assertSet('items.0.unit_price', 150)
+            ->assertSet('items.1.description', '');
+    }
+
     public function test_proposal_can_be_soft_deleted_restored_and_permanently_deleted(): void
     {
         $user = User::factory()->create();
@@ -184,5 +285,26 @@ class SoftDeletesTest extends TestCase
             ->call('forceDelete', $proposal->id);
 
         $this->assertDatabaseMissing('proposals', ['id' => $proposal->id]);
+    }
+
+    public function test_proposal_show_renders_without_item_relationship(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('Admin');
+        $this->actingAs($user);
+
+        $proposal = Proposal::create([
+            'number' => 'PR-1002',
+            'subject' => 'CRM Implementation',
+            'content' => 'Implementation scope and pricing.',
+            'total' => 5000,
+            'status' => 'Draft',
+            'user_id' => $user->id,
+        ]);
+
+        Livewire::test(ProposalShow::class, ['proposalId' => $proposal->id])
+            ->assertStatus(200)
+            ->assertSee('CRM Implementation')
+            ->assertSee('Implementation scope and pricing.');
     }
 }

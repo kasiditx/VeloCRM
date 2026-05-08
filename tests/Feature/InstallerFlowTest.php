@@ -17,7 +17,7 @@ class InstallerFlowTest extends TestCase
         $installedPath = storage_path('installed');
 
         if (file_exists($installedPath)) {
-            $this->backupPath = $installedPath . '.bak-testing';
+            $this->backupPath = $installedPath.'.bak-testing';
             rename($installedPath, $this->backupPath);
         }
     }

@@ -15,6 +15,7 @@ class InvoiceIndex extends Component
     use WithPagination;
 
     public string $search = '';
+
     public bool $showTrashed = false;
 
     protected $queryString = [
@@ -63,11 +64,11 @@ class InvoiceIndex extends Component
                 ->with('customer')
                 ->when($this->showTrashed, fn ($q) => $q->onlyTrashed())
                 ->when($this->search, fn ($q) => $q->where(function ($q): void {
-                    $q->where('number', 'like', '%' . $this->search . '%')
+                    $q->where('number', 'like', '%'.$this->search.'%')
                         ->orWhereHas('customer', fn ($customerQuery) => $customerQuery
-                            ->where('name', 'like', '%' . $this->search . '%')
-                            ->orWhere('company', 'like', '%' . $this->search . '%')
-                            ->orWhere('email', 'like', '%' . $this->search . '%'));
+                            ->where('name', 'like', '%'.$this->search.'%')
+                            ->orWhere('company', 'like', '%'.$this->search.'%')
+                            ->orWhere('email', 'like', '%'.$this->search.'%'));
                 }))
                 ->latest()
                 ->paginate(10),

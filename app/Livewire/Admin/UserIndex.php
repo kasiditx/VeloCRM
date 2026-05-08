@@ -67,8 +67,8 @@ class UserIndex extends Component
             ->with('roles')
             ->when($this->search, fn ($query) => $query->where(function ($subQuery) {
                 $subQuery
-                    ->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+                    ->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             }))
             ->latest()
             ->paginate(15);
