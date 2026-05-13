@@ -204,6 +204,7 @@ class SettingsBackup extends Component
         ]);
 
         Setting::set('currency_code', $this->currency_code);
+        Setting::set('default_currency', $this->currency_code);
         Setting::set('currency_symbol', $this->currency_symbol);
         Setting::set('date_format', $this->date_format);
 

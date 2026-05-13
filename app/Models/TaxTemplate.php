@@ -17,7 +17,6 @@ class TaxTemplate extends Model
         'name',
         'rate',
         'is_default',
-        'user_id',
     ];
 
     public function getActivitylogOptions(): LogOptions

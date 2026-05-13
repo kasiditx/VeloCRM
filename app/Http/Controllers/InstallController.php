@@ -236,6 +236,7 @@ class InstallController extends Controller
             Setting::set('company_address', $validated['company_address'] ?? '');
             Setting::set('site_title', $validated['site_title']);
             Setting::set('currency_code', $validated['currency_code']);
+            Setting::set('default_currency', $validated['currency_code']);
             Setting::set('currency_symbol', $validated['currency_symbol']);
             Setting::set('date_format', $validated['date_format']);
             Setting::set('mail_host', $validated['mail_host'] ?? '');

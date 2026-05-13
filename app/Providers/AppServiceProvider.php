@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Observers\PaymentObserver;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Suppress PHP 8.5 deprecation warnings that break Livewire AJAX responses
         error_reporting(E_ALL & ~E_DEPRECATED);
+
+        if ($this->app->runningUnitTests()) {
+            Model::unguard();
+        }
 
         Builder::defaultStringLength(191);
 

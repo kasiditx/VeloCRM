@@ -76,6 +76,8 @@
                 @error('notes') <p class="field-error">{{ $message }}</p> @enderror
             </div>
 
+            <x-custom-fields.form-fields :fields="$customFields" />
+
             <div class="form-footer">
                 <x-button.secondary-link href="{{ route('leads.index') }}" wire:navigate>{{ __('Cancel') }}</x-button.secondary-link>
                 <x-button.primary type="submit" wire:loading.attr="disabled" wire:target="save">

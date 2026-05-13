@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -22,8 +23,14 @@ class Proposal extends Model
         'content',
         'total',
         'status',
-        'user_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'public_viewed_at' => 'datetime',
+        ];
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -31,6 +38,38 @@ class Proposal extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    public function ensurePublicToken(): string
+    {
+        if (! $this->public_token) {
+            $this->forceFill(['public_token' => (string) Str::uuid()])->saveQuietly();
+        }
+
+        return (string) $this->public_token;
+    }
+
+    public function publicShareUrl(): string
+    {
+        return route('public.proposal.show', $this->ensurePublicToken());
+    }
+
+    public function markPublicView(string $ip): void
+    {
+        if ($this->public_viewed_at) {
+            return;
+        }
+
+        $this->forceFill([
+            'public_viewed_at' => now(),
+            'public_viewed_ip' => $ip,
+        ])->saveQuietly();
+
+        activity()
+            ->performedOn($this)
+            ->event('public_viewed')
+            ->withProperties(['ip' => $ip])
+            ->log('proposal public link viewed');
     }
 
     public function customer()

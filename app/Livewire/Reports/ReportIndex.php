@@ -151,7 +151,7 @@ class ReportIndex extends Component
             ->groupBy(fn (Invoice $invoice): string => Carbon::parse($invoice->invoice_date)->format('Y-m'))
             ->map(fn (Collection $group, string $month): array => [
                 'label' => Carbon::createFromFormat('Y-m', $month)->format('M Y'),
-                'amount' => (float) $group->sum('total'),
+                'amount' => (float) $group->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->total)),
             ])
             ->values()
             ->all();
@@ -160,7 +160,7 @@ class ReportIndex extends Component
             ->groupBy(fn (Invoice $invoice): string => $invoice->customer?->name ?? 'Deleted customer')
             ->map(fn (Collection $group, string $customer): array => [
                 'label' => $customer,
-                'amount' => (float) $group->sum('total'),
+                'amount' => (float) $group->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->total)),
             ])
             ->sortByDesc('amount')
             ->take(8)
@@ -190,14 +190,14 @@ class ReportIndex extends Component
         )->count();
 
         $totalLeads = $leadsInRange->count();
-        $totalPaidRevenue = (float) $paidInvoices->sum('total');
+        $totalPaidRevenue = (float) $paidInvoices->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->total));
         $conversionRate = $totalLeads > 0
             ? number_format(($convertedLeads / $totalLeads) * 100, 1).'%'
             : '0.0%';
         $conversionRateValue = $totalLeads > 0 ? ($convertedLeads / $totalLeads) * 100 : 0;
         $unpaidBalance = (float) $invoicesInRange
             ->where('status', '!=', 'Paid')
-            ->sum('balance_due');
+            ->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->balance_due));
         $topLeadSource = collect($leadSources)->first();
         $decisionNotes = [
             [
@@ -244,7 +244,7 @@ class ReportIndex extends Component
                 'Customers' => $customersInRange,
                 'Proposals' => $proposalsInRange,
                 'Open Tasks' => $openTasksInRange,
-                'Average Invoice' => $paidInvoices->isNotEmpty() ? (float) $paidInvoices->avg('total') : 0.0,
+                'Average Invoice' => $paidInvoices->isNotEmpty() ? $totalPaidRevenue / $paidInvoices->count() : 0.0,
                 'Conversion Rate' => $conversionRate,
             ],
             'decisionNotes' => $decisionNotes,

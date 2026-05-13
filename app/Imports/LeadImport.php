@@ -51,7 +51,7 @@ class LeadImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHeading
 
         $this->importedCount++;
 
-        return new Lead([
+        $lead = new Lead([
             'name' => (string) ($row['name'] ?? ''),
             'email' => $email,
             'phone' => $phone,
@@ -60,8 +60,11 @@ class LeadImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHeading
             'source' => $this->normalizeString($row['source'] ?? null),
             'value' => (float) ($row['value'] ?? 0),
             'notes' => $this->normalizeString($row['notes'] ?? null),
-            'user_id' => $this->resolveAssignedUserId($row['assigned_to'] ?? null),
         ]);
+
+        $lead->user_id = $this->resolveAssignedUserId($row['assigned_to'] ?? null);
+
+        return $lead;
     }
 
     public function rules(): array

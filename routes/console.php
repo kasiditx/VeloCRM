@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\DemoResetCommand;
 use App\Console\Commands\GenerateRecurringInvoices;
 use App\Console\Commands\SendOverdueReminders;
 use Illuminate\Foundation\Inspiring;
@@ -12,3 +13,7 @@ Artisan::command('inspire', function () {
 
 Schedule::command(SendOverdueReminders::class)->dailyAt('09:00');
 Schedule::command(GenerateRecurringInvoices::class)->dailyAt('08:00');
+
+if ((bool) config('app.demo_mode', false)) {
+    Schedule::command(DemoResetCommand::class)->everySixHours();
+}

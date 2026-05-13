@@ -28,6 +28,39 @@ if (! function_exists('velocrm_currency_symbol')) {
     }
 }
 
+if (! function_exists('velocrm_currency_code')) {
+    function velocrm_currency_code(): string
+    {
+        return strtoupper((string) velocrm_setting_value('default_currency', velocrm_setting_value('currency_code', 'USD')));
+    }
+}
+
+if (! function_exists('velocrm_currency_symbol_for')) {
+    function velocrm_currency_symbol_for(?string $currency = null): string
+    {
+        $currency = strtoupper((string) ($currency ?: velocrm_currency_code()));
+
+        $symbols = [
+            'THB' => '฿',
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+            'JPY' => '¥',
+            'CNY' => '¥',
+            'SGD' => 'S$',
+            'AUD' => 'A$',
+            'CAD' => 'C$',
+            'HKD' => 'HK$',
+        ];
+
+        if ($currency === velocrm_currency_code()) {
+            return velocrm_currency_symbol();
+        }
+
+        return $symbols[$currency] ?? $currency.' ';
+    }
+}
+
 if (! function_exists('velocrm_date_format')) {
     function velocrm_date_format(): string
     {
@@ -63,9 +96,23 @@ if (! function_exists('velocrm_auth_subtitle')) {
     }
 }
 
-if (! function_exists('format_currency')) {
-    function format_currency(float|int|string|null $amount, int $decimals = 2): string
+if (! function_exists('velocrm_money')) {
+    function velocrm_money(float|int|string|null $amount, ?string $currency = null, int $decimals = 2): string
     {
+        $value = is_null($amount) ? 0 : (float) $amount;
+        $currency = strtoupper((string) ($currency ?: velocrm_currency_code()));
+
+        return velocrm_currency_symbol_for($currency).number_format($value, $decimals).' '.$currency;
+    }
+}
+
+if (! function_exists('format_currency')) {
+    function format_currency(float|int|string|null $amount, int $decimals = 2, ?string $currency = null): string
+    {
+        if ($currency !== null) {
+            return velocrm_money($amount, $currency, $decimals);
+        }
+
         $value = is_null($amount) ? 0 : (float) $amount;
 
         return velocrm_currency_symbol().number_format($value, $decimals);

@@ -8,6 +8,7 @@ use App\Models\Setting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
 class InvoiceShow extends Component
 {
@@ -18,6 +19,10 @@ class InvoiceShow extends Component
     public string $companyName;
 
     public string $companyAddress;
+
+    public string $publicShareUrl = '';
+
+    public string $activeTab = 'overview';
 
     // Payment Form state
     public bool $showPaymentModal = false;
@@ -37,6 +42,7 @@ class InvoiceShow extends Component
 
         $this->companyName = Setting::get('company_name', velocrm_company_name());
         $this->companyAddress = Setting::get('company_address', '');
+        $this->publicShareUrl = $this->invoice->publicShareUrl();
 
         $this->paymentDate = date('Y-m-d');
         $this->paymentAmount = $this->invoice->balance_due;
@@ -45,6 +51,15 @@ class InvoiceShow extends Component
     private function loadInvoice(int $invoiceId)
     {
         $this->invoice = Invoice::with(['customer', 'items', 'payments'])->findOrFail($invoiceId);
+    }
+
+    public function setTab(string $tab): void
+    {
+        if (! in_array($tab, ['overview', 'activity'], true)) {
+            return;
+        }
+
+        $this->activeTab = $tab;
     }
 
     public function recordPayment()
@@ -80,7 +95,16 @@ class InvoiceShow extends Component
 
     public function render()
     {
-        return view('livewire.invoices.invoice-show')
+        $activities = Activity::where('subject_type', Invoice::class)
+            ->where('subject_id', $this->invoice->id)
+            ->with('causer')
+            ->latest()
+            ->take(20)
+            ->get();
+
+        return view('livewire.invoices.invoice-show', [
+            'activities' => $activities,
+        ])
             ->title(__('Invoice :number', ['number' => $this->invoice->number]));
     }
 }

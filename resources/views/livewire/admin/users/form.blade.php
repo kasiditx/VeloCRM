@@ -29,9 +29,23 @@
                     <select wire:model="role" class="field-control">
                         <option value="Admin">{{ __('Admin') }}</option>
                         <option value="Staff">{{ __('Staff') }}</option>
+                        <option value="Customer">{{ __('Customer') }}</option>
                     </select>
                     @error('role') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
+                @if ($role === 'Customer')
+                    <div>
+                        <label class="field-label">{{ __('Linked Customer') }}</label>
+                        <select wire:model="customer_id" class="field-control">
+                            <option value="">{{ __('Select customer') }}</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->name }} @if($customer->email) — {{ $customer->email }} @endif</option>
+                            @endforeach
+                        </select>
+                        <p class="field-hint">{{ __('Customer portal users can only see documents linked to this customer.') }}</p>
+                        @error('customer_id') <p class="field-error">{{ $message }}</p> @enderror
+                    </div>
+                @endif
                 <div>
                     <label class="field-label">{{ __('Status') }}</label>
                     <select wire:model="is_active" class="field-control">

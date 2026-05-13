@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Leads;
 
+use App\Livewire\Concerns\HandlesCustomFields;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -11,7 +12,7 @@ use Livewire\Component;
 
 class LeadForm extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, HandlesCustomFields;
 
     public ?int $leadId = null;
 
@@ -71,15 +72,19 @@ class LeadForm extends Component
             $this->value = (string) $this->lead->value;
             $this->notes = $this->lead->notes ?? '';
             $this->assigned_to = $this->lead->user_id;
+            $this->loadCustomFields(Lead::class, $this->lead);
         } else {
             $this->authorize('create', Lead::class);
             $this->assigned_to = auth()->id();
+            $this->loadCustomFields(Lead::class);
         }
     }
 
     public function save(): void
     {
-        $data = $this->validate();
+        $data = $this->validate($this->rules() + $this->customFieldRules());
+        $customFieldValues = $data['customFieldValues'] ?? [];
+        unset($data['customFieldValues']);
 
         $data['value'] = (float) $data['value'];
         $ownerId = auth()->user()->hasRole('Admin')
@@ -91,6 +96,7 @@ class LeadForm extends Component
             $this->authorize('update', $this->lead);
             $this->lead->user_id = $ownerId;
             $this->lead->update($data);
+            $this->lead->syncCustomFieldValues($customFieldValues);
             session()->flash('success', 'Lead updated successfully.');
             $this->redirect(route('leads.show', $this->leadId), navigate: true);
         } else {
@@ -98,6 +104,7 @@ class LeadForm extends Component
             $lead = new Lead($data);
             $lead->user_id = $ownerId;
             $lead->save();
+            $lead->syncCustomFieldValues($customFieldValues);
             session()->flash('success', 'Lead created successfully.');
             $this->redirect(route('leads.show', $lead->id), navigate: true);
         }

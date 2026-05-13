@@ -43,4 +43,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function forCustomer(int $customerId): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'customer_id' => $customerId,
+        ]);
+    }
 }

@@ -17,9 +17,23 @@ class Payment extends Model
         'amount',
         'payment_date',
         'payment_method',
+        'gateway',
+        'status',
         'transaction_id',
+        'external_reference',
         'notes',
+        'raw_payload',
+        'verified_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'payment_date' => 'date',
+            'raw_payload' => 'array',
+            'verified_at' => 'datetime',
+        ];
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

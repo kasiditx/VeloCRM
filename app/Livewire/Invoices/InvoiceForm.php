@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Invoices;
 
+use App\Livewire\Concerns\HandlesCustomFields;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Setting;
 use App\Models\TaxTemplate;
 use App\Notifications\InvoiceSentNotification;
 use App\Support\SafeNotifier;
@@ -16,7 +18,7 @@ use Livewire\Component;
 
 class InvoiceForm extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, HandlesCustomFields;
 
     public $invoiceId;
 
@@ -29,6 +31,10 @@ class InvoiceForm extends Component
     public $due_date;
 
     public $status = 'Draft';
+
+    public string $currency = 'USD';
+
+    public $exchange_rate = 1;
 
     public $items = [];
 
@@ -56,6 +62,8 @@ class InvoiceForm extends Component
         'invoice_date' => 'required|date',
         'due_date' => 'required|date|after_or_equal:invoice_date',
         'status' => 'required|in:Draft,Sent,Partially Paid,Paid,Overdue,Cancelled',
+        'currency' => 'required|string|size:3',
+        'exchange_rate' => 'required|numeric|min:0.000001|max:999999.999999',
         'items.*.description' => 'required',
         'items.*.quantity' => 'required|numeric|min:1',
         'items.*.unit_price' => 'required|numeric|min:0',
@@ -78,6 +86,8 @@ class InvoiceForm extends Component
             $this->invoice_date = $invoice->invoice_date;
             $this->due_date = $invoice->due_date;
             $this->status = $invoice->status;
+            $this->currency = (string) ($invoice->currency ?: velocrm_currency_code());
+            $this->exchange_rate = $invoice->exchange_rate ?: 1;
             $this->discount = $invoice->discount;
             $this->notes = $invoice->notes;
             $this->is_recurring = $invoice->is_recurring;
@@ -86,6 +96,7 @@ class InvoiceForm extends Component
             $this->items = $invoice->items
                 ->map(fn (InvoiceItem $item) => $this->normalizeItem($item->toArray()))
                 ->toArray();
+            $this->loadCustomFields(Invoice::class, $invoice);
         } else {
             $this->authorize('create', Invoice::class);
 
@@ -93,7 +104,10 @@ class InvoiceForm extends Component
             $this->invoice_date = now()->format('Y-m-d');
             $this->due_date = now()->addDays(30)->format('Y-m-d');
             $this->status = 'Draft';
+            $this->currency = strtoupper((string) Setting::get('default_currency', Setting::get('currency_code', 'USD')));
+            $this->exchange_rate = 1;
             $this->items = [$this->newItem()];
+            $this->loadCustomFields(Invoice::class);
         }
         $this->calculateTotals();
     }
@@ -196,7 +210,9 @@ class InvoiceForm extends Component
             $rules['next_recurring_date'] = 'required|date|after_or_equal:invoice_date';
         }
 
-        $this->validate($rules);
+        $validated = $this->validate($rules + $this->customFieldRules());
+        $customFieldValues = $validated['customFieldValues'] ?? [];
+        $this->currency = strtoupper($this->currency);
 
         $previousStatus = null;
         $invoice = $this->invoiceId ? Invoice::find($this->invoiceId) : new Invoice;
@@ -210,9 +226,13 @@ class InvoiceForm extends Component
         $invoice->fill([
             'number' => $this->number,
             'customer_id' => $this->customer_id,
+            'tax_id' => $this->invoiceTaxId($invoice),
+            'branch' => $this->invoiceBranch($invoice),
             'invoice_date' => $this->invoice_date,
             'due_date' => $this->due_date,
             'status' => $this->status,
+            'currency' => $this->currency,
+            'exchange_rate' => $this->toNumber($this->exchange_rate) ?: 1,
             'subtotal' => $this->subtotal,
             'tax_total' => $this->tax_total,
             'discount' => $this->discount,
@@ -230,6 +250,7 @@ class InvoiceForm extends Component
         }
 
         $invoice->save();
+        $invoice->syncCustomFieldValues($customFieldValues);
 
         $invoice->items()->delete();
         foreach ($this->items as $item) {
@@ -260,6 +281,28 @@ class InvoiceForm extends Component
         return view('livewire.invoices.invoice-form', [
             'customers' => Customer::all(),
             'taxTemplates' => TaxTemplate::all(),
+            'currencyOptions' => ['THB', 'USD', 'EUR', 'GBP', 'JPY', 'SGD', 'AUD', 'CAD', 'HKD'],
         ]);
+    }
+
+    private function invoiceTaxId(Invoice $invoice): ?string
+    {
+        return $this->shouldRefreshTaxSnapshot($invoice)
+            ? Customer::find($this->customer_id)?->tax_id
+            : $invoice->tax_id;
+    }
+
+    private function invoiceBranch(Invoice $invoice): ?string
+    {
+        return $this->shouldRefreshTaxSnapshot($invoice)
+            ? Customer::find($this->customer_id)?->branch
+            : $invoice->branch;
+    }
+
+    private function shouldRefreshTaxSnapshot(Invoice $invoice): bool
+    {
+        return ! $invoice->exists
+            || (int) $invoice->customer_id !== (int) $this->customer_id
+            || ($invoice->tax_id === null && $invoice->branch === null);
     }
 }

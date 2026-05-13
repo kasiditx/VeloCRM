@@ -16,6 +16,8 @@ class CustomerShow extends Component
 
     public Customer $customer;
 
+    public string $activeTab = 'overview';
+
     public function mount(int $customerId): void
     {
         $this->customer = Customer::with(['lead', 'user', 'invoices', 'proposals'])->findOrFail($customerId);
@@ -31,10 +33,20 @@ class CustomerShow extends Component
         $this->redirect(route('customers.index'), navigate: true);
     }
 
+    public function setTab(string $tab): void
+    {
+        if (! in_array($tab, ['overview', 'activity'], true)) {
+            return;
+        }
+
+        $this->activeTab = $tab;
+    }
+
     public function render()
     {
         $activities = Activity::where('subject_type', Customer::class)
             ->where('subject_id', $this->customer->id)
+            ->with('causer')
             ->latest()
             ->take(20)
             ->get();

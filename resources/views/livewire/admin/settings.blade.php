@@ -23,7 +23,7 @@
             <div class="module-header">
                 <div>
                     <h1 class="module-title">{{ __('Settings') }}</h1>
-                    <p class="module-subtitle">{{ __('Configure company profile, branding, email delivery, regional formats, exports, and system health.') }}</p>
+                    <p class="module-subtitle">{{ __('Configure company profile, branding, email delivery, regional formats, API access, exports, and system health.') }}</p>
                 </div>
             </div>
 
@@ -37,7 +37,9 @@
                             ['tab' => 'branding', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z', 'label' => __('Branding')],
                             ['tab' => 'smtp',     'icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'label' => 'SMTP'],
                             ['tab' => 'regional', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'label' => __('Regional')],
+                            ['tab' => 'payments', 'icon' => 'M3 10h18M7 15h.01M11 15h2M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z', 'label' => __('Payment Gateways')],
                             ['tab' => 'templates', 'icon' => 'M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z', 'label' => __('Email Templates')],
+                            ['tab' => 'api',       'icon' => 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z', 'label' => __('API Tokens')],
                             ['tab' => 'exports',  'icon' => 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', 'label' => __('Data Export')],
                             ['tab' => 'health',   'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'label' => __('Health Check')],
                         ] as $item)
@@ -230,6 +232,92 @@
                             </form>
                         </div>
 
+                        {{-- Payment Gateways --}}
+                        <div class="{{ $activeTab === 'payments' ? 'block' : 'hidden' }}">
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Payment Gateways') }}</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Choose how customers pay invoices from portal and public share links.') }}</p>
+                            </div>
+
+                            <form wire:submit.prevent="savePaymentGateways" class="space-y-6">
+                                <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Active Gateway') }}</label>
+                                        <select wire:model="payment_driver" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                            @foreach($paymentGateways as $key => $label)
+                                                <option value="{{ $key }}">{{ $label }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('payment_driver') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Mode') }}</label>
+                                        <select wire:model="payment_mode" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                            <option value="test">{{ __('Test') }}</option>
+                                            <option value="live">{{ __('Live') }}</option>
+                                        </select>
+                                        @error('payment_mode') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('Payment Currency') }}</label>
+                                        <input type="text" wire:model="payment_currency" maxlength="3" placeholder="THB" class="w-full rounded-lg border-gray-300 uppercase dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                                        @error('payment_currency') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
+                                <div class="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/50">
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ __('Manual / Bank Transfer') }}</h4>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Shown to customers when Manual is selected. Use this for bank account or PromptPay instructions.') }}</p>
+                                    <textarea wire:model="payment_bank_transfer_instructions" rows="4" class="mt-3 w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="{{ __('Bank name, account number, account holder, and payment confirmation instructions') }}"></textarea>
+                                    @error('payment_bank_transfer_instructions') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                                    <div class="rounded-2xl border border-gray-200 p-5 dark:border-gray-800">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">Stripe</h4>
+                                        <div class="mt-4 space-y-3">
+                                            <input type="text" wire:model="payment_stripe_public_key" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Public key">
+                                            <input type="password" wire:model="payment_stripe_secret_key" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Secret key">
+                                            <input type="password" wire:model="payment_stripe_webhook_secret" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Webhook HMAC secret">
+                                        </div>
+                                        @error('payment_stripe_public_key') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        @error('payment_stripe_secret_key') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        @error('payment_stripe_webhook_secret') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <div class="rounded-2xl border border-gray-200 p-5 dark:border-gray-800">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">PayPal</h4>
+                                        <div class="mt-4 space-y-3">
+                                            <input type="url" wire:model="payment_paypal_checkout_url" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Hosted checkout URL">
+                                            <input type="password" wire:model="payment_paypal_webhook_secret" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Webhook HMAC secret">
+                                        </div>
+                                        @error('payment_paypal_checkout_url') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        @error('payment_paypal_webhook_secret') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <div class="rounded-2xl border border-gray-200 p-5 dark:border-gray-800">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">Omise</h4>
+                                        <div class="mt-4 space-y-3">
+                                            <input type="url" wire:model="payment_omise_checkout_url" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Hosted checkout URL">
+                                            <input type="password" wire:model="payment_omise_webhook_secret" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Webhook HMAC secret">
+                                        </div>
+                                        @error('payment_omise_checkout_url') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        @error('payment_omise_webhook_secret') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
+                                </div>
+
+                                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
+                                    {{ __('Webhook verification uses the X-VeloCRM-Signature header with HMAC-SHA256 over the raw request body. Keep webhook secrets private.') }}
+                                </div>
+
+                                <div class="pt-2">
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="savePaymentGateways" class="action-button action-button-primary">
+                                        <x-ui.loading-label target="savePaymentGateways" :label="__('Save Payment Settings')" :loading="__('Saving...')" />
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
                         {{-- Email Templates --}}
                         <div class="{{ $activeTab === 'templates' ? 'block' : 'hidden' }}">
                             <div class="flex items-center justify-between mb-6">
@@ -278,6 +366,49 @@
                                     @endforelse
                                 </div>
                             @endif
+                        </div>
+
+                        {{-- API Tokens --}}
+                        <div class="{{ $activeTab === 'api' ? 'block' : 'hidden' }}">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">{{ __('API Tokens') }}</h3>
+
+                            @if($newApiToken)
+                                <div class="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/40">
+                                    <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ __('Copy this token now. It will not be shown again.') }}</p>
+                                    <input type="text" readonly value="{{ $newApiToken }}" class="mt-3 w-full rounded-lg border-amber-300 bg-white font-mono text-xs text-gray-900 shadow-sm dark:border-amber-800 dark:bg-gray-950 dark:text-gray-100">
+                                </div>
+                            @endif
+
+                            <form wire:submit.prevent="createApiToken" class="mb-6 flex flex-col gap-3 sm:flex-row">
+                                <div class="min-w-0 flex-1">
+                                    <label class="sr-only" for="api_token_name">{{ __('Token Name') }}</label>
+                                    <input id="api_token_name" type="text" wire:model="api_token_name" placeholder="{{ __('Token Name') }}" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm">
+                                    @error('api_token_name') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                </div>
+                                <button type="submit" wire:loading.attr="disabled" wire:target="createApiToken" class="action-button action-button-primary">
+                                    <x-ui.loading-label target="createApiToken" :label="__('Create Token')" :loading="__('Creating...')" />
+                                </button>
+                            </form>
+
+                            <div class="space-y-3">
+                                @forelse($apiTokens as $token)
+                                    <div class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex-row sm:items-center sm:justify-between">
+                                        <div class="min-w-0">
+                                            <h4 class="truncate font-medium text-gray-900 dark:text-gray-100">{{ $token['name'] }}</h4>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                                {{ __('Created') }}: {{ $token['created_at'] ?? '-' }} · {{ __('Last used') }}: {{ $token['last_used_at'] ?? '-' }}
+                                            </p>
+                                        </div>
+                                        <button type="button" wire:click="revokeApiToken({{ $token['id'] }})" wire:loading.attr="disabled" wire:target="revokeApiToken({{ $token['id'] }})" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700">
+                                            {{ __('Revoke') }}
+                                        </button>
+                                    </div>
+                                @empty
+                                    <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center dark:border-gray-700 dark:bg-gray-800">
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('No API tokens found.') }}</p>
+                                    </div>
+                                @endforelse
+                            </div>
                         </div>
 
                         {{-- Data Exports --}}

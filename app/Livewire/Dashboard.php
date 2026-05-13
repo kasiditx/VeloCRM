@@ -44,7 +44,7 @@ class Dashboard extends Component
             ->each(function (Collection $group, string $monthKey) use ($months): void {
                 if ($months->has($monthKey)) {
                     $month = $months->get($monthKey);
-                    $month['total'] = (float) $group->sum('total');
+                    $month['total'] = (float) $group->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->total));
                     $months->put($monthKey, $month);
                 }
             });
@@ -71,9 +71,13 @@ class Dashboard extends Component
     {
         $totalLeads = Lead::count();
         $totalCustomers = Customer::count();
-        $totalRevenue = Invoice::where('status', 'Paid')->sum('total');
+        $totalRevenue = Invoice::where('status', 'Paid')
+            ->get()
+            ->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->total));
         $pendingInvoices = Invoice::whereIn('status', ['Draft', 'Sent', 'Overdue'])->count();
-        $pendingInvoiceBalance = Invoice::whereIn('status', ['Draft', 'Sent', 'Overdue'])->sum('balance_due');
+        $pendingInvoiceBalance = Invoice::whereIn('status', ['Draft', 'Sent', 'Overdue'])
+            ->get()
+            ->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->balance_due));
         $totalProposals = Proposal::count();
         $convertedLeads = Customer::whereNotNull('lead_id')->count();
         $conversionRate = $totalLeads > 0 ? ($convertedLeads / $totalLeads) * 100 : 0;
@@ -106,7 +110,7 @@ class Dashboard extends Component
 
                 return $invoice;
             });
-        $overdueInvoiceTotal = $overdueInvoices->sum('balance_due');
+        $overdueInvoiceTotal = $overdueInvoices->sum(fn (Invoice $invoice): float => $invoice->baseAmount($invoice->balance_due));
         $todayLabel = now()->locale(app()->getLocale())->translatedFormat('l, j F Y');
         $staleLeads = Lead::query()
             ->whereIn('status', ['New', 'Contacted'])

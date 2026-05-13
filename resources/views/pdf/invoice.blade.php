@@ -158,6 +158,7 @@
                     <div><span class="muted">เลขที่:</span> <span class="strong">{{ $invoice->number }}</span></div>
                     <div><span class="muted">วันที่:</span> {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}</div>
                     <div><span class="muted">กำหนดชำระ:</span> {{ \Carbon\Carbon::parse($invoice->due_date)->format('d/m/Y') }}</div>
+                    <div><span class="muted">สกุลเงิน:</span> {{ $invoice->currency ?? velocrm_currency_code() }}</div>
                 </td>
             </tr>
         </table>
@@ -172,6 +173,12 @@
                     @endif
                     @if($invoice->customer?->address)
                         <div class="muted">{{ $invoice->customer->address }}</div>
+                    @endif
+                    @if($invoice->tax_id)
+                        <div class="muted">เลขประจำตัวผู้เสียภาษี: {{ $invoice->tax_id }}</div>
+                    @endif
+                    @if($invoice->branch)
+                        <div class="muted">สาขา: {{ $invoice->branch }}</div>
                     @endif
                 </td>
                 <td class="text-right">
@@ -201,8 +208,8 @@
                 <tr>
                     <td>{{ $item->description }}</td>
                     <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
-                    <td style="text-align: right;">{{ number_format($item->unit_price, 2) }}</td>
-                    <td style="text-align: right;">{{ number_format($item->amount, 2) }}</td>
+                    <td style="text-align: right;">{{ $invoice->money($item->unit_price) }}</td>
+                    <td style="text-align: right;">{{ $invoice->money($item->amount) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -212,30 +219,30 @@
             <table class="totals-table">
                 <tr>
                     <td>มูลค่าพื้นฐาน (Subtotal):</td>
-                    <td class="text-right">{{ number_format($invoice->subtotal, 2) }}</td>
+                    <td class="text-right">{{ $invoice->money($invoice->subtotal) }}</td>
                 </tr>
                 <tr>
                     <td>ภาษี (Tax):</td>
-                    <td class="text-right">{{ number_format($invoice->tax_total, 2) }}</td>
+                    <td class="text-right">{{ $invoice->money($invoice->tax_total) }}</td>
                 </tr>
                 @if($invoice->discount > 0)
                     <tr>
                         <td>ส่วนลด (Discount):</td>
-                        <td class="text-right">{{ number_format($invoice->discount, 2) }}</td>
+                        <td class="text-right">{{ $invoice->money($invoice->discount) }}</td>
                     </tr>
                 @endif
                 <tr class="grand-total">
                     <td>ยอดรวมสุทธิ (Total):</td>
-                    <td class="text-right">{{ number_format($invoice->total, 2) }}</td>
+                    <td class="text-right">{{ $invoice->money($invoice->total) }}</td>
                 </tr>
                 @if($invoice->amount_paid > 0)
                     <tr>
                         <td>ชำระแล้ว (Paid):</td>
-                        <td class="text-right">{{ number_format($invoice->amount_paid, 2) }}</td>
+                        <td class="text-right">{{ $invoice->money($invoice->amount_paid) }}</td>
                     </tr>
                     <tr class="balance-due">
                         <td>ยอดค้างชำระ (Balance):</td>
-                        <td class="text-right">{{ number_format($invoice->balance_due, 2) }}</td>
+                        <td class="text-right">{{ $invoice->money($invoice->balance_due) }}</td>
                     </tr>
                 @endif
             </table>

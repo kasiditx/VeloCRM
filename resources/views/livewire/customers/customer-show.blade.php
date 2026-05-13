@@ -15,6 +15,23 @@
             </div>
         </div>
 
+        <div class="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-800">
+            @foreach([['key' => 'overview', 'label' => __('Overview')], ['key' => 'activity', 'label' => __('Activity')]] as $tab)
+                <button type="button" wire:click="setTab('{{ $tab['key'] }}')" class="-mb-px border-b-2 px-3 py-2 text-sm font-semibold transition {{ $activeTab === $tab['key'] ? 'border-primary-600 text-primary-700 dark:border-primary-400 dark:text-primary-300' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100' }}">
+                    {{ $tab['label'] }}
+                </button>
+            @endforeach
+        </div>
+
+        @if($activeTab === 'activity')
+            <div class="detail-card overflow-hidden p-0">
+                <div class="border-b border-gray-100 p-5 dark:border-gray-800">
+                    <h2 class="detail-card-title">{{ __('Activity') }}</h2>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Changes recorded for this customer.') }}</p>
+                </div>
+                <x-activity.timeline :activities="$activities" />
+            </div>
+        @else
         <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <div class="space-y-6">
                 <div class="detail-card">
@@ -39,6 +56,14 @@
                         <div>
                             <dt class="detail-label">{{ __('Owner') }}</dt>
                             <dd class="detail-value">{{ $customer->user?->name ?? __('Unassigned') }}</dd>
+                        </div>
+                        <div>
+                            <dt class="detail-label">{{ __('Tax ID') }}</dt>
+                            <dd class="detail-value">{{ $customer->tax_id ?: __('Not provided') }}</dd>
+                        </div>
+                        <div>
+                            <dt class="detail-label">{{ __('Branch') }}</dt>
+                            <dd class="detail-value">{{ $customer->branch ?: __('Not provided') }}</dd>
                         </div>
                         <div>
                             <dt class="detail-label">{{ __('Created') }}</dt>
@@ -67,7 +92,7 @@
                                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ format_date($invoice->invoice_date) }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ format_currency($invoice->total) }}</p>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $invoice->money($invoice->total) }}</p>
                                     <x-ui.status-chip :status="$invoice->status">{{ __($invoice->status) }}</x-ui.status-chip>
                                 </div>
                             </div>
@@ -120,25 +145,6 @@
 
             <div class="space-y-6">
                 <div class="detail-card">
-                    <h2 class="detail-card-title">{{ __('Activity Timeline') }}</h2>
-                    <div class="mt-4 space-y-4">
-                        @forelse ($activities as $activity)
-                            <div class="timeline-item">
-                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $activity->description ?: __('Record updated') }}</p>
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $activity->created_at?->diffForHumans() }}</p>
-                            </div>
-                        @empty
-                            <x-ui.empty-state
-                                icon="report"
-                                :title="__('No activity recorded yet.')"
-                                :message="__('New notes, tasks, invoices, and proposal changes will appear in this timeline.')"
-                                size="compact"
-                            />
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="detail-card">
                     <h2 class="detail-card-title">{{ __('Related Tasks') }}</h2>
                     <div class="mt-4 space-y-3">
                         @forelse ($tasks as $task)
@@ -171,5 +177,6 @@
                 />
             </div>
         </div>
+        @endif
     </div>
 </div>

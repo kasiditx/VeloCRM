@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'demo_mode' => env('VELOCRM_DEMO_MODE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

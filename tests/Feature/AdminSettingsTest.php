@@ -119,4 +119,24 @@ class AdminSettingsTest extends TestCase
             ->call('setTab', 'invalid')
             ->assertSet('activeTab', 'smtp');
     }
+
+    public function test_admin_can_create_and_revoke_api_token(): void
+    {
+        $component = Livewire::test(Settings::class)
+            ->call('setTab', 'api')
+            ->set('api_token_name', 'Integration token')
+            ->call('createApiToken')
+            ->assertHasNoErrors()
+            ->assertSet('api_token_name', '');
+
+        $token = auth()->user()->tokens()->firstOrFail();
+
+        $this->assertSame('Integration token', $token->name);
+        $this->assertNotNull($component->get('newApiToken'));
+
+        $component->call('revokeApiToken', $token->id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $token->id]);
+    }
 }

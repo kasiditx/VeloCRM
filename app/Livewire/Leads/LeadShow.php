@@ -19,6 +19,8 @@ class LeadShow extends Component
 
     public bool $showConvertModal = false;
 
+    public string $activeTab = 'overview';
+
     // Convert-to-customer fields
     public string $customerName = '';
 
@@ -46,6 +48,15 @@ class LeadShow extends Component
         $this->customerPhone = $this->lead->phone ?? '';
         $this->customerCompany = $this->lead->company ?? '';
         $this->showConvertModal = true;
+    }
+
+    public function setTab(string $tab): void
+    {
+        if (! in_array($tab, ['overview', 'activity'], true)) {
+            return;
+        }
+
+        $this->activeTab = $tab;
     }
 
     public function convertToCustomer(): void
@@ -98,6 +109,7 @@ class LeadShow extends Component
     {
         $activities = Activity::where('subject_type', Lead::class)
             ->where('subject_id', $this->lead->id)
+            ->with('causer')
             ->latest()
             ->take(20)
             ->get();

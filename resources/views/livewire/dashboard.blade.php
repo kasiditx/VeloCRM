@@ -262,7 +262,7 @@
                                         <p class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $invoice->number }}</p>
                                         <p class="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">{{ $invoice->customer?->name ?? __('Unknown customer') }} / {{ format_date($invoice->due_date) }}</p>
                                     </div>
-                                    <p class="shrink-0 text-sm font-bold text-rose-600 dark:text-rose-400">{{ format_currency($invoice->balance_due) }}</p>
+                                    <p class="shrink-0 text-sm font-bold text-rose-600 dark:text-rose-400">{{ $invoice->money($invoice->balance_due) }}</p>
                                 </div>
                             </a>
                         @empty

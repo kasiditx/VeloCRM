@@ -53,6 +53,24 @@
                         @error('status') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
 
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="field-label">{{ __('Invoice Currency') }}</label>
+                            <select wire:model.live="currency" class="field-control">
+                                @foreach($currencyOptions as $code)
+                                    <option value="{{ $code }}">{{ $code }}</option>
+                                @endforeach
+                            </select>
+                            @error('currency') <p class="field-error">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="field-label">{{ __('Exchange Rate') }}</label>
+                            <input type="number" step="0.000001" min="0.000001" wire:model="exchange_rate" class="field-control">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Base currency conversion rate for dashboard and reports.') }}</p>
+                            @error('exchange_rate') <p class="field-error">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
                     <div>
                         <label class="flex items-center gap-3">
                             <input type="checkbox" wire:model.live="is_recurring" class="rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-950">
@@ -92,6 +110,8 @@
                 </div>
             </div>
 
+            <x-custom-fields.form-fields :fields="$customFields" />
+
             {{-- Items Table --}}
             <div class="border-t border-gray-200 dark:border-gray-800 pt-6">
                 <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Invoice Items') }}</h3>
@@ -119,7 +139,7 @@
                                         <input type="number" wire:model.live="items.{{ $index }}.unit_price" step="0.01" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 text-sm">
                                     </td>
                                     <td class="px-4 py-3 text-right text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {{ format_currency($item['amount']) }}
+                                        {{ velocrm_money($item['amount'], $currency) }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <button type="button" wire:click="removeItem({{ $index }})" wire:loading.attr="disabled" wire:target="removeItem({{ $index }})" class="p-1 text-gray-400 hover:text-rose-600 transition-colors rounded-lg hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-45 dark:hover:bg-rose-900/30">
@@ -145,7 +165,7 @@
                 <div class="w-72 space-y-3">
                     <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
                         <span>{{ __('Subtotal') }}</span>
-                        <span class="font-medium">{{ format_currency($subtotal) }}</span>
+                        <span class="font-medium">{{ velocrm_money($subtotal, $currency) }}</span>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-600 dark:text-gray-300">
                         <span>{{ __('Tax') }}</span>
@@ -158,11 +178,11 @@
                     </div>
                     <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
                         <span>{{ __('Tax Amount') }}</span>
-                        <span class="font-medium">{{ format_currency($tax_total) }}</span>
+                        <span class="font-medium">{{ velocrm_money($tax_total, $currency) }}</span>
                     </div>
                     <div class="flex justify-between text-lg font-bold text-gray-900 dark:text-gray-100 border-t border-gray-200 dark:border-gray-800 pt-3">
                         <span>{{ __('Total') }}</span>
-                        <span>{{ format_currency($total) }}</span>
+                        <span>{{ velocrm_money($total, $currency) }}</span>
                     </div>
                 </div>
             </div>

@@ -15,6 +15,20 @@ class InvoiceController extends Controller
     {
         Gate::authorize('view', $invoice);
 
+        return $this->streamPdf($invoice);
+    }
+
+    public function generatePublicPdf(string $token)
+    {
+        $invoice = Invoice::withoutGlobalScopes()
+            ->where('public_token', $token)
+            ->firstOrFail();
+
+        return $this->streamPdf($invoice);
+    }
+
+    protected function streamPdf(Invoice $invoice)
+    {
         // Use logo from admin settings (uploads disk), fallback to default
         $logoSetting = Setting::get('logo');
         $logoBase64 = null;

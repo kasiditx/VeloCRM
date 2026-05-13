@@ -31,7 +31,7 @@ class InvoiceOverdueNotification extends Notification
             ->line('Invoice Number: '.$this->invoice->number)
             ->line('Customer: '.($this->invoice->customer?->name ?? 'Unknown customer'))
             ->line('Due Date: '.$this->invoice->due_date)
-            ->line('Balance Due: '.number_format((float) $this->invoice->balance_due, 2))
+            ->line('Balance Due: '.$this->invoice->money($this->invoice->balance_due))
             ->line('Please follow up with the customer.');
     }
 }

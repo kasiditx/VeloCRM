@@ -103,7 +103,7 @@
                                         class="block rounded-lg bg-emerald-50 px-2 py-1.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/10 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-200 dark:ring-emerald-500/20"
                                         title="{{ __('Open invoice') }}: {{ $invoice->number }}">
                                         <span class="block truncate">{{ $invoice->number }}</span>
-                                        <span class="mt-0.5 block truncate text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">{{ $invoice->customer?->name ?? __('Unknown customer') }} · {{ format_currency($invoice->balance_due ?? $invoice->total) }}</span>
+                                        <span class="mt-0.5 block truncate text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">{{ $invoice->customer?->name ?? __('Unknown customer') }} · {{ $invoice->money($invoice->balance_due ?? $invoice->total) }}</span>
                                     </a>
                                 @endforeach
 
@@ -153,7 +153,7 @@
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="flex items-start gap-3 rounded-lg bg-emerald-50 p-3 text-emerald-900 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-100">
                                     <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500"></span>
                                     <span class="min-w-0">
-                                        <span class="block truncate text-sm font-semibold">{{ $invoice->number }} · {{ format_currency($invoice->balance_due ?? $invoice->total) }}</span>
+                                        <span class="block truncate text-sm font-semibold">{{ $invoice->number }} · {{ $invoice->money($invoice->balance_due ?? $invoice->total) }}</span>
                                         <span class="mt-0.5 block text-xs text-emerald-700 dark:text-emerald-300">{{ __('Invoice due') }} · {{ $invoice->customer?->name ?? __('Unknown customer') }}</span>
                                     </span>
                                 </a>

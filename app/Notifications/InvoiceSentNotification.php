@@ -30,7 +30,7 @@ class InvoiceSentNotification extends Notification
             ->line('A new invoice has been issued for your account.')
             ->line('Invoice Number: '.$this->invoice->number)
             ->line('Due Date: '.$this->invoice->due_date)
-            ->line('Total: '.number_format((float) $this->invoice->total, 2))
+            ->line('Total: '.$this->invoice->money($this->invoice->total))
             ->line('Please review the invoice and arrange payment by the due date.');
     }
 }

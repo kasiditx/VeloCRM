@@ -19,6 +19,14 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     {{ __('Download PDF') }}
                 </a>
+                <button type="button"
+                    x-data="{ copied: false, link: @js($publicShareUrl) }"
+                    x-on:click="navigator.clipboard.writeText(link).then(() => { copied = true; setTimeout(() => copied = false, 1800) })"
+                    class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    aria-label="{{ __('Copy public share link') }}">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-6 8h8a2 2 0 002-2V8l-6-6H8a2 2 0 00-2 2v4"/></svg>
+                    <span x-text="copied ? @js(__('Copied')) : @js(__('Copy Share Link'))"></span>
+                </button>
                 <x-button.primary-link href="{{ route('invoices.edit', $invoice->id) }}" wire:navigate>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     {{ __('Edit') }}
@@ -32,6 +40,24 @@
                 <p class="text-sm font-medium">{{ session('message') }}</p>
             </div>
         @endif
+
+        <div class="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-800">
+            @foreach([['key' => 'overview', 'label' => __('Overview')], ['key' => 'activity', 'label' => __('Activity')]] as $tab)
+                <button type="button" wire:click="setTab('{{ $tab['key'] }}')" class="-mb-px border-b-2 px-3 py-2 text-sm font-semibold transition {{ $activeTab === $tab['key'] ? 'border-primary-600 text-primary-700 dark:border-primary-400 dark:text-primary-300' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100' }}">
+                    {{ $tab['label'] }}
+                </button>
+            @endforeach
+        </div>
+
+        @if($activeTab === 'activity')
+            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
+                <div class="border-b border-gray-100 p-5 dark:border-gray-800">
+                    <h2 class="text-base font-bold text-gray-900 dark:text-white">{{ __('Activity') }}</h2>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Changes recorded for this invoice.') }}</p>
+                </div>
+                <x-activity.timeline :activities="$activities" />
+            </div>
+        @else
 
         {{-- Invoice Document --}}
         <div class="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
@@ -65,6 +91,12 @@
                             @if ($invoice->customer->address)
                                 <div class="mt-1 text-sm text-gray-500 dark:text-gray-400 whitespace-pre-line">{{ $invoice->customer->address }}</div>
                             @endif
+                            @if ($invoice->tax_id)
+                                <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('Tax ID') }}: {{ $invoice->tax_id }}</div>
+                            @endif
+                            @if ($invoice->branch)
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ __('Branch') }}: {{ $invoice->branch }}</div>
+                            @endif
                         @else
                             <div class="text-sm text-gray-500 italic">{{ __('Deleted Customer') }}</div>
                         @endif
@@ -78,6 +110,10 @@
                             <div class="flex sm:justify-end gap-2">
                                 <span class="font-medium text-gray-500 dark:text-gray-400">{{ __('Due Date:') }}</span>
                                 <span class="text-gray-900 dark:text-white font-semibold">{{ format_date($invoice->due_date) }}</span>
+                            </div>
+                            <div class="flex sm:justify-end gap-2">
+                                <span class="font-medium text-gray-500 dark:text-gray-400">{{ __('Currency:') }}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">{{ $invoice->currency ?? velocrm_currency_code() }}</span>
                             </div>
                             @if ($invoice->is_recurring)
                             <div class="flex sm:justify-end gap-2">
@@ -105,8 +141,8 @@
                                 <tr>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $item->description }}</td>
                                     <td class="px-6 py-4 text-sm text-right text-gray-500 dark:text-gray-400">{{ $item->quantity }}</td>
-                                    <td class="px-6 py-4 text-sm text-right text-gray-500 dark:text-gray-400">{{ format_currency($item->unit_price) }}</td>
-                                    <td class="px-6 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">{{ format_currency($item->amount) }}</td>
+                                    <td class="px-6 py-4 text-sm text-right text-gray-500 dark:text-gray-400">{{ $invoice->money($item->unit_price) }}</td>
+                                    <td class="px-6 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">{{ $invoice->money($item->amount) }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -129,21 +165,21 @@
                     <div class="w-full sm:w-80 space-y-3">
                         <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
                             <span>{{ __('Subtotal') }}</span>
-                            <span class="font-medium">{{ format_currency($invoice->subtotal) }}</span>
+                            <span class="font-medium">{{ $invoice->money($invoice->subtotal) }}</span>
                         </div>
                         @if ($invoice->tax_total > 0)
                         <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
                             <span>{{ __('Tax') }}</span>
-                            <span class="font-medium">{{ format_currency($invoice->tax_total) }}</span>
+                            <span class="font-medium">{{ $invoice->money($invoice->tax_total) }}</span>
                         </div>
                         @endif
                         <div class="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-3 text-lg font-bold text-gray-900 dark:text-white">
                             <span>{{ __('Total') }}</span>
-                            <span>{{ format_currency($invoice->total) }}</span>
+                            <span>{{ $invoice->money($invoice->total) }}</span>
                         </div>
                         <div class="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-3 text-sm font-bold {{ $invoice->balance_due > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">
                             <span>{{ __('Balance Due') }}</span>
-                            <span>{{ format_currency($invoice->balance_due) }}</span>
+                            <span>{{ $invoice->money($invoice->balance_due) }}</span>
                         </div>
                     </div>
                 </div>
@@ -186,7 +222,7 @@
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">{{ format_date($payment->payment_date) }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $payment->payment_method }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $payment->notes }}</td>
-                                        <td class="px-4 py-3 text-sm text-right font-medium text-emerald-600 dark:text-emerald-400">{{ format_currency($payment->amount) }}</td>
+                                        <td class="px-4 py-3 text-sm text-right font-medium text-emerald-600 dark:text-emerald-400">{{ $invoice->money($payment->amount) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -202,6 +238,7 @@
                 @endif
             </div>
         </div>
+        @endif
     </div>
 
     {{-- Payment Modal --}}
@@ -220,7 +257,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ __('Amount') }}</label>
                             <div class="relative">
                                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <span class="text-gray-500 dark:text-gray-400 sm:text-sm">$</span>
+                                    <span class="text-gray-500 dark:text-gray-400 sm:text-sm">{{ velocrm_currency_symbol_for($invoice->currency) }}</span>
                                 </div>
                                 <input type="number" step="0.01" wire:model="paymentAmount" class="block w-full rounded-xl border-gray-300 pl-7 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-white" required>
                             </div>

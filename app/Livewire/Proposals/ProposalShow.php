@@ -17,6 +17,8 @@ class ProposalShow extends Component
 
     public string $companyAddress;
 
+    public string $publicShareUrl = '';
+
     public function mount(int $proposalId)
     {
         $this->proposal = Proposal::with(['customer', 'lead'])->findOrFail($proposalId);
@@ -24,6 +26,7 @@ class ProposalShow extends Component
 
         $this->companyName = Setting::get('company_name', velocrm_company_name());
         $this->companyAddress = Setting::get('company_address', '');
+        $this->publicShareUrl = $this->proposal->publicShareUrl();
     }
 
     public function render()

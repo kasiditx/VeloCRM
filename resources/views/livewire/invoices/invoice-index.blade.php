@@ -73,9 +73,9 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $invoice->customer?->name ?? __('Deleted customer') }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ format_date($invoice->invoice_date) }}</td>
-                                <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-gray-100">{{ format_currency($invoice->total) }}</td>
+                                <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $invoice->money($invoice->total) }}</td>
                                 <td class="px-6 py-4 text-right text-sm font-medium {{ $invoice->balance_due > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-                                    {{ format_currency($invoice->balance_due) }}
+                                    {{ $invoice->money($invoice->balance_due) }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <x-ui.status-chip :status="$invoice->status">{{ __($invoice->status) }}</x-ui.status-chip>
@@ -147,8 +147,8 @@
                         </div>
                         <div class="flex gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
                             <span>{{ __('Date') }}: {{ format_date($invoice->invoice_date) }}</span>
-                            <span>{{ __('Total') }}: <span class="font-semibold text-gray-900 dark:text-gray-100">{{ format_currency($invoice->total) }}</span></span>
-                            <span>{{ __('Due') }}: <span class="font-semibold {{ $invoice->balance_due > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">{{ format_currency($invoice->balance_due) }}</span></span>
+                            <span>{{ __('Total') }}: <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $invoice->money($invoice->total) }}</span></span>
+                            <span>{{ __('Due') }}: <span class="font-semibold {{ $invoice->balance_due > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">{{ $invoice->money($invoice->balance_due) }}</span></span>
                         </div>
                         <div class="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700/50">
                             @if ($showTrashed)

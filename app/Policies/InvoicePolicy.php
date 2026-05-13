@@ -26,6 +26,10 @@ class InvoicePolicy
             return true;
         }
 
+        if ($user->hasRole('Customer')) {
+            return $user->customer_id !== null && $invoice->customer_id === $user->customer_id;
+        }
+
         return $invoice->user_id === $user->id;
     }
 
@@ -34,7 +38,7 @@ class InvoicePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return ! $user->hasRole('Customer');
     }
 
     /**
@@ -44,6 +48,10 @@ class InvoicePolicy
     {
         if ($user->hasRole('Admin')) {
             return true;
+        }
+
+        if ($user->hasRole('Customer')) {
+            return false;
         }
 
         return $invoice->user_id === $user->id;
@@ -58,6 +66,10 @@ class InvoicePolicy
             return true;
         }
 
+        if ($user->hasRole('Customer')) {
+            return false;
+        }
+
         return $invoice->user_id === $user->id;
     }
 
@@ -68,6 +80,10 @@ class InvoicePolicy
     {
         if ($user->hasRole('Admin')) {
             return true;
+        }
+
+        if ($user->hasRole('Customer')) {
+            return false;
         }
 
         return $invoice->user_id === $user->id;

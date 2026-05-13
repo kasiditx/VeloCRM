@@ -25,7 +25,6 @@ class Task extends Model
         'relatable_type',
         'relatable_id',
         'assigned_to',
-        'user_id',
     ];
 
     public function getActivitylogOptions(): LogOptions

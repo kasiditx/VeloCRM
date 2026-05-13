@@ -6,6 +6,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\EmailTemplate;
 use App\Models\Setting;
+use App\Services\Payments\PaymentGatewayManager;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
@@ -71,6 +72,35 @@ class Settings extends Component
 
     public string $date_format = 'd/m/Y';
 
+    // Payment gateways
+    public string $payment_driver = 'manual';
+
+    public string $payment_mode = 'test';
+
+    public string $payment_currency = 'USD';
+
+    public string $payment_bank_transfer_instructions = '';
+
+    public string $payment_stripe_public_key = '';
+
+    public string $payment_stripe_secret_key = '';
+
+    public string $payment_stripe_webhook_secret = '';
+
+    public string $payment_paypal_checkout_url = '';
+
+    public string $payment_paypal_webhook_secret = '';
+
+    public string $payment_omise_checkout_url = '';
+
+    public string $payment_omise_webhook_secret = '';
+
+    public string $api_token_name = '';
+
+    public ?string $newApiToken = null;
+
+    public array $apiTokens = [];
+
     protected $rules = [
         'company_name' => 'required|string|max:255',
         'company_address' => 'nullable|string|max:1000',
@@ -112,7 +142,20 @@ class Settings extends Component
         $this->date_format = (string) Setting::get('date_format', 'd/m/Y');
         $this->envato_purchase_code = (string) Setting::get('envato_purchase_code', '');
 
+        $this->payment_driver = (string) Setting::get('payment_driver', config('payments.default', 'manual'));
+        $this->payment_mode = (string) Setting::get('payment_mode', config('payments.mode', 'test'));
+        $this->payment_currency = (string) Setting::get('payment_currency', $this->currency_code);
+        $this->payment_bank_transfer_instructions = (string) Setting::get('payment_manual_instructions', config('payments.drivers.manual.instructions', ''));
+        $this->payment_stripe_public_key = (string) Setting::get('payment_stripe_public_key', config('payments.drivers.stripe.public_key', ''));
+        $this->payment_stripe_secret_key = (string) Setting::get('payment_stripe_secret_key', '', true);
+        $this->payment_stripe_webhook_secret = (string) Setting::get('payment_stripe_webhook_secret', '', true);
+        $this->payment_paypal_checkout_url = (string) Setting::get('payment_paypal_checkout_url', config('payments.drivers.paypal.checkout_url', ''));
+        $this->payment_paypal_webhook_secret = (string) Setting::get('payment_paypal_webhook_secret', '', true);
+        $this->payment_omise_checkout_url = (string) Setting::get('payment_omise_checkout_url', config('payments.drivers.omise.checkout_url', ''));
+        $this->payment_omise_webhook_secret = (string) Setting::get('payment_omise_webhook_secret', '', true);
+
         $this->loadTemplates();
+        $this->loadApiTokens();
     }
 
     public function loadTemplates(): void
@@ -175,11 +218,57 @@ class Settings extends Component
 
     public function setTab(string $tab): void
     {
-        if (! in_array($tab, ['general', 'branding', 'smtp', 'regional', 'templates', 'exports', 'health'], true)) {
+        if (! in_array($tab, ['general', 'branding', 'smtp', 'regional', 'payments', 'templates', 'api', 'exports', 'health'], true)) {
             return;
         }
 
         $this->activeTab = $tab;
+    }
+
+    public function loadApiTokens(): void
+    {
+        $this->apiTokens = auth()->user()
+            ->tokens()
+            ->latest()
+            ->get(['id', 'name', 'abilities', 'last_used_at', 'created_at'])
+            ->map(fn ($token): array => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'abilities' => $token->abilities,
+                'last_used_at' => $token->last_used_at?->diffForHumans(),
+                'created_at' => $token->created_at?->diffForHumans(),
+            ])
+            ->all();
+    }
+
+    public function createApiToken(): void
+    {
+        $this->validate([
+            'api_token_name' => 'required|string|max:100',
+        ]);
+
+        $token = auth()->user()->createToken($this->api_token_name, ['crm:read', 'crm:write']);
+
+        $this->newApiToken = $token->plainTextToken;
+        $this->api_token_name = '';
+        $this->loadApiTokens();
+
+        session()->flash('success', 'API token created successfully. Copy it now because it will not be shown again.');
+    }
+
+    public function revokeApiToken(int $tokenId): void
+    {
+        auth()->user()
+            ->tokens()
+            ->whereKey($tokenId)
+            ->delete();
+
+        if ($this->newApiToken !== null) {
+            $this->newApiToken = null;
+        }
+
+        $this->loadApiTokens();
+        session()->flash('success', 'API token revoked successfully.');
     }
 
     public function saveGeneral(): void
@@ -294,10 +383,56 @@ class Settings extends Component
         $this->currency_code = strtoupper($this->currency_code);
 
         Setting::set('currency_code', $this->currency_code);
+        Setting::set('default_currency', $this->currency_code);
         Setting::set('currency_symbol', $this->currency_symbol);
         Setting::set('date_format', $this->date_format);
 
         session()->flash('success', 'Regional settings saved successfully.');
+    }
+
+    public function savePaymentGateways(): void
+    {
+        $this->validate([
+            'payment_driver' => 'required|in:manual,stripe,paypal,omise',
+            'payment_mode' => 'required|in:test,live',
+            'payment_currency' => 'required|string|size:3',
+            'payment_bank_transfer_instructions' => 'nullable|string|max:2000',
+            'payment_stripe_public_key' => 'nullable|string|max:255',
+            'payment_stripe_secret_key' => 'nullable|string|max:255',
+            'payment_stripe_webhook_secret' => 'nullable|string|max:255',
+            'payment_paypal_checkout_url' => 'nullable|url|max:500',
+            'payment_paypal_webhook_secret' => 'nullable|string|max:255',
+            'payment_omise_checkout_url' => 'nullable|url|max:500',
+            'payment_omise_webhook_secret' => 'nullable|string|max:255',
+        ]);
+
+        $this->payment_currency = strtoupper($this->payment_currency);
+
+        Setting::set('payment_driver', $this->payment_driver);
+        Setting::set('payment_mode', $this->payment_mode);
+        Setting::set('payment_currency', $this->payment_currency);
+        Setting::set('payment_manual_instructions', $this->payment_bank_transfer_instructions);
+        Setting::set('payment_stripe_public_key', $this->payment_stripe_public_key);
+        Setting::set('payment_paypal_checkout_url', $this->payment_paypal_checkout_url);
+        Setting::set('payment_omise_checkout_url', $this->payment_omise_checkout_url);
+
+        if ($this->payment_stripe_secret_key !== '') {
+            Setting::set('payment_stripe_secret_key', $this->payment_stripe_secret_key, true);
+        }
+
+        if ($this->payment_stripe_webhook_secret !== '') {
+            Setting::set('payment_stripe_webhook_secret', $this->payment_stripe_webhook_secret, true);
+        }
+
+        if ($this->payment_paypal_webhook_secret !== '') {
+            Setting::set('payment_paypal_webhook_secret', $this->payment_paypal_webhook_secret, true);
+        }
+
+        if ($this->payment_omise_webhook_secret !== '') {
+            Setting::set('payment_omise_webhook_secret', $this->payment_omise_webhook_secret, true);
+        }
+
+        session()->flash('success', 'Payment gateway settings saved successfully.');
     }
 
     #[Computed]
@@ -333,6 +468,7 @@ class Settings extends Component
     {
         return view('livewire.admin.settings', [
             'health' => $this->healthStatus,
+            'paymentGateways' => app(PaymentGatewayManager::class)->labels(),
         ])->layout('layouts.app');
     }
 }

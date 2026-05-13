@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCustomFields;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Lead extends Model
 {
-    use BelongsToTenant, LogsActivity, SoftDeletes;
+    use BelongsToTenant, HasCustomFields, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -24,7 +25,6 @@ class Lead extends Model
         'source',
         'value',
         'notes',
-        'user_id',
     ];
 
     public function getActivitylogOptions(): LogOptions

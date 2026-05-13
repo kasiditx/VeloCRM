@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use App\Models\Scopes\TenancyScope;
+use Illuminate\Support\Facades\Schema;
 
 trait BelongsToTenant
 {
@@ -17,7 +18,10 @@ trait BelongsToTenant
 
         static::creating(function ($model) {
             if (auth()->check() && ! auth()->user()->hasRole('Admin')) {
-                if (in_array('user_id', $model->getFillable()) || $model->isFillable('user_id')) {
+                if (
+                    array_key_exists('user_id', $model->getAttributes()) ||
+                    Schema::hasColumn($model->getTable(), 'user_id')
+                ) {
                     $model->user_id = auth()->id();
                 }
             }

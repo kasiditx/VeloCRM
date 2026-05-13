@@ -44,12 +44,24 @@
                     </select>
                     @error('lead_id') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
+                <div>
+                    <label class="field-label">{{ __('Tax ID') }}</label>
+                    <input wire:model="tax_id" type="text" inputmode="numeric" maxlength="13" class="field-control" placeholder="1234567890123">
+                    @error('tax_id') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">{{ __('Branch') }}</label>
+                    <input wire:model="branch" type="text" class="field-control" placeholder="{{ __('Head Office') }}">
+                    @error('branch') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
                 <div class="md:col-span-2">
                     <label class="field-label">{{ __('Address') }}</label>
                     <textarea wire:model="address" rows="5" class="field-control"></textarea>
                     @error('address') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
             </div>
+
+            <x-custom-fields.form-fields :fields="$customFields" />
 
             <div class="form-footer">
                 <x-button.secondary-link href="{{ route('customers.index') }}" wire:navigate>

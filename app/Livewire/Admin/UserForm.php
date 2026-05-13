@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
+use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -24,6 +25,8 @@ class UserForm extends Component
 
     public string $role = 'Staff';
 
+    public ?int $customer_id = null;
+
     public bool $is_active = true;
 
     public function mount(?int $userId = null): void
@@ -38,6 +41,7 @@ class UserForm extends Component
         $this->name = $this->user->name;
         $this->email = $this->user->email;
         $this->role = $this->user->getRoleNames()->first() ?? 'Staff';
+        $this->customer_id = $this->user->customer_id;
         $this->is_active = $this->user->is_active;
     }
 
@@ -47,7 +51,8 @@ class UserForm extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
             'password' => [$this->userId ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', Rule::in(['Admin', 'Staff'])],
+            'role' => ['required', Rule::in(['Admin', 'Staff', 'Customer'])],
+            'customer_id' => ['nullable', Rule::requiredIf($this->role === 'Customer'), 'exists:customers,id'],
             'is_active' => ['required', 'boolean'],
         ];
     }
@@ -85,12 +90,14 @@ class UserForm extends Component
         }
 
         if ($this->userId) {
-            $this->user->update($attributes);
-            $user = $this->user->fresh();
+            $user = $this->user;
+            $user->fill($attributes);
         } else {
-            $user = User::create($attributes);
+            $user = new User($attributes);
         }
 
+        $user->customer_id = $data['role'] === 'Customer' ? $data['customer_id'] : null;
+        $user->save();
         $user->syncRoles([$this->role]);
 
         session()->flash('success', $this->userId ? 'User updated successfully.' : 'User created successfully.');
@@ -100,6 +107,8 @@ class UserForm extends Component
 
     public function render()
     {
-        return view('livewire.admin.users.form')->layout('layouts.app');
+        return view('livewire.admin.users.form', [
+            'customers' => Customer::query()->orderBy('name')->get(),
+        ])->layout('layouts.app');
     }
 }

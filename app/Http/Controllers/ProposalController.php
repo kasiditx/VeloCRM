@@ -15,6 +15,20 @@ class ProposalController extends Controller
     {
         Gate::authorize('view', $proposal);
 
+        return $this->streamPdf($proposal);
+    }
+
+    public function generatePublicPdf(string $token)
+    {
+        $proposal = Proposal::withoutGlobalScopes()
+            ->where('public_token', $token)
+            ->firstOrFail();
+
+        return $this->streamPdf($proposal);
+    }
+
+    protected function streamPdf(Proposal $proposal)
+    {
         // Use logo from admin settings (uploads disk), fallback to default
         $logoSetting = Setting::get('logo');
         $logoBase64 = null;
