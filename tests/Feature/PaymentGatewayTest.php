@@ -45,6 +45,7 @@ class PaymentGatewayTest extends TestCase
             ->set('payment_mode', 'test')
             ->set('payment_currency', 'thb')
             ->set('payment_bank_transfer_instructions', "Bank: Demo Bank\nAccount: 123")
+            ->set('promptpay_id', '0812345678')
             ->set('payment_stripe_public_key', 'pk_test_demo')
             ->set('payment_stripe_secret_key', 'sk_test_demo')
             ->set('payment_stripe_webhook_secret', 'whsec_demo')
@@ -54,6 +55,7 @@ class PaymentGatewayTest extends TestCase
         $this->assertSame('manual', Setting::get('payment_driver'));
         $this->assertSame('THB', Setting::get('payment_currency'));
         $this->assertSame("Bank: Demo Bank\nAccount: 123", Setting::get('payment_manual_instructions'));
+        $this->assertSame('0812345678', Setting::get('promptpay_id'));
         $this->assertSame('sk_test_demo', Setting::get('payment_stripe_secret_key', '', true));
         $this->assertSame('whsec_demo', Setting::get('payment_stripe_webhook_secret', '', true));
     }

@@ -14,6 +14,8 @@ class InvoiceResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'document_type' => $this->document_type,
+            'document_type_label' => $this->documentTypeLabel(),
             'customer_id' => $this->customer_id,
             'tax_id' => $this->tax_id,
             'branch' => $this->branch,
@@ -21,6 +23,7 @@ class InvoiceResource extends JsonResource
             'due_date' => $this->due_date,
             'subtotal' => (float) $this->subtotal,
             'tax_total' => (float) $this->tax_total,
+            'wht_total' => (float) $this->wht_total,
             'discount' => (float) $this->discount,
             'total' => (float) $this->total,
             'amount_paid' => (float) $this->amount_paid,

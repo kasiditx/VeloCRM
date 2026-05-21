@@ -224,6 +224,38 @@
                                     </select>
                                     @error('date_format') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>
+                                <div class="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/50">
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ __('Document Numbering') }}</h4>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Configure prefixes and the next running number for each document type in the current year.') }}</p>
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+                                            <thead>
+                                                <tr>
+                                                    <th class="pb-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Type') }}</th>
+                                                    <th class="pb-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Prefix') }}</th>
+                                                    <th class="pb-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Next No.') }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                                                @foreach($documentTypes as $type => $label)
+                                                    <tr>
+                                                        <td class="py-3 pr-4 text-sm font-medium text-gray-700 dark:text-gray-200">{{ $label }}</td>
+                                                        <td class="py-3 pr-4">
+                                                            <input type="text" wire:model="document_number_prefixes.{{ $type }}" class="w-28 rounded-lg border-gray-300 uppercase shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 text-sm">
+                                                            @error('document_number_prefixes.'.$type) <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                                        </td>
+                                                        <td class="py-3">
+                                                            <input type="number" min="1" max="999999" wire:model="document_number_next.{{ $type }}" class="w-28 rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 text-sm">
+                                                            @error('document_number_next.'.$type) <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="pt-2">
                                     <button type="submit" wire:loading.attr="disabled" wire:target="saveRegional" class="action-button action-button-primary">
                                         <x-ui.loading-label target="saveRegional" :label="__('Save Changes')" :loading="__('Saving...')" />
@@ -270,6 +302,13 @@
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Shown to customers when Manual is selected. Use this for bank account or PromptPay instructions.') }}</p>
                                     <textarea wire:model="payment_bank_transfer_instructions" rows="4" class="mt-3 w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="{{ __('Bank name, account number, account holder, and payment confirmation instructions') }}"></textarea>
                                     @error('payment_bank_transfer_instructions') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+
+                                    <div class="mt-4">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ __('PromptPay ID') }}</label>
+                                        <input type="text" wire:model="promptpay_id" class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-950 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="{{ __('Mobile number, national ID, or corporate tax ID') }}">
+                                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ __('Used to generate PromptPay QR codes for THB invoices with an outstanding balance.') }}</p>
+                                        @error('promptpay_id') <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">

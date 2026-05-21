@@ -119,6 +119,81 @@ if (! function_exists('format_currency')) {
     }
 }
 
+if (! function_exists('velocrm_baht_text')) {
+    function velocrm_baht_text(float|int|string|null $amount): string
+    {
+        $value = $amount === null ? 0.0 : (float) str_replace(',', '', (string) $amount);
+        $value = round(abs($value), 2);
+        $baht = (int) floor($value);
+        $satang = (int) round(($value - $baht) * 100);
+
+        if ($satang === 100) {
+            $baht++;
+            $satang = 0;
+        }
+
+        $bahtText = $baht === 0
+            ? 'ศูนย์บาท'
+            : velocrm_thai_number_text($baht).'บาท';
+
+        if ($satang === 0) {
+            return $bahtText.'ถ้วน';
+        }
+
+        return $bahtText.velocrm_thai_number_text($satang).'สตางค์';
+    }
+}
+
+if (! function_exists('velocrm_thai_number_text')) {
+    function velocrm_thai_number_text(int $number): string
+    {
+        if ($number === 0) {
+            return 'ศูนย์';
+        }
+
+        if ($number >= 1000000) {
+            $millions = intdiv($number, 1000000);
+            $remainder = $number % 1000000;
+
+            return velocrm_thai_number_text($millions).'ล้าน'.($remainder > 0 ? velocrm_thai_number_under_million($remainder) : '');
+        }
+
+        return velocrm_thai_number_under_million($number);
+    }
+}
+
+if (! function_exists('velocrm_thai_number_under_million')) {
+    function velocrm_thai_number_under_million(int $number): string
+    {
+        $digitWords = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+        $positionWords = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน'];
+        $digits = str_split((string) $number);
+        $lastPosition = count($digits) - 1;
+        $text = '';
+
+        foreach ($digits as $index => $digit) {
+            $value = (int) $digit;
+            $position = $lastPosition - $index;
+
+            if ($value === 0) {
+                continue;
+            }
+
+            $text .= match ($position) {
+                0 => $value === 1 && $lastPosition > 0 ? 'เอ็ด' : $digitWords[$value],
+                1 => match ($value) {
+                    1 => 'สิบ',
+                    2 => 'ยี่สิบ',
+                    default => $digitWords[$value].'สิบ',
+                },
+                default => $digitWords[$value].$positionWords[$position],
+            };
+        }
+
+        return $text;
+    }
+}
+
 if (! function_exists('format_date')) {
     function format_date(mixed $value, ?string $format = null): string
     {

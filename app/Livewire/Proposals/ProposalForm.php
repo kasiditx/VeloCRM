@@ -87,7 +87,7 @@ class ProposalForm extends Component
 
         $proposal->save();
 
-        session()->flash('message', 'Proposal saved successfully.');
+        session()->flash('success', 'Proposal saved successfully.');
 
         return redirect()->route('proposals.index');
     }

@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('portal.invoices.index') }}" wire:navigate class="rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">{{ __('Back to invoices') }}</a>
-            <a href="{{ route('portal.invoices.pdf', $invoice->id) }}" target="_blank" class="rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700">{{ __('Download PDF') }}</a>
+            <a href="{{ route('portal.invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank" class="rounded-xl bg-primary-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-700">{{ __('Download PDF') }}</a>
         </div>
     </div>
 
@@ -63,9 +63,12 @@
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Currency') }}</dt><dd class="font-bold">{{ $invoice->currency ?? velocrm_currency_code() }}</dd></div>
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Subtotal') }}</dt><dd class="font-bold">{{ $invoice->money($invoice->subtotal) }}</dd></div>
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Tax') }}</dt><dd class="font-bold">{{ $invoice->money($invoice->tax_total) }}</dd></div>
+                    @if ($invoice->wht_total > 0)
+                        <div class="flex justify-between"><dt class="text-rose-600 dark:text-rose-400">{{ $invoice->withholdingTaxLabel() }}</dt><dd class="font-bold text-rose-600 dark:text-rose-400">-{{ $invoice->money($invoice->wht_total) }}</dd></div>
+                    @endif
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Discount') }}</dt><dd class="font-bold">{{ $invoice->money($invoice->discount) }}</dd></div>
                     <div class="border-t border-slate-100 pt-3 dark:border-slate-800">
-                        <div class="flex justify-between text-base"><dt class="font-bold">{{ __('Total') }}</dt><dd class="font-black">{{ $invoice->money($invoice->total) }}</dd></div>
+                        <div class="flex justify-between text-base"><dt class="font-bold">{{ __('Net Total') }}</dt><dd class="font-black">{{ $invoice->money($invoice->total) }}</dd></div>
                     </div>
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Paid') }}</dt><dd class="font-bold text-emerald-600">{{ $invoice->money($invoice->amount_paid) }}</dd></div>
                     <div class="flex justify-between"><dt class="text-slate-500">{{ __('Balance Due') }}</dt><dd class="font-black text-rose-600">{{ $invoice->money($invoice->balance_due) }}</dd></div>
@@ -86,10 +89,26 @@
                         <p class="mt-2 whitespace-pre-line">{{ $bankTransferInstructions }}</p>
                     </div>
                 @endif
+                @if($promptPayQrDataUri)
+                    <div class="mt-4 rounded-2xl bg-white p-4 text-center shadow-sm dark:bg-slate-950">
+                        <p class="text-sm font-black text-slate-900 dark:text-white">{{ __('PromptPay QR') }}</p>
+                        <img src="{{ $promptPayQrDataUri }}" alt="{{ __('PromptPay QR') }}" class="mx-auto mt-3 h-40 w-40">
+                        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">{{ __('Receiver') }}: <span class="font-bold text-slate-900 dark:text-white">{{ $promptPayReceiver }}</span></p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Amount') }}: <span class="font-bold text-slate-900 dark:text-white">{{ $promptPayAmount }}</span></p>
+                    </div>
+                @endif
                 @if((float) $invoice->balance_due > 0)
                     <a href="{{ $paymentUrl }}" class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-primary-600 px-4 py-3 text-sm font-black text-white transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
                         {{ __('Pay with :gateway', ['gateway' => $paymentGatewayLabel]) }}
                     </a>
+                    @if($promptPayQrDataUri || $paymentStatus === 'manual')
+                        <form method="POST" action="{{ route('public.invoice.confirm-transfer', $invoice->public_token) }}" class="mt-3">
+                            @csrf
+                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 dark:focus:ring-offset-slate-900">
+                                {{ __('Confirm Transfer') }}
+                            </button>
+                        </form>
+                    @endif
                     <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('You will be redirected to the configured payment flow. If Manual is selected, bank transfer instructions will be shown here.') }}</p>
                 @else
                     <p class="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-300">{{ __('This invoice has been paid.') }}</p>

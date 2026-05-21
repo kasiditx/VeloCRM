@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Invoice;
+use App\Support\InvoiceDocuments;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class GenerateRecurringInvoices extends Command
 {
@@ -70,7 +70,7 @@ class GenerateRecurringInvoices extends Command
                     ]);
 
                     $generatedInvoice->fill([
-                        'number' => $this->generateInvoiceNumber(),
+                        'number' => InvoiceDocuments::nextNumber($template->document_type, $runDate),
                         'invoice_date' => $runDate->toDateString(),
                         'due_date' => $this->calculateDueDate($template, $runDate)->toDateString(),
                         'status' => 'Draft',
@@ -86,6 +86,8 @@ class GenerateRecurringInvoices extends Command
                             'quantity' => $item->quantity,
                             'unit_price' => $item->unit_price,
                             'amount' => $item->amount,
+                            'wht_rate' => $item->wht_rate,
+                            'wht_amount' => $item->wht_amount,
                         ]);
                     }
 
@@ -119,14 +121,5 @@ class GenerateRecurringInvoices extends Command
         $termsInDays = max($templateInvoiceDate->diffInDays($templateDueDate, false), 0);
 
         return $invoiceDate->copy()->addDays($termsInDays);
-    }
-
-    protected function generateInvoiceNumber(): string
-    {
-        do {
-            $number = 'INV-'.Str::upper(Str::random(6));
-        } while (Invoice::query()->where('number', $number)->exists());
-
-        return $number;
     }
 }

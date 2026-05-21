@@ -21,7 +21,7 @@
 <tr><td>PUT</td><td><code>/api/customers/{id}</code></td><td>Update a customer.</td></tr>
 <tr><td>DELETE</td><td><code>/api/customers/{id}</code></td><td>Soft delete a customer.</td></tr>
 <tr><td>GET</td><td><code>/api/invoices</code></td><td>List invoices. Supports <code>status</code>, <code>customer_id</code>, and <code>per_page</code>.</td></tr>
-<tr><td>POST</td><td><code>/api/invoices</code></td><td>Create an invoice with line items.</td></tr>
+<tr><td>POST</td><td><code>/api/invoices</code></td><td>Create an invoice with line items. Optional item <code>wht_rate</code> supports <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>5</code>, <code>10</code>, and <code>15</code>.</td></tr>
 <tr><td>GET</td><td><code>/api/invoices/{id}</code></td><td>Show an invoice with customer and items.</td></tr>
 <tr><td>PUT</td><td><code>/api/invoices/{id}</code></td><td>Update an invoice and replace line items.</td></tr>
 <tr><td>DELETE</td><td><code>/api/invoices/{id}</code></td><td>Soft delete an invoice.</td></tr>
@@ -47,7 +47,9 @@
     "status": "Draft",
     "currency": "THB",
     "exchange_rate": 1,
-    "items": [{"description": "Consulting", "quantity": 1, "unit_price": 5000}]
+    "tax_total": 350,
+    "items": [{"description": "Consulting", "quantity": 1, "unit_price": 5000, "wht_rate": 3}]
   }'</pre></div>
+<div class="card"><h3>Invoice Totals</h3><p>Invoice responses include <code>subtotal</code>, <code>tax_total</code>, <code>wht_total</code>, <code>discount</code>, <code>total</code>, <code>amount_paid</code>, and <code>balance_due</code>. Line items include <code>wht_rate</code> and calculated <code>wht_amount</code>.</p></div>
 <div class="card"><h3>Authorization</h3><p>API access reuses the same policies as the web application. Admin users can access all CRM records. Staff users are limited by the existing ownership rules.</p></div>
 </main></div></body></html>

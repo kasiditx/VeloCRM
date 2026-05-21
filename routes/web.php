@@ -70,6 +70,7 @@ Route::prefix('p')->name('public.')->middleware('throttle:60,1')->group(function
     Route::get('invoice/{token}', PublicInvoiceShow::class)->name('invoice.show');
     Route::get('invoice/{token}/pdf', [InvoiceController::class, 'generatePublicPdf'])->name('invoice.pdf');
     Route::get('invoice/{token}/pay', [PaymentController::class, 'checkout'])->name('invoice.pay');
+    Route::post('invoice/{token}/confirm-transfer', [PaymentController::class, 'confirmTransfer'])->name('invoice.confirm-transfer');
     Route::get('proposal/{token}', PublicProposalShow::class)->name('proposal.show');
     Route::get('proposal/{token}/pdf', [ProposalController::class, 'generatePublicPdf'])->name('proposal.pdf');
 });
@@ -85,7 +86,7 @@ Route::middleware(['auth', EnsureUserIsActive::class, 'verified'])->group(functi
         Route::get('invoices/{invoice}/pdf', function (int $invoice) {
             $invoice = Invoice::withoutGlobalScopes()->findOrFail($invoice);
 
-            return app(InvoiceController::class)->generatePdf($invoice);
+            return app(InvoiceController::class)->generatePdf($invoice, request());
         })->name('invoices.pdf');
         Route::get('proposals/{proposalId}', PortalProposalShow::class)->name('proposals.show');
         Route::get('profile', PortalProfile::class)->name('profile');

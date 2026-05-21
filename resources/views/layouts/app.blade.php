@@ -114,7 +114,40 @@
             <link rel="icon" type="image/png" href="{{ asset('uploads/' . $favicon) }}">
         @endif
     </head>
-    <body class="font-sans antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <body class="font-sans antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100"
+        x-data="{
+            shortcutsOpen: false,
+            quickCreateOpen: false,
+            focusIsTyping() {
+                const tag = document.activeElement?.tagName?.toLowerCase()
+                return ['input', 'textarea', 'select'].includes(tag) || document.activeElement?.isContentEditable
+            },
+            go(path) {
+                window.location.href = path
+            },
+            contextCreate() {
+                const path = window.location.pathname
+                if (path.includes('/customers')) return this.go('{{ route('customers.create') }}')
+                if (path.includes('/invoices')) return this.go('{{ route('invoices.create') }}')
+                if (path.includes('/tasks')) return this.go('{{ route('tasks.create') }}')
+                return this.go('{{ route('leads.create') }}')
+            }
+        }"
+        x-on:keydown.window="
+            if (focusIsTyping()) return;
+            if ($event.key === '?') { $event.preventDefault(); shortcutsOpen = ! shortcutsOpen; return; }
+            if ($event.key === 'n') { $event.preventDefault(); contextCreate(); return; }
+        "
+        x-on:keydown.g.window="
+            if (focusIsTyping()) return;
+            window.__veloWaitingForGo = true;
+            setTimeout(() => window.__veloWaitingForGo = false, 900);
+        "
+        x-on:keydown.d.window="if (window.__veloWaitingForGo && ! focusIsTyping()) { $event.preventDefault(); go('{{ route('dashboard') }}'); }"
+        x-on:keydown.l.window="if (window.__veloWaitingForGo && ! focusIsTyping()) { $event.preventDefault(); go('{{ route('leads.index') }}'); }"
+        x-on:keydown.c.window="if (window.__veloWaitingForGo && ! focusIsTyping()) { $event.preventDefault(); go('{{ route('customers.index') }}'); }"
+        x-on:keydown.i.window="if (window.__veloWaitingForGo && ! focusIsTyping()) { $event.preventDefault(); go('{{ route('invoices.index') }}'); }"
+    >
 
         <!-- Flash Messages -->
         @if (session()->has('success'))
@@ -162,6 +195,33 @@
             <header class="hidden lg:flex items-center justify-end h-14 px-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 z-30 gap-3"
                     x-data="{ currentTheme: localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') }"
                     @theme-changed.window="currentTheme = $event.detail">
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button type="button" @click="open = ! open"
+                        class="inline-flex h-9 items-center gap-2 rounded-xl bg-primary-600 px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M12 4v16m8-8H4"/></svg>
+                        {{ __('Quick Create') }}
+                    </button>
+                    <div x-show="open" x-cloak x-transition
+                        class="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-xl dark:border-gray-800 dark:bg-gray-900">
+                        @foreach([
+                            ['href' => route('leads.create'), 'label' => __('Lead')],
+                            ['href' => route('customers.create'), 'label' => __('Customer')],
+                            ['href' => route('invoices.create'), 'label' => __('Invoice')],
+                            ['href' => route('tasks.create'), 'label' => __('Task')],
+                        ] as $item)
+                            <a href="{{ $item['href'] }}" wire:navigate @click="open = false"
+                               class="flex items-center justify-between px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800">
+                                <span>{{ $item['label'] }}</span>
+                                <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+                <button type="button" @click="shortcutsOpen = true"
+                    class="inline-flex h-9 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800">
+                    <span class="text-xs">?</span>
+                    {{ __('Shortcuts') }}
+                </button>
                 <!-- Search -->
                 <div class="w-56">
                     <livewire:global-search />
@@ -299,6 +359,39 @@
             </div>
         </div>
 
+        <div x-show="shortcutsOpen" x-cloak x-on:keydown.escape.window="shortcutsOpen = false"
+            class="fixed inset-0 z-[85] flex items-center justify-center px-4 py-6" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+            <div x-show="shortcutsOpen" x-transition.opacity class="absolute inset-0 bg-gray-950/55" @click="shortcutsOpen = false"></div>
+            <div x-show="shortcutsOpen" x-transition
+                class="relative w-full max-w-lg overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
+                <div class="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-5 dark:border-gray-800">
+                    <div>
+                        <h2 id="shortcuts-title" class="text-base font-bold text-gray-950 dark:text-gray-50">{{ __('Keyboard shortcuts') }}</h2>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Move through daily CRM work without leaving the keyboard.') }}</p>
+                    </div>
+                    <button type="button" @click="shortcutsOpen = false" class="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200" aria-label="{{ __('Close') }}">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="grid gap-2 p-6">
+                    @foreach([
+                        ['keys' => 'Ctrl/⌘ K', 'label' => __('Global search')],
+                        ['keys' => 'g d', 'label' => __('Dashboard')],
+                        ['keys' => 'g l', 'label' => __('Leads')],
+                        ['keys' => 'g c', 'label' => __('Customers')],
+                        ['keys' => 'g i', 'label' => __('Invoices')],
+                        ['keys' => 'n', 'label' => __('New record for this page')],
+                        ['keys' => '?', 'label' => __('Open this overlay')],
+                    ] as $shortcut)
+                        <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 px-4 py-3 dark:border-gray-800">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ $shortcut['label'] }}</span>
+                            <kbd class="rounded-lg border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-bold text-gray-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300">{{ $shortcut['keys'] }}</kbd>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
         <!-- Plugins -->
         <script>
             (function () {
@@ -319,6 +412,51 @@
                 } else {
                     document.addEventListener('livewire:init', loadLivewireSortable, { once: true });
                 }
+            })();
+
+            (function () {
+                function bindDraftForms() {
+                    document.querySelectorAll('form[data-draft-key]:not([data-draft-bound])').forEach(function (form) {
+                        var key = form.dataset.draftKey;
+                        form.dataset.draftBound = 'true';
+
+                        try {
+                            var saved = JSON.parse(localStorage.getItem(key) || '{}');
+                            Object.keys(saved).forEach(function (model) {
+                                var field = form.querySelector('[wire\\:model="' + model + '"], [wire\\:model\\.live="' + model + '"], [wire\\:model\\.live\\.debounce\\.500ms="' + model + '"]');
+                                if (field && field.value === '') {
+                                    field.value = saved[model];
+                                    field.dispatchEvent(new Event('input', { bubbles: true }));
+                                    field.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
+                            });
+                        } catch (error) {
+                            localStorage.removeItem(key);
+                        }
+
+                        form.addEventListener('input', function (event) {
+                            var target = event.target;
+                            var model = target.getAttribute('wire:model') || target.getAttribute('wire:model.live') || target.getAttribute('wire:model.live.debounce.500ms');
+                            if (! model || target.type === 'file') return;
+
+                            var current = {};
+                            try {
+                                current = JSON.parse(localStorage.getItem(key) || '{}');
+                            } catch (error) {
+                                current = {};
+                            }
+                            current[model] = target.value;
+                            localStorage.setItem(key, JSON.stringify(current));
+                        });
+
+                        form.addEventListener('submit', function () {
+                            localStorage.removeItem(key);
+                        });
+                    });
+                }
+
+                document.addEventListener('DOMContentLoaded', bindDraftForms);
+                document.addEventListener('livewire:navigated', bindDraftForms);
             })();
         </script>
     </body>

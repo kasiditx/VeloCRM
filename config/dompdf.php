@@ -179,9 +179,13 @@ return [
          *
          * @var string
          */
-        'default_font' => 'thsarabunnew',
+        'default_font' => 'SarabunPdf',
 
         'font_data' => [
+            'sarabunpdf' => [
+                'R' => 'Sarabun-Regular.ttf',
+                'B' => 'Sarabun-Bold.ttf',
+            ],
             'thsarabunnew' => [
                 'R' => 'THSarabunNew.ttf',
                 'B' => 'THSarabunNew-Bold.ttf',

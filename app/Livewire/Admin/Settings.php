@@ -7,6 +7,8 @@ namespace App\Livewire\Admin;
 use App\Models\EmailTemplate;
 use App\Models\Setting;
 use App\Services\Payments\PaymentGatewayManager;
+use App\Support\InvoiceDocuments;
+use App\Support\PromptPay;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
@@ -72,6 +74,10 @@ class Settings extends Component
 
     public string $date_format = 'd/m/Y';
 
+    public array $document_number_prefixes = [];
+
+    public array $document_number_next = [];
+
     // Payment gateways
     public string $payment_driver = 'manual';
 
@@ -80,6 +86,8 @@ class Settings extends Component
     public string $payment_currency = 'USD';
 
     public string $payment_bank_transfer_instructions = '';
+
+    public string $promptpay_id = '';
 
     public string $payment_stripe_public_key = '';
 
@@ -140,12 +148,14 @@ class Settings extends Component
         $this->currency_code = (string) Setting::get('currency_code', 'USD');
         $this->currency_symbol = (string) Setting::get('currency_symbol', '$');
         $this->date_format = (string) Setting::get('date_format', 'd/m/Y');
+        $this->loadDocumentNumberSettings();
         $this->envato_purchase_code = (string) Setting::get('envato_purchase_code', '');
 
         $this->payment_driver = (string) Setting::get('payment_driver', config('payments.default', 'manual'));
         $this->payment_mode = (string) Setting::get('payment_mode', config('payments.mode', 'test'));
         $this->payment_currency = (string) Setting::get('payment_currency', $this->currency_code);
         $this->payment_bank_transfer_instructions = (string) Setting::get('payment_manual_instructions', config('payments.drivers.manual.instructions', ''));
+        $this->promptpay_id = (string) Setting::get('promptpay_id', '');
         $this->payment_stripe_public_key = (string) Setting::get('payment_stripe_public_key', config('payments.drivers.stripe.public_key', ''));
         $this->payment_stripe_secret_key = (string) Setting::get('payment_stripe_secret_key', '', true);
         $this->payment_stripe_webhook_secret = (string) Setting::get('payment_stripe_webhook_secret', '', true);
@@ -378,6 +388,8 @@ class Settings extends Component
             'currency_code' => 'required|string|size:3',
             'currency_symbol' => 'required|string|max:10',
             'date_format' => 'required|in:d/m/Y,m/d/Y,Y-m-d,M d, Y',
+            'document_number_prefixes.*' => 'required|string|max:10|regex:/^[A-Za-z0-9-]+$/',
+            'document_number_next.*' => 'required|integer|min:1|max:999999',
         ]);
 
         $this->currency_code = strtoupper($this->currency_code);
@@ -386,6 +398,7 @@ class Settings extends Component
         Setting::set('default_currency', $this->currency_code);
         Setting::set('currency_symbol', $this->currency_symbol);
         Setting::set('date_format', $this->date_format);
+        $this->saveDocumentNumberSettings();
 
         session()->flash('success', 'Regional settings saved successfully.');
     }
@@ -397,6 +410,16 @@ class Settings extends Component
             'payment_mode' => 'required|in:test,live',
             'payment_currency' => 'required|string|size:3',
             'payment_bank_transfer_instructions' => 'nullable|string|max:2000',
+            'promptpay_id' => [
+                'nullable',
+                'string',
+                'max:32',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if ($value !== null && $value !== '' && PromptPay::normalizeIdentifier((string) $value) === null) {
+                        $fail(__('PromptPay ID must be a Thai mobile number, national ID, or corporate tax ID.'));
+                    }
+                },
+            ],
             'payment_stripe_public_key' => 'nullable|string|max:255',
             'payment_stripe_secret_key' => 'nullable|string|max:255',
             'payment_stripe_webhook_secret' => 'nullable|string|max:255',
@@ -407,11 +430,13 @@ class Settings extends Component
         ]);
 
         $this->payment_currency = strtoupper($this->payment_currency);
+        $this->promptpay_id = trim($this->promptpay_id);
 
         Setting::set('payment_driver', $this->payment_driver);
         Setting::set('payment_mode', $this->payment_mode);
         Setting::set('payment_currency', $this->payment_currency);
         Setting::set('payment_manual_instructions', $this->payment_bank_transfer_instructions);
+        Setting::set('promptpay_id', $this->promptpay_id);
         Setting::set('payment_stripe_public_key', $this->payment_stripe_public_key);
         Setting::set('payment_paypal_checkout_url', $this->payment_paypal_checkout_url);
         Setting::set('payment_omise_checkout_url', $this->payment_omise_checkout_url);
@@ -469,6 +494,30 @@ class Settings extends Component
         return view('livewire.admin.settings', [
             'health' => $this->healthStatus,
             'paymentGateways' => app(PaymentGatewayManager::class)->labels(),
+            'documentTypes' => InvoiceDocuments::labels(),
         ])->layout('layouts.app');
+    }
+
+    private function loadDocumentNumberSettings(): void
+    {
+        $year = now()->year;
+
+        foreach (InvoiceDocuments::types() as $type) {
+            $this->document_number_prefixes[$type] = InvoiceDocuments::prefix($type);
+            $this->document_number_next[$type] = (int) Setting::get(InvoiceDocuments::nextSettingKey($type, $year), 1);
+        }
+    }
+
+    private function saveDocumentNumberSettings(): void
+    {
+        $year = now()->year;
+
+        foreach (InvoiceDocuments::types() as $type) {
+            $prefix = strtoupper(trim((string) ($this->document_number_prefixes[$type] ?? InvoiceDocuments::prefix($type))));
+            $next = max((int) ($this->document_number_next[$type] ?? 1), 1);
+
+            Setting::set(InvoiceDocuments::prefixSettingKey($type), $prefix);
+            Setting::set(InvoiceDocuments::nextSettingKey($type, $year), (string) $next);
+        }
     }
 }

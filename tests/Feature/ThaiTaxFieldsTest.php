@@ -131,6 +131,7 @@ class ThaiTaxFieldsTest extends TestCase
             'company_name' => 'VeloCRM',
             'company_address' => 'Bangkok',
             'company_url' => 'https://example.test',
+            'locale' => 'th',
         ])->render();
 
         $this->assertStringContainsString('เลขประจำตัวผู้เสียภาษี: 1101700207030', $html);

@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="{{ str_replace('_', '-', $locale ?? app()->getLocale()) }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Invoice - {{ $invoice->number }}</title>
     @php
-        $regularFont = storage_path('fonts/THSarabunNew.ttf');
-        $boldFont = storage_path('fonts/THSarabunNew-Bold.ttf');
-        $regularFontUrl = file_exists($regularFont) ? 'file://' . $regularFont : null;
-        $boldFontUrl = file_exists($boldFont) ? 'file://' . $boldFont : null;
+        $requestedLocale = $locale ?? app()->getLocale();
+        $currentLocale = in_array($requestedLocale, ['en', 'th'], true)
+            ? $requestedLocale
+            : config('app.fallback_locale', 'en');
+        app()->setLocale($currentLocale);
+        $isThai = $currentLocale === 'th';
+        $documentTitle = $isThai ? $invoice->documentTypeLabel() : $invoice->documentTypeEnglishLabel();
+        $regularFont = storage_path('fonts/Sarabun-Regular.ttf');
+        $boldFont = storage_path('fonts/Sarabun-Bold.ttf');
+        $regularFontUrl = file_exists($regularFont) ? $regularFont : null;
+        $boldFontUrl = file_exists($boldFont) ? $boldFont : null;
     @endphp
+    <title>{{ $documentTitle }} - {{ $invoice->number }}</title>
     <style>
         @if($regularFontUrl)
             @font-face {
-                font-family: 'thsarabunnew';
+                font-family: SarabunPdf;
                 font-style: normal;
                 font-weight: normal;
                 src: url("{{ $regularFontUrl }}") format('truetype');
@@ -20,7 +27,7 @@
         @endif
         @if($boldFontUrl)
             @font-face {
-                font-family: 'thsarabunnew';
+                font-family: SarabunPdf;
                 font-style: normal;
                 font-weight: bold;
                 src: url("{{ $boldFontUrl }}") format('truetype');
@@ -29,9 +36,9 @@
         @page { margin: 30px 34px; }
         body {
             color: #111827;
-            font-family: 'thsarabunnew', sans-serif;
-            font-size: 14pt;
-            line-height: 1.12;
+            font-family: SarabunPdf, sans-serif;
+            font-size: {{ $isThai ? '14pt' : '11pt' }};
+            line-height: {{ $isThai ? '1.12' : '1.35' }};
             margin: 0;
         }
         .invoice-box {
@@ -65,7 +72,7 @@
             text-align: right;
         }
         .invoice-title {
-            font-size: 23pt;
+            font-size: {{ $isThai ? '23pt' : '20pt' }};
             font-weight: bold;
             text-align: right;
         }
@@ -104,14 +111,15 @@
             vertical-align: top;
             word-wrap: break-word;
         }
-        .col-description { width: 38%; }
-        .col-qty { width: 14%; }
-        .col-price { width: 24%; }
-        .col-amount { width: 24%; }
+        .col-description { width: 34%; }
+        .col-qty { width: 12%; }
+        .col-price { width: 20%; }
+        .col-wht { width: 14%; }
+        .col-amount { width: 20%; }
         .totals-wrap {
             margin-left: auto;
             margin-top: 16px;
-            width: 250px;
+            width: 320px;
         }
         .totals-table td {
             padding: 4px 0;
@@ -121,6 +129,13 @@
             font-size: 16pt;
             font-weight: bold;
             padding-top: 8px;
+        }
+        .baht-text {
+            color: #374151;
+            font-size: 13pt;
+            font-weight: bold;
+            margin-top: 8px;
+            text-align: right;
         }
         .balance-due {
             color: #b91c1c;
@@ -132,6 +147,18 @@
             font-size: 13pt;
             margin-top: 22px;
             padding-top: 12px;
+        }
+        .promptpay-box {
+            border: 1px solid #e5e7eb;
+            margin-top: 20px;
+            padding: 10px;
+            width: 205px;
+        }
+        .promptpay-qr {
+            display: block;
+            height: 132px;
+            margin: 6px auto;
+            width: 132px;
         }
         .footer {
             color: #6b7280;
@@ -153,12 +180,11 @@
                     @endif
                 </td>
                 <td class="text-right" style="width: 55%; vertical-align: top;">
-                    <div class="doc-type">ใบแจ้งหนี้</div>
-                    <div class="invoice-title">INVOICE</div>
-                    <div><span class="muted">เลขที่:</span> <span class="strong">{{ $invoice->number }}</span></div>
-                    <div><span class="muted">วันที่:</span> {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}</div>
-                    <div><span class="muted">กำหนดชำระ:</span> {{ \Carbon\Carbon::parse($invoice->due_date)->format('d/m/Y') }}</div>
-                    <div><span class="muted">สกุลเงิน:</span> {{ $invoice->currency ?? velocrm_currency_code() }}</div>
+                    <div class="invoice-title">{{ $documentTitle }}</div>
+                    <div><span class="muted">{{ __('Invoice No.') }}:</span> <span class="strong">{{ $invoice->number }}</span></div>
+                    <div><span class="muted">{{ __('Issue Date') }}:</span> {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}</div>
+                    <div><span class="muted">{{ __('Due Date') }}:</span> {{ \Carbon\Carbon::parse($invoice->due_date)->format('d/m/Y') }}</div>
+                    <div><span class="muted">{{ __('Currency') }}:</span> {{ $invoice->currency ?? velocrm_currency_code() }}</div>
                 </td>
             </tr>
         </table>
@@ -166,7 +192,7 @@
         <table class="meta-table">
             <tr>
                 <td>
-                    <div class="section-label">ลูกค้า / Bill To</div>
+                    <div class="section-label">{{ __('Bill To') }}</div>
                     <div class="strong">{{ $invoice->customer?->name ?? '-' }}</div>
                     @if($invoice->customer?->company)
                         <div>{{ $invoice->customer->company }}</div>
@@ -175,14 +201,14 @@
                         <div class="muted">{{ $invoice->customer->address }}</div>
                     @endif
                     @if($invoice->tax_id)
-                        <div class="muted">เลขประจำตัวผู้เสียภาษี: {{ $invoice->tax_id }}</div>
+                        <div class="muted">{{ __('Tax ID') }}: {{ $invoice->tax_id }}</div>
                     @endif
                     @if($invoice->branch)
-                        <div class="muted">สาขา: {{ $invoice->branch }}</div>
+                        <div class="muted">{{ __('Branch') }}: {{ $invoice->branch }}</div>
                     @endif
                 </td>
                 <td class="text-right">
-                    <div class="section-label">ออกโดย / From</div>
+                    <div class="section-label">{{ __('From') }}</div>
                     <div class="strong">{{ $company_name }}</div>
                     @if(! empty($company_address))
                         <div>{{ $company_address }}</div>
@@ -197,10 +223,11 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th class="col-description">รายการ</th>
-                    <th class="col-qty" style="text-align: center;">จำนวน</th>
-                    <th class="col-price" style="text-align: right;">ราคาต่อหน่วย</th>
-                    <th class="col-amount" style="text-align: right;">จำนวนเงิน</th>
+                    <th class="col-description">{{ __('Description') }}</th>
+                    <th class="col-qty" style="text-align: center;">{{ __('Quantity') }}</th>
+                    <th class="col-price" style="text-align: right;">{{ __('Unit Price') }}</th>
+                    <th class="col-wht" style="text-align: right;">{{ __('Withholding Tax') }}</th>
+                    <th class="col-amount" style="text-align: right;">{{ __('Amount') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -209,6 +236,14 @@
                     <td>{{ $item->description }}</td>
                     <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
                     <td style="text-align: right;">{{ $invoice->money($item->unit_price) }}</td>
+                    <td style="text-align: right;">
+                        @if((float) $item->wht_amount > 0)
+                            {{ rtrim(rtrim(number_format((float) $item->wht_rate, 2), '0'), '.') }}%<br>
+                            <span class="muted">-{{ $invoice->money($item->wht_amount) }}</span>
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td style="text-align: right;">{{ $invoice->money($item->amount) }}</td>
                 </tr>
                 @endforeach
@@ -218,45 +253,64 @@
         <div class="totals-wrap">
             <table class="totals-table">
                 <tr>
-                    <td>มูลค่าพื้นฐาน (Subtotal):</td>
+                    <td>{{ __('Subtotal') }}:</td>
                     <td class="text-right">{{ $invoice->money($invoice->subtotal) }}</td>
                 </tr>
                 <tr>
-                    <td>ภาษี (Tax):</td>
+                    <td>{{ __('Tax') }}:</td>
                     <td class="text-right">{{ $invoice->money($invoice->tax_total) }}</td>
                 </tr>
                 @if($invoice->discount > 0)
                     <tr>
-                        <td>ส่วนลด (Discount):</td>
+                        <td>{{ __('Discount') }}:</td>
                         <td class="text-right">{{ $invoice->money($invoice->discount) }}</td>
                     </tr>
                 @endif
+                @if($invoice->wht_total > 0)
+                    <tr>
+                        <td>{{ __('Withholding Tax') }}{{ $invoice->withholdingTaxRateLabel() ? ' ('.$invoice->withholdingTaxRateLabel().')' : '' }}:</td>
+                        <td class="text-right">-{{ $invoice->money($invoice->wht_total) }}</td>
+                    </tr>
+                @endif
                 <tr class="grand-total">
-                    <td>ยอดรวมสุทธิ (Total):</td>
+                    <td>{{ __('Net Total') }}:</td>
                     <td class="text-right">{{ $invoice->money($invoice->total) }}</td>
                 </tr>
                 @if($invoice->amount_paid > 0)
                     <tr>
-                        <td>ชำระแล้ว (Paid):</td>
+                        <td>{{ __('Paid') }}:</td>
                         <td class="text-right">{{ $invoice->money($invoice->amount_paid) }}</td>
                     </tr>
                     <tr class="balance-due">
-                        <td>ยอดค้างชำระ (Balance):</td>
+                        <td>{{ __('Balance Due') }}:</td>
                         <td class="text-right">{{ $invoice->money($invoice->balance_due) }}</td>
                     </tr>
                 @endif
             </table>
+            @if(strtoupper((string) ($invoice->currency ?? velocrm_currency_code())) === 'THB')
+                <div class="baht-text">{{ velocrm_baht_text($invoice->total) }}</div>
+            @endif
         </div>
 
         @if($invoice->notes)
             <div class="notes">
-                <span class="strong">หมายเหตุ / Notes:</span><br>
+                <span class="strong">{{ __('Notes') }}:</span><br>
                 {!! nl2br(e($invoice->notes)) !!}
             </div>
         @endif
 
+        @if(! empty($promptpay_qr_data_uri))
+            <div class="promptpay-box">
+                <div class="strong">PromptPay QR</div>
+                <img src="{{ $promptpay_qr_data_uri }}" class="promptpay-qr">
+                <div class="muted">{{ __('Receiver') }}: {{ $promptpay_receiver }}</div>
+                <div class="muted">{{ __('Amount') }}: {{ $promptpay_amount }}</div>
+            </div>
+        @endif
+
         <div class="footer">
-            ขอขอบคุณที่ใช้บริการ / Thank you for your business.
+            {{ $isThai ? $invoice->documentTypeFooter() : __('This document was generated by VeloCRM.') }}<br>
+            {{ __('Thank you for your business.') }}
         </div>
     </div>
 </body>

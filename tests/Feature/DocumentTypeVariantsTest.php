@@ -1,0 +1,182 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Livewire\Admin\Settings;
+use App\Livewire\Invoices\InvoiceForm;
+use App\Livewire\Invoices\InvoiceShow;
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Setting as SettingModel;
+use App\Models\User;
+use App\Support\InvoiceDocuments;
+use Database\Seeders\DefaultRolesSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Tests\TestCase;
+
+class DocumentTypeVariantsTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected User $admin;
+
+    protected Customer $customer;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(DefaultRolesSeeder::class);
+        touch(storage_path('installed'));
+
+        $this->admin = User::factory()->create([
+            'email_verified_at' => now(),
+            'is_active' => true,
+        ]);
+        $this->admin->assignRole('Admin');
+        $this->actingAs($this->admin);
+
+        $this->customer = Customer::create([
+            'name' => 'Document Type Customer',
+            'email' => 'doc-type@example.com',
+            'user_id' => $this->admin->id,
+        ]);
+    }
+
+    public function test_invoice_form_generates_running_number_per_document_type_and_year(): void
+    {
+        SettingModel::set(InvoiceDocuments::prefixSettingKey(InvoiceDocuments::TYPE_TAX_INVOICE), 'TAX');
+        SettingModel::set(InvoiceDocuments::nextSettingKey(InvoiceDocuments::TYPE_TAX_INVOICE, now()->year), '7');
+
+        Livewire::test(InvoiceForm::class)
+            ->set('document_type', InvoiceDocuments::TYPE_TAX_INVOICE)
+            ->set('customer_id', $this->customer->id)
+            ->set('invoice_date', now()->toDateString())
+            ->set('due_date', now()->addDays(7)->toDateString())
+            ->set('currency', 'THB')
+            ->set('exchange_rate', 1)
+            ->set('items.0.description', 'Tax service')
+            ->set('items.0.quantity', 1)
+            ->set('items.0.unit_price', 1000)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $invoice = Invoice::firstOrFail();
+
+        $this->assertSame(InvoiceDocuments::TYPE_TAX_INVOICE, $invoice->document_type);
+        $this->assertSame('TAX-'.now()->year.'-0007', $invoice->number);
+        $this->assertSame('8', SettingModel::get(InvoiceDocuments::nextSettingKey(InvoiceDocuments::TYPE_TAX_INVOICE, now()->year)));
+    }
+
+    public function test_invoice_show_can_convert_to_tax_invoice_and_issue_receipt(): void
+    {
+        $invoice = $this->invoice([
+            'document_type' => InvoiceDocuments::TYPE_INVOICE,
+            'number' => 'INV-ORIGINAL',
+            'amount_paid' => 1000,
+            'balance_due' => 0,
+            'status' => 'Paid',
+        ]);
+
+        Livewire::test(InvoiceShow::class, ['invoiceId' => $invoice->id])
+            ->call('convertToTaxInvoice')
+            ->assertHasNoErrors();
+
+        $invoice->refresh();
+        $this->assertSame(InvoiceDocuments::TYPE_TAX_INVOICE, $invoice->document_type);
+        $this->assertStringStartsWith('TAX-'.now()->year.'-', $invoice->number);
+
+        Livewire::test(InvoiceShow::class, ['invoiceId' => $invoice->id])
+            ->call('issueReceipt')
+            ->assertHasNoErrors();
+
+        $invoice->refresh();
+        $this->assertSame(InvoiceDocuments::TYPE_TAX_INVOICE_RECEIPT, $invoice->document_type);
+        $this->assertStringStartsWith('TIR-'.now()->year.'-', $invoice->number);
+    }
+
+    public function test_pdf_uses_document_type_header_and_footer(): void
+    {
+        $invoice = $this->invoice([
+            'document_type' => InvoiceDocuments::TYPE_QUOTATION,
+            'number' => 'QUO-TEST',
+        ]);
+
+        $thaiHtml = view('pdf.invoice', [
+            'invoice' => $invoice->load('customer', 'items'),
+            'logo_base64' => null,
+            'company_name' => 'VeloCRM',
+            'company_address' => 'Bangkok',
+            'company_url' => 'https://example.test',
+            'promptpay_qr_data_uri' => null,
+            'promptpay_amount' => $invoice->money($invoice->balance_due),
+            'promptpay_receiver' => 'VeloCRM',
+            'locale' => 'th',
+        ])->render();
+
+        $englishHtml = view('pdf.invoice', [
+            'invoice' => $invoice->load('customer', 'items'),
+            'logo_base64' => null,
+            'company_name' => 'VeloCRM',
+            'company_address' => 'Bangkok',
+            'company_url' => 'https://example.test',
+            'promptpay_qr_data_uri' => null,
+            'promptpay_amount' => $invoice->money($invoice->balance_due),
+            'promptpay_receiver' => 'VeloCRM',
+            'locale' => 'en',
+        ])->render();
+
+        $this->assertStringContainsString('ใบเสนอราคา', $thaiHtml);
+        $this->assertStringContainsString('เอกสารนี้เป็นใบเสนอราคา', $thaiHtml);
+        $this->assertStringContainsString('QUOTATION', $englishHtml);
+        $this->assertStringContainsString('This document was generated by VeloCRM.', $englishHtml);
+    }
+
+    public function test_settings_save_document_numbering_per_type(): void
+    {
+        Livewire::test(Settings::class)
+            ->set('currency_code', 'THB')
+            ->set('currency_symbol', '฿')
+            ->set('date_format', 'd/m/Y')
+            ->set('document_number_prefixes.'.InvoiceDocuments::TYPE_RECEIPT, 'RCPT')
+            ->set('document_number_next.'.InvoiceDocuments::TYPE_RECEIPT, 42)
+            ->call('saveRegional')
+            ->assertHasNoErrors();
+
+        $this->assertSame('RCPT', SettingModel::get(InvoiceDocuments::prefixSettingKey(InvoiceDocuments::TYPE_RECEIPT)));
+        $this->assertSame('42', SettingModel::get(InvoiceDocuments::nextSettingKey(InvoiceDocuments::TYPE_RECEIPT, now()->year)));
+    }
+
+    private function invoice(array $overrides = []): Invoice
+    {
+        $invoice = Invoice::forceCreate(array_merge([
+            'number' => 'INV-DOC-1',
+            'document_type' => InvoiceDocuments::TYPE_INVOICE,
+            'customer_id' => $this->customer->id,
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(7)->toDateString(),
+            'subtotal' => 1000,
+            'tax_total' => 0,
+            'discount' => 0,
+            'total' => 1000,
+            'amount_paid' => 0,
+            'balance_due' => 1000,
+            'status' => 'Sent',
+            'currency' => 'THB',
+            'exchange_rate' => 1,
+            'user_id' => $this->admin->id,
+        ], $overrides));
+
+        $invoice->items()->create([
+            'description' => 'Document service',
+            'quantity' => 1,
+            'unit_price' => 1000,
+            'amount' => 1000,
+        ]);
+
+        return $invoice;
+    }
+}

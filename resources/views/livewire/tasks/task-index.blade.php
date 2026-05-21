@@ -19,19 +19,72 @@
             </div>
         </div>
 
-        @if (session()->has('message'))
+        @if (session()->has('success'))
             <div class="animate-fade-in flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
                 <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <p class="text-sm font-medium">{{ session('message') }}</p>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
             </div>
         @endif
 
         <div class="module-panel">
+            <div class="module-filter grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Search') }}</label>
+                    <input wire:model.live.debounce.300ms="search" type="text" placeholder="{{ __('Task title or description') }}"
+                        class="w-full rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Status') }}</label>
+                    <select wire:model.live="statusFilter" class="w-full rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                        <option value="">{{ __('All statuses') }}</option>
+                        @foreach($statuses as $status)
+                            <option value="{{ $status }}">{{ __($status) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3 border-b border-gray-100 px-4 py-3 dark:border-gray-800 lg:flex-row lg:items-center lg:justify-between">
+                <div class="flex flex-wrap items-center gap-2">
+                    <select wire:model="bulkAction" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                        <option value="">{{ __('Bulk action') }}</option>
+                        <option value="delete">{{ __('Delete') }}</option>
+                        <option value="status">{{ __('Change status') }}</option>
+                        <option value="assign">{{ __('Assign user') }}</option>
+                        <option value="export">{{ __('Export selected') }}</option>
+                    </select>
+                    @if($bulkAction === 'status')
+                        <select wire:model="bulkStatus" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                            @foreach($statuses as $status)
+                                <option value="{{ $status }}">{{ __($status) }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    @if($bulkAction === 'assign')
+                        <select wire:model="bulkUserId" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                            <option value="">{{ __('Choose user') }}</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    <button type="button" wire:click="runBulkAction" wire:loading.attr="disabled" class="rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                        {{ __('Apply') }} <span class="text-xs opacity-75">({{ count($selectedIds) }})</span>
+                    </button>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    @foreach($savedFilterViews as $view)
+                        <button type="button" wire:click="applyFilterView({{ $view->id }})" class="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">{{ $view->name }}</button>
+                    @endforeach
+                    <input type="text" wire:model="filterViewName" placeholder="{{ __('View name') }}" class="w-32 rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                    <button type="button" wire:click="saveFilterView" class="rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-100 dark:border-primary-900 dark:bg-primary-950/50 dark:text-primary-300">{{ __('Save view') }}</button>
+                </div>
+            </div>
             <!-- Desktop View: Table -->
             <div class="hidden lg:block overflow-x-auto">
                 <table class="module-table">
                     <thead class="module-table-head">
                         <tr>
+                            <th class="module-table-heading w-10"></th>
                             <th class="module-table-heading">{{ __('Status') }}</th>
                             <th class="module-table-heading">{{ __('Title') }}</th>
                             <th class="module-table-heading">{{ __('Related To') }}</th>
@@ -44,16 +97,14 @@
                         @forelse($tasks as $task)
                             <tr class="module-table-row group">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <x-ui.status-chip :status="$task->status">
-                                        @if($task->status === 'Completed')
-                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>
-                                        @elseif($task->status === 'In Progress')
-                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3 animate-pulse" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>
-                                        @else
-                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        @endif
-                                        {{ __($task->status) }}
-                                    </x-ui.status-chip>
+                                    <input type="checkbox" wire:model.live="selectedIds" value="{{ $task->id }}" class="rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <select wire:change="updateStatus({{ $task->id }}, $event.target.value)" class="rounded-full border-gray-300 py-1 pl-3 pr-8 text-xs font-semibold shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                                        @foreach($statuses as $status)
+                                            <option value="{{ $status }}" @selected($task->status === $status)>{{ __($status) }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{{ $task->title }}</div>
@@ -89,7 +140,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+                                <td colspan="7" class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
                                     <x-ui.empty-state
                                         icon="task"
                                         :title="__('No tasks found.')"

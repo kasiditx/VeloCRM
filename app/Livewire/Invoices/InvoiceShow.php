@@ -5,6 +5,7 @@ namespace App\Livewire\Invoices;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Setting;
+use App\Support\InvoiceDocuments;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -91,6 +92,50 @@ class InvoiceShow extends Component
         $this->paymentNotes = null;
 
         session()->flash('success', __('Payment recorded successfully.'));
+    }
+
+    public function convertToTaxInvoice(): void
+    {
+        $this->authorize('update', $this->invoice);
+
+        if (in_array($this->invoice->document_type, [InvoiceDocuments::TYPE_TAX_INVOICE, InvoiceDocuments::TYPE_TAX_INVOICE_RECEIPT], true)) {
+            return;
+        }
+
+        $this->invoice->forceFill([
+            'document_type' => InvoiceDocuments::TYPE_TAX_INVOICE,
+            'number' => InvoiceDocuments::nextNumber(InvoiceDocuments::TYPE_TAX_INVOICE, $this->invoice->invoice_date),
+        ])->save();
+
+        $this->loadInvoice($this->invoice->id);
+        session()->flash('success', __('Converted to tax invoice successfully.'));
+    }
+
+    public function issueReceipt(): void
+    {
+        $this->authorize('update', $this->invoice);
+
+        if ((float) $this->invoice->balance_due > 0) {
+            session()->flash('error', __('Receipt can be issued after the invoice is fully paid.'));
+
+            return;
+        }
+
+        $documentType = $this->invoice->document_type === InvoiceDocuments::TYPE_TAX_INVOICE
+            ? InvoiceDocuments::TYPE_TAX_INVOICE_RECEIPT
+            : InvoiceDocuments::TYPE_RECEIPT;
+
+        if ($this->invoice->document_type === $documentType) {
+            return;
+        }
+
+        $this->invoice->forceFill([
+            'document_type' => $documentType,
+            'number' => InvoiceDocuments::nextNumber($documentType, $this->invoice->invoice_date),
+        ])->save();
+
+        $this->loadInvoice($this->invoice->id);
+        session()->flash('success', __('Receipt issued successfully.'));
     }
 
     public function render()

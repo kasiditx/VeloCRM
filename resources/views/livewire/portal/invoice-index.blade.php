@@ -34,7 +34,7 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('portal.invoices.show', $invoice->id) }}" wire:navigate class="rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">{{ __('View') }}</a>
-                                    <a href="{{ route('portal.invoices.pdf', $invoice->id) }}" target="_blank" class="rounded-xl bg-primary-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-primary-700">PDF</a>
+                                    <a href="{{ route('portal.invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank" class="rounded-xl bg-primary-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-primary-700">PDF</a>
                                 </div>
                             </td>
                         </tr>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="mt-4 flex gap-2">
                         <a href="{{ route('portal.invoices.show', $invoice->id) }}" wire:navigate class="flex-1 rounded-xl bg-slate-100 py-2 text-center text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ __('View') }}</a>
-                        <a href="{{ route('portal.invoices.pdf', $invoice->id) }}" target="_blank" class="flex-1 rounded-xl bg-primary-600 py-2 text-center text-xs font-bold text-white">PDF</a>
+                        <a href="{{ route('portal.invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank" class="flex-1 rounded-xl bg-primary-600 py-2 text-center text-xs font-bold text-white">PDF</a>
                     </div>
                 </div>
             @empty

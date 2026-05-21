@@ -41,6 +41,36 @@ class PaymentController extends Controller
         return redirect()->away($checkout->redirectUrl);
     }
 
+    public function confirmTransfer(string $token): RedirectResponse
+    {
+        $invoice = Invoice::withoutGlobalScopes()
+            ->where('public_token', $token)
+            ->firstOrFail();
+
+        if ((float) $invoice->balance_due <= 0) {
+            return redirect()
+                ->route('public.invoice.show', $invoice->public_token)
+                ->with('success', __('This invoice is already paid.'));
+        }
+
+        $invoice->payments()->firstOrCreate(
+            [
+                'gateway' => 'manual',
+                'status' => 'pending',
+            ],
+            [
+                'amount' => $invoice->balance_due,
+                'payment_date' => now()->toDateString(),
+                'payment_method' => 'PromptPay / Bank Transfer',
+                'notes' => __('Customer confirmed a bank transfer or PromptPay payment from the public invoice page.'),
+            ]
+        );
+
+        return redirect()
+            ->route('public.invoice.show', $invoice->public_token)
+            ->with('success', __('Transfer confirmation received. Please keep your payment slip until the payment is reviewed.'));
+    }
+
     public function webhook(string $gateway, Request $request, PaymentGatewayManager $gateways): JsonResponse
     {
         $result = $gateways->driver($gateway)->parseWebhook($request);

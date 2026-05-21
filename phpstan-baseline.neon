@@ -1,0 +1,2683 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/GenerateRecurringInvoices.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/GenerateRecurringInvoices.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/GenerateRecurringInvoices.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/GenerateRecurringInvoices.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/SendOverdueReminders.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/SendOverdueReminders.php
+
+		-
+			message: '#^Relation ''user'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/SendOverdueReminders.php
+
+		-
+			message: '#^Class App\\Exports\\CustomersExport implements generic interface Maatwebsite\\Excel\\Concerns\\WithMapping but does not specify its types\: RowType$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Method App\\Exports\\CustomersExport\:\:headings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Method App\\Exports\\CustomersExport\:\:map\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Method App\\Exports\\CustomersExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Method App\\Exports\\CustomersExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Method App\\Exports\\CustomersExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\Relation does not specify its types\: TRelatedModel, TDeclaringModel, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/CustomersExport.php
+
+		-
+			message: '#^Class App\\Exports\\LeadsExport implements generic interface Maatwebsite\\Excel\\Concerns\\WithMapping but does not specify its types\: RowType$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Exports\\LeadsExport\:\:headings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Exports\\LeadsExport\:\:map\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Exports\\LeadsExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Exports\\LeadsExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Exports\\LeadsExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\Relation does not specify its types\: TRelatedModel, TDeclaringModel, TResult$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/LeadsExport.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\CustomerController\:\:validatedData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/CustomerController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:invoiceAttributes\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:invoiceAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:statuses\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:syncItems\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:taxSnapshotAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\InvoiceController\:\:validatedData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>amount_paid" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Api/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Api\\LeadController\:\:validatedData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Api/LeadController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lead\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportSummaryController.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/Api/ReportSummaryController.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/Api/ReportSummaryController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Api/ReportSummaryController.php
+
+		-
+			message: '#^Parameter \#1 \$user of class Illuminate\\Auth\\Events\\Verified constructor expects Illuminate\\Contracts\\Auth\\MustVerifyEmail, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Auth/VerifyEmailController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ExportController\:\:customers\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ExportController\:\:leads\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallController\:\:generateEnvFile\(\) has parameter \$dbConfig with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/InstallController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InstallController\:\:generateEnvFile\(\) has parameter \$installConfig with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/InstallController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InvoiceController\:\:generatePdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InvoiceController\:\:generatePublicPdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InvoiceController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\InvoiceController\:\:streamPdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/InvoiceController.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Http/Controllers/Payments/PaymentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ProposalController\:\:generatePdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ProposalController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ProposalController\:\:generatePublicPdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ProposalController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ProposalController\:\:streamPdf\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/ProposalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$branch\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$company\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$lead_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$tax_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CustomerResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$unit_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$wht_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceItemResource\:\:\$wht_rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\InvoiceItemResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/InvoiceItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$amount_paid\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$balance_due\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$branch\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$discount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$document_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$due_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$exchange_rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$invoice_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$is_recurring\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$next_recurring_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$recurring_cycle\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$tax_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$tax_total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$wht_total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\InvoiceResource\:\:documentTypeLabel\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\InvoiceResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/InvoiceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$company\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$source\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LeadResource\:\:\$value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\LeadResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/LeadResource.php
+
+		-
+			message: '#^Method App\\Imports\\LeadImport\:\:model\(\) has parameter \$row with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Imports/LeadImport.php
+
+		-
+			message: '#^Method App\\Imports\\LeadImport\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Imports/LeadImport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Imports/LeadImport.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\ActivityLogIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/ActivityLogIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\ActivityLogIndex\:\:\$modelTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/ActivityLogIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\ActivityLogIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/ActivityLogIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\CustomFieldIndex\:\:parseOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/CustomFieldIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\CustomFieldIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/CustomFieldIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\CustomFieldIndex\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/CustomFieldIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\CustomFieldIndex\:\:\$fieldTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/CustomFieldIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\CustomFieldIndex\:\:\$modelTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/CustomFieldIndex.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Admin\\Settings\:\:\$healthStatus\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<80200, 80599\> and 80200 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\Settings\:\:healthStatus\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\Settings\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$apiTokens type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$document_number_next type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$document_number_prefixes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$favicon has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$logo has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$rules has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\Settings\:\:\$templates type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/Settings.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Admin\\SettingsBackup\:\:\$health_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<80200, 80599\> and 80200 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\SettingsBackup\:\:getHealthStatusProperty\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\SettingsBackup\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\SettingsBackup\:\:\$current_favicon has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\SettingsBackup\:\:\$current_logo has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\SettingsBackup\:\:\$favicon has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\SettingsBackup\:\:\$logo has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Property App\\Livewire\\Admin\\SettingsBackup\:\:\$rules has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Admin/SettingsBackup.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\UserForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/UserForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\UserForm\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Admin/UserForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Admin\\UserIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Admin/UserIndex.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:attachments\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: app/Livewire/Attachments/AttachmentPanel.php
+
+		-
+			message: '#^Method App\\Livewire\\Attachments\\AttachmentPanel\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Attachments/AttachmentPanel.php
+
+		-
+			message: '#^Method App\\Livewire\\Attachments\\AttachmentPanel\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Attachments/AttachmentPanel.php
+
+		-
+			message: '#^Method App\\Livewire\\Calendar\\CalendarIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Calendar/CalendarIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Calendar/CalendarIndex.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:customFieldValues\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerForm\:\:customFieldRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerForm\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerForm\:\:rulesForCustomField\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerForm\:\:rulesForCustomField\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Customers\\CustomerForm\:\:\$customFieldValues type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Customers\\CustomerForm\:\:\$customFields type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Customers/CustomerForm.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Customers\\CustomerIndex\) and ''resetPage'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:applyFilterViewState\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:currentFilterViewState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:exportSelected\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:savedFilterViews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerIndex\:\:selectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Customers\\CustomerIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Customers\\CustomerIndex\:\:\$selectedIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Customers/CustomerIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Customers\\CustomerShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Customers/CustomerShow.php
+
+		-
+			message: '#^Relation ''invoices'' is not found in App\\Models\\Customer model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Customers/CustomerShow.php
+
+		-
+			message: '#^Relation ''lead'' is not found in App\\Models\\Customer model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Customers/CustomerShow.php
+
+		-
+			message: '#^Relation ''proposals'' is not found in App\\Models\\Customer model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Customers/CustomerShow.php
+
+		-
+			message: '#^Relation ''user'' is not found in App\\Models\\Customer model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Customers/CustomerShow.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Dashboard\:\:\$leadPipeline\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Dashboard\:\:\$revenueSeries\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Method App\\Livewire\\Dashboard\:\:leadPipeline\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Method App\\Livewire\\Dashboard\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Method App\\Livewire\\Dashboard\:\:revenueSeries\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Property App\\Livewire\\Dashboard\:\:\$listeners has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Dashboard.php
+
+		-
+			message: '#^Method App\\Livewire\\GlobalSearch\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/GlobalSearch.php
+
+		-
+			message: '#^Method App\\Livewire\\GlobalSearch\:\:updatedQuery\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/GlobalSearch.php
+
+		-
+			message: '#^Property App\\Livewire\\GlobalSearch\:\:\$query has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/GlobalSearch.php
+
+		-
+			message: '#^Property App\\Livewire\\GlobalSearch\:\:\$results has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/GlobalSearch.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Invoice\>\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Access to protected property Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Invoice\>\:\:\$items\.$#'
+			identifier: property.protected
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:customFieldValues\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Cannot call method map\(\) on array\<int, App\\Models\\Invoice\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:addItem\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:calculateTotals\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:customFieldRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:itemAttributes\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:itemAttributes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:mount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:mount\(\) has parameter \$invoiceId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:newItem\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:normalizeItem\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:normalizeItem\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:removeItem\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:removeItem\(\) has parameter \$index with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:rulesForCustomField\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:rulesForCustomField\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:save\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:updated\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceForm\:\:updated\(\) has parameter \$propertyName with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$customFieldValues type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$customFields type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$customer_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$discount has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$due_date has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$exchange_rate has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$invoiceId has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$invoice_date has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$is_recurring has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$items has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$next_recurring_date has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$notes has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$number has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$recurring_cycle has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$rules has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$status has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$subtotal has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$tax_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$tax_total has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$total has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceForm\:\:\$wht_total has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>rate" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Invoices/InvoiceForm.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Invoices\\InvoiceIndex\) and ''resetPage'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:applyFilterViewState\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:currentFilterViewState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:exportSelected\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:savedFilterViews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceIndex\:\:selectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceIndex\:\:\$selectedIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceIndex\:\:\$statuses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 3
+			path: app/Livewire/Invoices/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceShow\:\:loadInvoice\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceShow\:\:mount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceShow\:\:recordPayment\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Invoices\\InvoiceShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceShow\:\:\$paymentAmount has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceShow\:\:\$paymentDate has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceShow\:\:\$paymentMethod has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Property App\\Livewire\\Invoices\\InvoiceShow\:\:\$paymentNotes has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Relation ''payments'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Invoices/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\LeadKanban\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Method App\\Livewire\\LeadKanban\:\:updateTaskOrder\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Method App\\Livewire\\LeadKanban\:\:updateTaskOrder\(\) has parameter \$groups with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Property App\\Livewire\\LeadKanban\:\:\$statuses has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/LeadKanban.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:customFieldValues\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadForm\:\:customFieldRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadForm\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadForm\:\:rulesForCustomField\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadForm\:\:rulesForCustomField\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadForm\:\:\$customFieldValues type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadForm\:\:\$customFields type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadForm\:\:\$sources type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadForm\:\:\$statuses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadImport\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leads/LeadImport.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadImport\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadImport.php
+
+		-
+			message: '#^Offset 0 on non\-empty\-list\<string\> in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: app/Livewire/Leads/LeadImport.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-empty\-list\<string\|null\> and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Livewire/Leads/LeadImport.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Leads\\LeadIndex\) and ''resetPage'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:applyFilterViewState\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:currentFilterViewState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:exportSelected\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:savedFilterViews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadIndex\:\:selectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadIndex\:\:\$selectedIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadIndex\:\:\$sources type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Leads\\LeadIndex\:\:\$statuses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Leads/LeadIndex.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lead\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leads/LeadShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Leads\\LeadShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leads/LeadShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Leads/LeadShow.php
+
+		-
+			message: '#^Relation ''user'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Leads/LeadShow.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notes\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: app/Livewire/Notes/NotesList.php
+
+		-
+			message: '#^Method App\\Livewire\\Notes\\NotesList\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Notes/NotesList.php
+
+		-
+			message: '#^Method App\\Livewire\\Notes\\NotesList\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Notes/NotesList.php
+
+		-
+			message: '#^Method App\\Livewire\\Portal\\InvoiceIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Portal/InvoiceIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/InvoiceIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Portal\\InvoiceShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Portal/InvoiceShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/InvoiceShow.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/InvoiceShow.php
+
+		-
+			message: '#^Relation ''payments'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Portal\\Profile\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Parameter \#1 \$boolean of function abort_unless expects bool, App\\Models\\Customer\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>address" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>company" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>phone" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Portal/Profile.php
+
+		-
+			message: '#^Method App\\Livewire\\Portal\\ProposalShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Portal/ProposalShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/ProposalShow.php
+
+		-
+			message: '#^Relation ''lead'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Portal/ProposalShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalForm\:\:mount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalForm\:\:mount\(\) has parameter \$proposalId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalForm\:\:save\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$content has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$customer_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$lead_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$number has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$proposalId has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$rules has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$status has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$subject has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalForm\:\:\$total has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalForm.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Proposal\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Proposals\\ProposalIndex\) and ''resetPage'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:applyFilterViewState\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:currentFilterViewState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:exportSelected\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:savedFilterViews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalIndex\:\:selectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalIndex\:\:\$selectedIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Proposals\\ProposalIndex\:\:\$statuses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Relation ''lead'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Proposals/ProposalIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalShow\:\:mount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalShow.php
+
+		-
+			message: '#^Method App\\Livewire\\Proposals\\ProposalShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Proposals/ProposalShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Proposals/ProposalShow.php
+
+		-
+			message: '#^Relation ''lead'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Proposals/ProposalShow.php
+
+		-
+			message: '#^Method App\\Livewire\\PublicShare\\InvoiceShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/PublicShare/InvoiceShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/PublicShare/InvoiceShow.php
+
+		-
+			message: '#^Relation ''items'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/PublicShare/InvoiceShow.php
+
+		-
+			message: '#^Relation ''payments'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/PublicShare/InvoiceShow.php
+
+		-
+			message: '#^Method App\\Livewire\\PublicShare\\ProposalShow\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/PublicShare/ProposalShow.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/PublicShare/ProposalShow.php
+
+		-
+			message: '#^Relation ''lead'' is not found in App\\Models\\Proposal model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/PublicShare/ProposalShow.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lead\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\ReportIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\ReportIndex\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Reports\\ReportIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Invoice model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Relation ''customer'' is not found in App\\Models\\Lead model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Reports/ReportIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskBoard\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tasks/TaskBoard.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskBoard\:\:updateTaskStatus\(\) has parameter \$newStatus with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskBoard.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskBoard\:\:updateTaskStatus\(\) has parameter \$taskId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskBoard.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskBoard\:\:\$listeners has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskBoard.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:mount\(\) has parameter \$relatableId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:mount\(\) has parameter \$relatableType with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:mount\(\) has parameter \$taskId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskForm\:\:save\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$assigned_to has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$description has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$due_date has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$priority has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$relatable_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$relatable_type has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$status has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$taskId has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskForm\:\:\$title has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Tasks\\TaskIndex\) and ''resetPage'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:applyFilterViewState\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:currentFilterViewState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:delete\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:exportSelected\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:savedFilterViews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Livewire\\Tasks\\TaskIndex\:\:selectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskIndex\:\:\$listeners has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskIndex\:\:\$queryString has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskIndex\:\:\$selectedIds type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Property App\\Livewire\\Tasks\\TaskIndex\:\:\$statuses type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tasks/TaskIndex.php
+
+		-
+			message: '#^Method App\\Models\\Attachment\:\:attachable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Attachment.php
+
+		-
+			message: '#^Method App\\Models\\Attachment\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Attachment.php
+
+		-
+			message: '#^Call to function is_scalar\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Models/CustomField.php
+
+		-
+			message: '#^Method App\\Models\\CustomField\:\:normalizedOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/CustomField.php
+
+		-
+			message: '#^Method App\\Models\\CustomField\:\:values\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CustomField.php
+
+		-
+			message: '#^Method App\\Models\\CustomFieldValue\:\:field\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CustomFieldValue.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:attachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:customFieldValues\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:lead\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:notes\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:proposals\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:syncCustomFieldValues\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Method App\\Models\\Customer\:\:user\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\Models\\EmailTemplate\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/EmailTemplate.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Invoice\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:customFieldValues\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:customer\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:generatedInvoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:items\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:payments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:recurringParent\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:syncCustomFieldValues\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\Invoice\:\:user\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Invoice.php
+
+		-
+			message: '#^Method App\\Models\\InvoiceItem\:\:invoice\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/InvoiceItem.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:attachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:customFieldValues\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:customer\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:notes\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:syncCustomFieldValues\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Lead\:\:user\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Lead.php
+
+		-
+			message: '#^Method App\\Models\\Note\:\:notable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Note.php
+
+		-
+			message: '#^Method App\\Models\\Note\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Note.php
+
+		-
+			message: '#^Method App\\Models\\Payment\:\:invoice\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Payment.php
+
+		-
+			message: '#^Method App\\Models\\Proposal\:\:customer\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Proposal.php
+
+		-
+			message: '#^Method App\\Models\\Proposal\:\:lead\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Proposal.php
+
+		-
+			message: '#^Method App\\Models\\Proposal\:\:user\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Proposal.php
+
+		-
+			message: '#^Method App\\Models\\RecurringInvoice\:\:invoice\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RecurringInvoice.php
+
+		-
+			message: '#^Method App\\Models\\Scopes\\TenancyScope\:\:apply\(\) has parameter \$builder with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Scopes/TenancyScope.php
+
+		-
+			message: '#^Method App\\Models\\Task\:\:assignee\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Method App\\Models\\Task\:\:attachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Method App\\Models\\Task\:\:relatable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Method App\\Models\\Task\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Method App\\Models\\TaskAttachment\:\:task\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/TaskAttachment.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:customer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:scopeActive\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:scopeActive\(\) has parameter \$query with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Notifications\\InvoiceOverdueNotification\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/InvoiceOverdueNotification.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Notifications/InvoiceOverdueNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\InvoiceSentNotification\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/InvoiceSentNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskAssignedNotification\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/TaskAssignedNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Payment\:\:\$invoice\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Observers/PaymentObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Payment\:\:\$invoice\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/PaymentPolicy.php
+
+		-
+			message: '#^Method App\\Services\\Payments\\DTO\\PaymentWebhookResult\:\:__construct\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payments/DTO/PaymentWebhookResult.php
+
+		-
+			message: '#^Method App\\Services\\Payments\\Drivers\\ExternalCheckoutDriver\:\:appendQuery\(\) has parameter \$query with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payments/Drivers/ExternalCheckoutDriver.php
+
+		-
+			message: '#^Method App\\Services\\Payments\\Drivers\\StripeDriver\:\:appendQuery\(\) has parameter \$query with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payments/Drivers/StripeDriver.php
+
+		-
+			message: '#^Method App\\Support\\ActivityLogFormatter\:\:changedFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/ActivityLogFormatter.php
+
+		-
+			message: '#^Method App\\Support\\InvoiceDocuments\:\:englishLabels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Method App\\Support\\InvoiceDocuments\:\:footerLabels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Method App\\Support\\InvoiceDocuments\:\:labels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Method App\\Support\\InvoiceDocuments\:\:prefixes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Method App\\Support\\InvoiceDocuments\:\:types\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Support/InvoiceDocuments.php
+
+		-
+			message: '#^Method App\\Support\\PromptPay\:\:merchantAccountValue\(\) has parameter \$target with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/PromptPay.php
+
+		-
+			message: '#^Method App\\Support\\PromptPay\:\:normalizeIdentifier\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/PromptPay.php
+
+		-
+			message: '#^Method App\\Support\\SafeNotifier\:\:send\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/SafeNotifier.php

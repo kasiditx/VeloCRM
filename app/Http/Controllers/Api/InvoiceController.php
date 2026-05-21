@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Support\InvoiceDocuments;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -108,7 +110,8 @@ class InvoiceController extends Controller
         $invoiceId = $invoice?->id;
 
         return $request->validate([
-            'number' => ['required', Rule::unique('invoices', 'number')->ignore($invoiceId)],
+            'number' => ['nullable', 'string', 'max:255', Rule::unique('invoices', 'number')->ignore($invoiceId)],
+            'document_type' => ['nullable', Rule::in(InvoiceDocuments::types())],
             'customer_id' => ['required', 'integer', Rule::exists(Customer::class, 'id')],
             'invoice_date' => ['required', 'date'],
             'due_date' => ['required', 'date', 'after_or_equal:invoice_date'],
@@ -126,6 +129,7 @@ class InvoiceController extends Controller
             'items.*.description' => ['required', 'string', 'max:255'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'items.*.wht_rate' => ['nullable', 'numeric', Rule::in(InvoiceItem::WHT_RATES)],
         ]);
     }
 
@@ -134,18 +138,27 @@ class InvoiceController extends Controller
         $subtotal = collect($data['items'])->sum(
             fn (array $item): float => round((float) $item['quantity'] * (float) $item['unit_price'], 2)
         );
+        $whtTotal = collect($data['items'])->sum(function (array $item): float {
+            $amount = round((float) $item['quantity'] * (float) $item['unit_price'], 2);
+
+            return $this->calculateWithholdingTax($amount, (float) ($item['wht_rate'] ?? 0));
+        });
         $discount = (float) ($data['discount'] ?? 0);
         $taxTotal = (float) ($data['tax_total'] ?? 0);
-        $total = max(round($subtotal - $discount + $taxTotal, 2), 0);
+        $total = max(round($subtotal - $discount + $taxTotal - $whtTotal, 2), 0);
         $amountPaid = min((float) ($data['amount_paid'] ?? $invoice?->amount_paid ?? 0), $total);
 
+        $documentType = InvoiceDocuments::normalize($data['document_type'] ?? $invoice?->document_type);
+
         return [
-            'number' => $data['number'],
+            'number' => $data['number'] ?? InvoiceDocuments::nextNumber($documentType, $data['invoice_date']),
+            'document_type' => $documentType,
             'customer_id' => $data['customer_id'],
             'invoice_date' => $data['invoice_date'],
             'due_date' => $data['due_date'],
             'subtotal' => $subtotal,
             'tax_total' => $taxTotal,
+            'wht_total' => $whtTotal,
             'discount' => $discount,
             'total' => $total,
             'amount_paid' => $amountPaid,
@@ -167,14 +180,27 @@ class InvoiceController extends Controller
         foreach ($items as $item) {
             $quantity = (float) $item['quantity'];
             $unitPrice = (float) $item['unit_price'];
+            $amount = round($quantity * $unitPrice, 2);
+            $whtRate = (float) ($item['wht_rate'] ?? 0);
 
             $invoice->items()->create([
                 'description' => $item['description'],
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
-                'amount' => round($quantity * $unitPrice, 2),
+                'amount' => $amount,
+                'wht_rate' => $whtRate,
+                'wht_amount' => $this->calculateWithholdingTax($amount, $whtRate),
             ]);
         }
+    }
+
+    private function calculateWithholdingTax(float $amount, float $rate): float
+    {
+        if ($amount <= 0 || $rate <= 0) {
+            return 0.0;
+        }
+
+        return round($amount * ($rate / 100), 2);
     }
 
     private function taxSnapshotAttributes(int|string $customerId): array

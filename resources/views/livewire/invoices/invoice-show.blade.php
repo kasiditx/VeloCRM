@@ -14,7 +14,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     {{ __('Back') }}
                 </x-button.secondary-link>
-                <a href="{{ route('invoices.pdf', $invoice->id) }}" target="_blank"
+                <a href="{{ route('invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank"
                     class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     {{ __('Download PDF') }}
@@ -27,6 +27,20 @@
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-6 8h8a2 2 0 002-2V8l-6-6H8a2 2 0 00-2 2v4"/></svg>
                     <span x-text="copied ? @js(__('Copied')) : @js(__('Copy Share Link'))"></span>
                 </button>
+                @if(! in_array($invoice->document_type, ['tax_invoice', 'tax_invoice_receipt'], true))
+                    <button type="button" wire:click="convertToTaxInvoice" wire:loading.attr="disabled" wire:target="convertToTaxInvoice"
+                        class="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800 shadow-sm transition hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 dark:hover:bg-amber-900/50">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/></svg>
+                        {{ __('Convert to Tax Invoice') }}
+                    </button>
+                @endif
+                @if((float) $invoice->balance_due <= 0 && ! in_array($invoice->document_type, ['receipt', 'tax_invoice_receipt'], true))
+                    <button type="button" wire:click="issueReceipt" wire:loading.attr="disabled" wire:target="issueReceipt"
+                        class="inline-flex items-center gap-1.5 rounded-xl border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-800 shadow-sm transition hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/50">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        {{ __('Issue Receipt') }}
+                    </button>
+                @endif
                 <x-button.primary-link href="{{ route('invoices.edit', $invoice->id) }}" wire:navigate>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     {{ __('Edit') }}
@@ -34,10 +48,22 @@
             </div>
         </div>
 
-        @if (session()->has('message'))
+        @if (session()->has('success'))
             <div class="mb-6 animate-fade-in flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
                 <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <p class="text-sm font-medium">{{ session('message') }}</p>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
+            </div>
+        @endif
+        @if (session()->has('success'))
+            <div class="mb-6 animate-fade-in flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
+                <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
+            </div>
+        @endif
+        @if (session()->has('error'))
+            <div class="mb-6 animate-fade-in flex items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-900/50 dark:bg-rose-900/30 dark:text-rose-300">
+                <svg class="h-5 w-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
             </div>
         @endif
 
@@ -71,7 +97,9 @@
                         </div>
                     </div>
                     <div class="text-left sm:text-right">
-                        <div class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{{ __('INVOICE') }}</div>
+                        <div class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            {{ app()->getLocale() === 'th' ? $invoice->documentTypeLabel() : $invoice->documentTypeEnglishLabel() }}
+                        </div>
                         <div class="mt-2 text-sm font-medium text-gray-500 dark:text-gray-400">#{{ $invoice->number }}</div>
                         <div class="mt-4 inline-flex">
                             <x-ui.status-chip :status="$invoice->status" class="text-sm px-3 py-1">{{ __($invoice->status) }}</x-ui.status-chip>
@@ -173,8 +201,14 @@
                             <span class="font-medium">{{ $invoice->money($invoice->tax_total) }}</span>
                         </div>
                         @endif
+                        @if ($invoice->wht_total > 0)
+                        <div class="flex justify-between text-sm text-rose-600 dark:text-rose-400">
+                            <span>{{ $invoice->withholdingTaxLabel() }}</span>
+                            <span class="font-medium">-{{ $invoice->money($invoice->wht_total) }}</span>
+                        </div>
+                        @endif
                         <div class="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-3 text-lg font-bold text-gray-900 dark:text-white">
-                            <span>{{ __('Total') }}</span>
+                            <span>{{ __('Net Total') }}</span>
                             <span>{{ $invoice->money($invoice->total) }}</span>
                         </div>
                         <div class="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-3 text-sm font-bold {{ $invoice->balance_due > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">

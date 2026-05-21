@@ -12,7 +12,7 @@
             </x-button.secondary-link>
         </div>
 
-        <form wire:submit="save" class="form-panel">
+        <form wire:submit="save" class="form-panel" data-draft-key="velocrm.proposal-form.{{ $proposalId ?: 'new' }}">
             <div class="form-grid">
                 <div class="md:col-span-2">
                     <label class="field-label">{{ __('Subject') }}</label>

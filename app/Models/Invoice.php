@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasCustomFields;
+use App\Support\InvoiceDocuments;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +19,7 @@ class Invoice extends Model
 
     protected $fillable = [
         'number',
+        'document_type',
         'customer_id',
         'tax_id',
         'branch',
@@ -25,6 +27,7 @@ class Invoice extends Model
         'due_date',
         'subtotal',
         'tax_total',
+        'wht_total',
         'discount',
         'total',
         'amount_paid',
@@ -43,8 +46,30 @@ class Invoice extends Model
     {
         return [
             'exchange_rate' => 'decimal:6',
+            'subtotal' => 'decimal:2',
+            'tax_total' => 'decimal:2',
+            'wht_total' => 'decimal:2',
+            'discount' => 'decimal:2',
+            'total' => 'decimal:2',
+            'amount_paid' => 'decimal:2',
+            'balance_due' => 'decimal:2',
             'public_viewed_at' => 'datetime',
         ];
+    }
+
+    public function documentTypeLabel(): string
+    {
+        return InvoiceDocuments::label($this->document_type);
+    }
+
+    public function documentTypeEnglishLabel(): string
+    {
+        return InvoiceDocuments::englishLabel($this->document_type);
+    }
+
+    public function documentTypeFooter(): string
+    {
+        return InvoiceDocuments::footer($this->document_type);
     }
 
     public function getActivitylogOptions(): LogOptions
@@ -57,10 +82,21 @@ class Invoice extends Model
 
     public function updateTotals(): void
     {
+        $this->loadMissing('items');
+
+        if ($this->items->isNotEmpty()) {
+            $this->subtotal = round((float) $this->items->sum('amount'), 2);
+            $this->wht_total = round((float) $this->items->sum('wht_amount'), 2);
+        }
+
+        $this->total = max(round(
+            (float) $this->subtotal - (float) $this->discount + (float) $this->tax_total - (float) $this->wht_total,
+            2
+        ), 0);
         $this->amount_paid = $this->payments()
             ->where('status', 'paid')
             ->sum('amount');
-        $this->balance_due = $this->total - $this->amount_paid;
+        $this->balance_due = max(round((float) $this->total - (float) $this->amount_paid, 2), 0);
 
         if ($this->balance_due <= 0) {
             $this->status = 'Paid';
@@ -69,6 +105,39 @@ class Invoice extends Model
         }
 
         $this->save();
+    }
+
+    public function withholdingTaxLabel(): string
+    {
+        $rateLabel = $this->withholdingTaxRateLabel();
+
+        if ($rateLabel !== null) {
+            return __('Withholding Tax (:rate)', ['rate' => $rateLabel]);
+        }
+
+        return __('Withholding Tax');
+    }
+
+    public function withholdingTaxRateLabel(): ?string
+    {
+        $items = $this->relationLoaded('items') ? $this->items : $this->items()->get();
+        $rates = $items
+            ->filter(fn (InvoiceItem $item): bool => (float) $item->wht_amount > 0)
+            ->map(fn (InvoiceItem $item): float => (float) $item->wht_rate)
+            ->filter(fn (float $rate): bool => $rate > 0)
+            ->unique()
+            ->values();
+
+        if ($rates->count() === 1) {
+            return $this->formatRate($rates->first()).'%';
+        }
+
+        return null;
+    }
+
+    private function formatRate(float $rate): string
+    {
+        return rtrim(rtrim(number_format($rate, 2), '0'), '.');
     }
 
     public function ensurePublicToken(): string

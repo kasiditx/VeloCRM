@@ -8,7 +8,9 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\Proposal;
+use App\Models\Setting;
 use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -153,6 +155,34 @@ class Dashboard extends Component
             ],
         ])->sortBy('priority')->values();
 
+        $onboardingItems = collect([
+            [
+                'label' => __('Set branding'),
+                'done' => filled(Setting::get('logo')) || filled(Setting::get('company_name')),
+                'href' => route('admin.settings').'#branding',
+            ],
+            [
+                'label' => __('Configure SMTP and send a test email'),
+                'done' => filled(Setting::get('mail_host')) && filled(Setting::get('mail_from_address')),
+                'href' => route('admin.settings').'#smtp',
+            ],
+            [
+                'label' => __('Create the first lead'),
+                'done' => $totalLeads > 0,
+                'href' => route('leads.create'),
+            ],
+            [
+                'label' => __('Create the first invoice'),
+                'done' => Invoice::query()->exists(),
+                'href' => route('invoices.create'),
+            ],
+            [
+                'label' => __('Invite a second user'),
+                'done' => User::query()->count() > 1,
+                'href' => route('admin.users.create'),
+            ],
+        ]);
+
         return view('livewire.dashboard', [
             'totalLeads' => $totalLeads,
             'totalCustomers' => $totalCustomers,
@@ -169,6 +199,8 @@ class Dashboard extends Component
             'overdueInvoices' => $overdueInvoices,
             'todayLabel' => $todayLabel,
             'decisionCards' => $decisionCards,
+            'onboardingItems' => $onboardingItems,
+            'onboardingComplete' => $onboardingItems->every(fn (array $item): bool => $item['done']),
         ])->layout('layouts.app');
     }
 }

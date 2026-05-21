@@ -54,6 +54,38 @@
             @endforeach
         </section>
 
+        @unless($onboardingComplete)
+            <section x-data="{ hidden: localStorage.getItem('velocrm_onboarding_hidden') === 'true' }" x-show="! hidden" x-cloak
+                class="rounded-2xl border border-primary-100 bg-white p-5 shadow-sm dark:border-primary-900/50 dark:bg-gray-900">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">{{ __('Getting started') }}</p>
+                        <h2 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">{{ __('Finish the workspace setup') }}</h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">{{ __('Complete these steps once so daily CRM work feels ready for the whole team.') }}</p>
+                    </div>
+                    <button type="button" @click="hidden = true; localStorage.setItem('velocrm_onboarding_hidden', 'true')"
+                        class="rounded-xl border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+                        {{ __('Hide') }}
+                    </button>
+                </div>
+                <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                    @foreach($onboardingItems as $item)
+                        <a href="{{ $item['href'] }}" wire:navigate
+                            class="flex items-start gap-3 rounded-xl border px-3 py-3 transition focus:outline-none focus:ring-2 focus:ring-primary-500 {{ $item['done'] ? 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-100' : 'border-gray-200 bg-gray-50 text-gray-800 hover:bg-white dark:border-gray-800 dark:bg-gray-950/50 dark:text-gray-200 dark:hover:bg-gray-900' }}">
+                            <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full {{ $item['done'] ? 'bg-emerald-600 text-white' : 'bg-white text-gray-400 ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700' }}">
+                                @if($item['done'])
+                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                @else
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                @endif
+                            </span>
+                            <span class="text-sm font-semibold leading-5">{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endunless
+
         @php
             $metrics = [
                 [

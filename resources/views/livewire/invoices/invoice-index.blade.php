@@ -41,11 +41,49 @@
                 </div>
             </div>
 
+            <div class="flex flex-col gap-3 border-b border-gray-100 px-4 py-3 dark:border-gray-800 lg:flex-row lg:items-center lg:justify-between">
+                <div class="flex flex-wrap items-center gap-2">
+                    <select wire:model="bulkAction" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                        <option value="">{{ __('Bulk action') }}</option>
+                        <option value="delete">{{ __('Delete') }}</option>
+                        <option value="status">{{ __('Change status') }}</option>
+                        <option value="assign">{{ __('Assign user') }}</option>
+                        <option value="export">{{ __('Export selected') }}</option>
+                    </select>
+                    @if($bulkAction === 'status')
+                        <select wire:model="bulkStatus" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                            @foreach($statuses as $status)
+                                <option value="{{ $status }}">{{ __($status) }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    @if($bulkAction === 'assign')
+                        <select wire:model="bulkUserId" class="rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                            <option value="">{{ __('Choose user') }}</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    <button type="button" wire:click="runBulkAction" wire:loading.attr="disabled" class="rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white">
+                        {{ __('Apply') }} <span class="text-xs opacity-75">({{ count($selectedIds) }})</span>
+                    </button>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    @foreach($savedFilterViews as $view)
+                        <button type="button" wire:click="applyFilterView({{ $view->id }})" class="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">{{ $view->name }}</button>
+                    @endforeach
+                    <input type="text" wire:model="filterViewName" placeholder="{{ __('View name') }}" class="w-32 rounded-xl border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                    <button type="button" wire:click="saveFilterView" class="rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-100 dark:border-primary-900 dark:bg-primary-950/50 dark:text-primary-300">{{ __('Save view') }}</button>
+                </div>
+            </div>
+
             {{-- Desktop Table --}}
             <div class="hidden lg:block overflow-x-auto">
                 <table class="module-table">
                     <thead class="module-table-head">
                         <tr>
+                            <th class="module-table-heading w-10"></th>
                             <th class="module-table-heading">{{ __('Number') }}</th>
                             <th class="module-table-heading">{{ __('Customer') }}</th>
                             <th class="module-table-heading">{{ __('Date') }}</th>
@@ -58,6 +96,9 @@
                     <tbody class="module-table-body">
                         @forelse($invoices as $invoice)
                             <tr class="module-table-row group">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" wire:model.live="selectedIds" value="{{ $invoice->id }}" class="rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950">
+                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
                                         <div class="h-8 w-8 rounded-lg bg-primary-50 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
@@ -78,7 +119,15 @@
                                     {{ $invoice->money($invoice->balance_due) }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <x-ui.status-chip :status="$invoice->status">{{ __($invoice->status) }}</x-ui.status-chip>
+                                    @if($showTrashed)
+                                        <x-ui.status-chip :status="$invoice->status">{{ __($invoice->status) }}</x-ui.status-chip>
+                                    @else
+                                        <select wire:change="updateStatus({{ $invoice->id }}, $event.target.value)" class="rounded-full border-gray-300 py-1 pl-3 pr-8 text-xs font-semibold shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+                                            @foreach($statuses as $status)
+                                                <option value="{{ $status }}" @selected($invoice->status === $status)>{{ __($status) }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-1">
@@ -100,7 +149,7 @@
                                                 class="module-icon-button hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             </a>
-                                            <a href="{{ route('invoices.pdf', $invoice->id) }}" target="_blank" title="PDF" aria-label="{{ __('Download PDF') }}"
+                                            <a href="{{ route('invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank" title="PDF" aria-label="{{ __('Download PDF') }}"
                                                 class="module-icon-button hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                             </a>
@@ -114,7 +163,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-16 text-center">
+                                <td colspan="8" class="px-6 py-16 text-center">
                                     <x-ui.empty-state
                                         :icon="$showTrashed ? 'trash' : 'invoice'"
                                         :title="$showTrashed ? __('Trash is empty.') : __('No invoices found.')"
@@ -157,7 +206,7 @@
                             @else
                                 <a href="{{ route('invoices.show', $invoice->id) }}" wire:navigate class="flex-1 text-center rounded-lg bg-gray-50 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">{{ __('View') }}</a>
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" wire:navigate class="flex-1 text-center rounded-lg bg-amber-50 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400">{{ __('Edit') }}</a>
-                                <a href="{{ route('invoices.pdf', $invoice->id) }}" target="_blank" class="flex-1 text-center rounded-lg bg-emerald-50 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400">PDF</a>
+                                <a href="{{ route('invoices.pdf', ['invoice' => $invoice->id, 'locale' => app()->getLocale()]) }}" target="_blank" class="flex-1 text-center rounded-lg bg-emerald-50 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400">PDF</a>
                                 <button wire:click="delete({{ $invoice->id }})" wire:loading.attr="disabled" wire:target="delete({{ $invoice->id }})" data-velo-confirm="{{ __('Move this invoice to trash?') }}" class="flex-1 rounded-lg bg-white border border-gray-200 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"><x-ui.loading-label target="delete({{ $invoice->id }})" :label="__('Trash')" :loading="__('Moving...')" /></button>
                             @endif
                         </div>

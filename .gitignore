@@ -43,6 +43,8 @@ auth.json
 !/storage/fonts/.gitignore
 !/storage/fonts/THSarabunNew.ttf
 !/storage/fonts/THSarabunNew-Bold.ttf
+!/storage/fonts/Sarabun-Regular.ttf
+!/storage/fonts/Sarabun-Bold.ttf
 
 # Laravel generated cache
 /bootstrap/cache/*

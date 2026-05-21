@@ -61,24 +61,40 @@ new class extends Component
         <nav class="flex-1 overflow-y-auto py-2 px-2 space-y-0.5 overflow-x-hidden">
 
             @php
+            $openInvoiceStatuses = ['Draft', 'Sent', 'Overdue'];
+            $openProposalStatuses = ['Draft', 'Sent', 'Open'];
+            $openTaskStatuses = ['Todo', 'In Progress'];
+            $activeLeadStatuses = ['New', 'Contacted', 'Qualified', 'Proposal'];
             $navItems = [
                 ['route' => 'dashboard', 'label' => __('Dashboard'), 'match' => 'dashboard',
                  'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
                 ['route' => 'leads.index', 'label' => __('Leads'), 'match' => 'leads.*',
+                 'badge' => number_format(\App\Models\Lead::query()->count()),
+                 'badgeLabel' => __('Total leads'),
                  'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
                 ['route' => 'customers.index', 'label' => __('Customers'), 'match' => 'customers.*',
+                 'badge' => number_format(\App\Models\Customer::query()->count()),
+                 'badgeLabel' => __('Total customers'),
                  'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
                 ['route' => 'invoices.index', 'label' => __('Invoices'), 'match' => 'invoices.*',
+                 'badge' => number_format(\App\Models\Invoice::query()->whereIn('status', $openInvoiceStatuses)->count()),
+                 'badgeLabel' => __('Open invoices'),
                  'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
                 ['route' => 'proposals.index', 'label' => __('Proposals'), 'match' => 'proposals.*',
+                 'badge' => number_format(\App\Models\Proposal::query()->whereIn('status', $openProposalStatuses)->count()),
+                 'badgeLabel' => __('Open proposals'),
                  'icon' => 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z'],
             ];
             $toolItems = [
                 ['route' => 'tasks.index', 'label' => __('Tasks'), 'match' => 'tasks.*',
+                 'badge' => number_format(\App\Models\Task::query()->whereIn('status', $openTaskStatuses)->count()),
+                 'badgeLabel' => __('Open tasks'),
                  'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-3 7l2 2 4-4'],
                 ['route' => 'calendar.index', 'label' => __('Calendar'), 'match' => 'calendar.*',
                  'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
                 ['route' => 'leads.kanban', 'label' => __('Pipeline'), 'match' => 'leads.kanban',
+                 'badge' => number_format(\App\Models\Lead::query()->whereIn('status', $activeLeadStatuses)->count()),
+                 'badgeLabel' => __('Active leads'),
                  'icon' => 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2'],
             ];
             $adminItems = [
@@ -111,11 +127,20 @@ new class extends Component
                     @if($isActive)
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary-500 rounded-r-full"></span>
                     @endif
-                    <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
-                    </svg>
-                    <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    <span class="flex min-w-0 flex-1 items-center gap-3">
+                        <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
+                        </svg>
+                        <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    </span>
+                    @isset($item['badge'])
+                        <span x-show="!collapsed" x-cloak
+                              aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                              class="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                            {{ $item['badge'] }}
+                        </span>
+                    @endisset
                 </a>
             @endforeach
 
@@ -136,11 +161,20 @@ new class extends Component
                     @if($isActive)
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary-500 rounded-r-full"></span>
                     @endif
-                    <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
-                    </svg>
-                    <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    <span class="flex min-w-0 flex-1 items-center gap-3">
+                        <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
+                        </svg>
+                        <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    </span>
+                    @isset($item['badge'])
+                        <span x-show="!collapsed" x-cloak
+                              aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                              class="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                            {{ $item['badge'] }}
+                        </span>
+                    @endisset
                 </a>
             @endforeach
 
@@ -162,11 +196,20 @@ new class extends Component
                     @if($isActive)
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary-500 rounded-r-full"></span>
                     @endif
-                    <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
-                    </svg>
-                    <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    <span class="flex min-w-0 flex-1 items-center gap-3">
+                        <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
+                        </svg>
+                        <span x-show="!collapsed" x-cloak class="truncate leading-none">{{ $item['label'] }}</span>
+                    </span>
+                    @isset($item['badge'])
+                        <span x-show="!collapsed" x-cloak
+                              aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                              class="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                            {{ $item['badge'] }}
+                        </span>
+                    @endisset
                 </a>
             @endforeach
             @endrole
@@ -274,6 +317,24 @@ new class extends Component
         </a>
 
         <div class="flex items-center gap-2 ml-auto">
+            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                <button @click="open = ! open" type="button" aria-label="{{ __('Quick Create') }}"
+                    class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-600 text-white transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M12 4v16m8-8H4"/></svg>
+                </button>
+                <div x-show="open" x-cloak x-transition
+                    class="absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-xl dark:border-gray-800 dark:bg-gray-900">
+                    @foreach([
+                        ['href' => route('leads.create'), 'label' => __('Lead')],
+                        ['href' => route('customers.create'), 'label' => __('Customer')],
+                        ['href' => route('invoices.create'), 'label' => __('Invoice')],
+                        ['href' => route('tasks.create'), 'label' => __('Task')],
+                    ] as $item)
+                        <a href="{{ $item['href'] }}" wire:navigate @click="open = false"
+                            class="block px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800">{{ $item['label'] }}</a>
+                    @endforeach
+                </div>
+            </div>
             {{-- Dark mode --}}
                 <button onclick="window.toggleTheme()" type="button" aria-label="{{ __('Toggle theme') }}"
                 class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -343,7 +404,13 @@ new class extends Component
                         <svg class="w-5 h-5 shrink-0 {{ $isActive ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
                         </svg>
-                        {{ $item['label'] }}
+                        <span class="min-w-0 flex-1 truncate">{{ $item['label'] }}</span>
+                        @isset($item['badge'])
+                            <span aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                                  class="ml-auto shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                                {{ $item['badge'] }}
+                            </span>
+                        @endisset
                     </a>
                 @endforeach
                 <div class="px-2 pt-4 pb-1">
@@ -357,7 +424,13 @@ new class extends Component
                         <svg class="w-5 h-5 shrink-0 {{ $isActive ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
                         </svg>
-                        {{ $item['label'] }}
+                        <span class="min-w-0 flex-1 truncate">{{ $item['label'] }}</span>
+                        @isset($item['badge'])
+                            <span aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                                  class="ml-auto shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                                {{ $item['badge'] }}
+                            </span>
+                        @endisset
                     </a>
                 @endforeach
                 @role('Admin')
@@ -372,7 +445,13 @@ new class extends Component
                         <svg class="w-5 h-5 shrink-0 {{ $isActive ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ $item['icon'] }}"/>
                         </svg>
-                        {{ $item['label'] }}
+                        <span class="min-w-0 flex-1 truncate">{{ $item['label'] }}</span>
+                        @isset($item['badge'])
+                            <span aria-label="{{ $item['badgeLabel'] }}: {{ $item['badge'] }}"
+                                  class="ml-auto shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold tabular-nums text-gray-500 dark:bg-gray-800 dark:text-gray-300 {{ $isActive ? 'bg-white/80 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200' : '' }}">
+                                {{ $item['badge'] }}
+                            </span>
+                        @endisset
                     </a>
                 @endforeach
                 @endrole

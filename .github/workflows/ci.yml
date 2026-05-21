@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  quality:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '8.2'
+          - '8.3'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: bcmath, dom, fileinfo, gd, mbstring, pdo_sqlite, sqlite3, xml, zip
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-${{ matrix.php-version }}-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Prepare Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+          touch database/database.sqlite
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Validate Composer metadata
+        run: composer validate --strict
+
+      - name: Audit Composer dependencies
+        run: composer audit
+
+      - name: Run Pint
+        run: ./vendor/bin/pint --test
+
+      - name: Run Larastan
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G
+
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit
+
+      - name: Build frontend assets
+        run: npm run build

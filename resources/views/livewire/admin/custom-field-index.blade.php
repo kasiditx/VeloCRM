@@ -113,9 +113,12 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center dark:border-gray-700 dark:bg-gray-800">
-                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('No custom fields found.') }}</p>
-                                    </div>
+                                    <x-ui.empty-state
+                                        icon="file"
+                                        :title="__('No custom fields found.')"
+                                        :message="__('Add a field to capture extra details on this model without changing core screens.')"
+                                        size="compact"
+                                    />
                                 @endforelse
                             </div>
                         </section>
